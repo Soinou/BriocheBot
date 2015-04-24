@@ -216,7 +216,7 @@ target_link_libraries(${EXECUTABLE} ${CURL_LIBRARIES})
 find_package(Lua51)
 
 # If Lua is not found
-if(NOT LUA_FOUND)
+if(NOT LUA51_FOUND)
 	# Error
 	message(FATAL_ERROR "Could not find Lua")
 endif()
