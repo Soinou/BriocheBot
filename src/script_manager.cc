@@ -77,7 +77,7 @@ void ScriptManager::on_command(const std::string& sender, const std::string& com
     {
         // Log them
         Log.error(e.what());
-        fprintf(stderr, e.what());
+        fprintf(stderr, "Lua Error: %s\n", e.what());
     }
 }
 
@@ -98,6 +98,6 @@ void ScriptManager::on_message(const std::string& sender, const std::string& mes
     {
         // Log them
         Log.error(e.what());
-        fprintf(stderr, e.what());
+        fprintf(stderr, "Lua Error: %s\n", e.what());
     }
 }
