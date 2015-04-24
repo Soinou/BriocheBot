@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\command.h" />
+    <ClInclude Include="..\src\config.h" />
+    <ClInclude Include="..\src\curl.h" />
+    <ClInclude Include="..\src\icommand_listener.h" />
+    <ClInclude Include="..\src\imessage_listener.h" />
+    <ClInclude Include="..\src\ini.h" />
+    <ClInclude Include="..\src\ini_reader.h" />
+    <ClInclude Include="..\src\irc_client.h" />
+    <ClInclude Include="..\src\logger.h" />
+    <ClInclude Include="..\src\lua_logger.h" />
+    <ClInclude Include="..\src\lua_player.h" />
+    <ClInclude Include="..\src\lua_request.h" />
+    <ClInclude Include="..\src\lua_server.h" />
+    <ClInclude Include="..\src\lua_state.h" />
+    <ClInclude Include="..\src\lua_wrapper_types.h" />
+    <ClInclude Include="..\src\lua_wrapper.h" />
+    <ClInclude Include="..\src\lua_wrapper_utils.h" />
+    <ClInclude Include="..\src\osu_api.h" />
+    <ClInclude Include="..\src\osu_beatmap.h" />
+    <ClInclude Include="..\src\osu_client.h" />
+    <ClInclude Include="..\src\osu_user.h" />
+    <ClInclude Include="..\src\player.h" />
+    <ClInclude Include="..\src\players.h" />
+    <ClInclude Include="..\src\redis.h" />
+    <ClInclude Include="..\src\request.h" />
+    <ClInclude Include="..\src\request_builder.h" />
+    <ClInclude Include="..\src\script.h" />
+    <ClInclude Include="..\src\script_manager.h" />
+    <ClInclude Include="..\src\server.h" />
+    <ClInclude Include="..\src\service.h" />
+    <ClInclude Include="..\src\twitch_client.h" />
+    <ClInclude Include="..\src\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\command.cc" />
+    <ClCompile Include="..\src\config.cc" />
+    <ClCompile Include="..\src\curl.cc" />
+    <ClCompile Include="..\src\ini.c" />
+    <ClCompile Include="..\src\ini_reader.cc" />
+    <ClCompile Include="..\src\irc_client.cc" />
+    <ClCompile Include="..\src\logger.cc" />
+    <ClCompile Include="..\src\lua_logger.cc" />
+    <ClCompile Include="..\src\lua_player.cc" />
+    <ClCompile Include="..\src\lua_request.cc" />
+    <ClCompile Include="..\src\lua_server.cc" />
+    <ClCompile Include="..\src\lua_state.cc" />
+    <ClCompile Include="..\src\main.cc" />
+    <ClCompile Include="..\src\osu_api.cc" />
+    <ClCompile Include="..\src\osu_beatmap.cc" />
+    <ClCompile Include="..\src\osu_client.cc" />
+    <ClCompile Include="..\src\osu_user.cc" />
+    <ClCompile Include="..\src\player.cc" />
+    <ClCompile Include="..\src\players.cc" />
+    <ClCompile Include="..\src\redis.cc" />
+    <ClCompile Include="..\src\request.cc" />
+    <ClCompile Include="..\src\request_builder.cc" />
+    <ClCompile Include="..\src\script.cc" />
+    <ClCompile Include="..\src\script_manager.cc" />
+    <ClCompile Include="..\src\server.cc" />
+    <ClCompile Include="..\src\service.cc" />
+    <ClCompile Include="..\src\twitch_client.cc" />
+    <ClCompile Include="..\src\utils.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="launch.bat" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AFA8D2CD-3976-41AB-8D4F-8A12CF8C67BC}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>build.bat</NMakeBuildCommandLine>
+    <NMakeOutput>launch.bat</NMakeOutput>
+    <NMakeCleanCommandLine>clean.bat</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>build.bat</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath>C:\Program Files\jsoncpp\include;C:\Program Files\libcurl\include;C:\Program Files\Lua\5.1\include;..\lib\include;C:\Program Files %28x86%29\libircclient\include;C:\Program Files\hiredis\include;C:\Program Files\Boost\boost_1_57_0;$(IncludePath)</IncludePath>
+    <AdditionalOptions>/Yu</AdditionalOptions>
+    <SourcePath>..\src;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>build.bat</NMakeBuildCommandLine>
+    <NMakeOutput>ircbot.exe</NMakeOutput>
+    <NMakeCleanCommandLine>clean.bat</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>build.bat</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

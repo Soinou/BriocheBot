@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Server">
+      <UniqueIdentifier>{edbcb72d-dae0-4b20-bd19-2a8fbdac598a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{b6a41766-fa82-41a9-bbe8-d099be317f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers">
+      <UniqueIdentifier>{00733fe4-d934-424a-bba7-6cd659c1dadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers\libircclient">
+      <UniqueIdentifier>{1c49f760-e18c-4e24-9caf-0c416686e85a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers\hiredis">
+      <UniqueIdentifier>{27bfaa36-e58b-417b-b20a-6bfb53101831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers\libcurl">
+      <UniqueIdentifier>{95852f0e-6fb2-407f-9822-0c3754554a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers\inih">
+      <UniqueIdentifier>{2774a720-586e-4a4c-b926-b75f68ffa6c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers\osu!api">
+      <UniqueIdentifier>{0196ac52-1a45-4c81-9a87-300a4995d6b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clients">
+      <UniqueIdentifier>{5244cc36-a91b-49ed-98e9-2c1dac6831a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Players">
+      <UniqueIdentifier>{b5f6f9e1-2aa7-4c74-910c-86ae24e15d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{b76639da-6546-476c-b8ed-91d9eec96df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{8547bad7-5503-4a6a-92db-321b7c605b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parsers">
+      <UniqueIdentifier>{a02edd09-f56b-4da1-9dac-41b79c78506c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{90a481f9-822f-455e-bc43-f34c3a816557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Wrappers">
+      <UniqueIdentifier>{b81889b8-c477-4b11-ae3b-7c080b360a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{5a170e1a-7cb6-416f-9732-b844fd4539fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Listeners">
+      <UniqueIdentifier>{d96e6b41-756c-4caf-ae38-4b13e47234c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{0d9764e0-f27d-4ea7-9851-a9ca6e663642}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\redis.h">
+      <Filter>Wrappers\hiredis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ini.h">
+      <Filter>Wrappers\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ini_reader.h">
+      <Filter>Wrappers\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\curl.h">
+      <Filter>Wrappers\libcurl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\irc_client.h">
+      <Filter>Wrappers\libircclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\osu_api.h">
+      <Filter>Wrappers\osu!api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\osu_beatmap.h">
+      <Filter>Wrappers\osu!api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\osu_user.h">
+      <Filter>Wrappers\osu!api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\service.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\players.h">
+      <Filter>Players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\request.h">
+      <Filter>Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\command.h">
+      <Filter>Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\logger.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\config.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\osu_client.h">
+      <Filter>Clients</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\twitch_client.h">
+      <Filter>Clients</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_player.h">
+      <Filter>Lua\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_state.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_wrapper.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_wrapper_utils.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_wrapper_types.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\player.h">
+      <Filter>Players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_request.h">
+      <Filter>Lua\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_server.h">
+      <Filter>Lua\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\script.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\script_manager.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\icommand_listener.h">
+      <Filter>Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\imessage_listener.h">
+      <Filter>Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua_logger.h">
+      <Filter>Lua\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\request_builder.h">
+      <Filter>Wrappers\libcurl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\redis.cc">
+      <Filter>Wrappers\hiredis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ini.c">
+      <Filter>Wrappers\inih</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ini_reader.cc">
+      <Filter>Wrappers\inih</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\curl.cc">
+      <Filter>Wrappers\libcurl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\irc_client.cc">
+      <Filter>Wrappers\libircclient</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\osu_api.cc">
+      <Filter>Wrappers\osu!api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\osu_beatmap.cc">
+      <Filter>Wrappers\osu!api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\osu_user.cc">
+      <Filter>Wrappers\osu!api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils.cc">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server.cc">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\service.cc">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\players.cc">
+      <Filter>Players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\request.cc">
+      <Filter>Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\command.cc">
+      <Filter>Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\logger.cc">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\config.cc">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\osu_client.cc">
+      <Filter>Clients</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\twitch_client.cc">
+      <Filter>Clients</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cc" />
+    <ClCompile Include="..\src\lua_player.cc">
+      <Filter>Lua\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\player.cc">
+      <Filter>Players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua_request.cc">
+      <Filter>Lua\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua_server.cc">
+      <Filter>Lua\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\script.cc">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua_state.cc">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua_logger.cc">
+      <Filter>Lua\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\script_manager.cc">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\request_builder.cc">
+      <Filter>Wrappers\libcurl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt">
+      <Filter>Other Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="launch.bat">
+      <Filter>Other Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
