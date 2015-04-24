@@ -213,7 +213,7 @@ target_link_libraries(${EXECUTABLE} ${CURL_LIBRARIES})
 ########################################################################
 
 # Find Lua
-find_package(Lua)
+find_package(Lua51)
 
 # If Lua is not found
 if(NOT LUA_FOUND)
