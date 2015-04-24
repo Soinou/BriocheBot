@@ -175,6 +175,15 @@ public:
         ssl_ = ssl;
     }
 
+    // SSL Verify setter
+    inline void set_ssl_verify(bool verify)
+    {
+        if (verify)
+            irc_option_reset(session_, LIBIRC_OPTION_SSL_NO_VERIFY);
+        else
+            irc_option_set(session_, LIBIRC_OPTION_SSL_NO_VERIFY);
+    }
+
     // Connect handler
     virtual void on_connect() = 0;
 

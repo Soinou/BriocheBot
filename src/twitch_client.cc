@@ -32,6 +32,9 @@ TwitchClient::TwitchClient(Server* server) : IrcClient(), server_(server), targe
 {
     // No ssl
     set_ssl(false);
+
+    // No ssl check
+    set_ssl_verify(false);
 }
 
 TwitchClient::~TwitchClient()
