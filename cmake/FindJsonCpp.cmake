@@ -7,7 +7,7 @@
 FIND_PATH(JSONCPP_INCLUDE_DIR json/json.h
    HINTS
    $ENV{JSONCPPDIR}
-   PATH_SUFFIXES include/json include
+   PATH_SUFFIXES include/jsoncpp include include
    PATHS
    ${JSONCPP_ROOT}
    ~/Library/Frameworks
