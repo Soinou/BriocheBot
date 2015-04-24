@@ -31,9 +31,6 @@ OsuClient::OsuClient() : IrcClient(), target_("")
 {
     // No ssl
     set_ssl(false);
-
-    // No ssl check
-    set_ssl_verify(false);
 }
 
 OsuClient::~OsuClient()
