@@ -122,7 +122,7 @@ list(APPEND IRCCLIENT_ROOT
 )
 
 # Find libircclient
-find_package(IRCCLIENT)
+find_package(Ircclient)
 
 # Not found
 if(NOT IRCCLIENT_FOUND)
@@ -157,7 +157,7 @@ list(APPEND HIREDIS_ROOT
 )
 
 # Find hiredis
-find_package(hiredis)
+find_package(Hiredis)
 
 # Not found
 if(NOT HIREDIS_FOUND)
@@ -190,7 +190,7 @@ set(CMAKE_INCLUDE_PATH "C:/Program Files/libcurl/include")
 set(CMAKE_LIBRARY_PATH "C:/Program Files/libcurl/lib")
 
 # Find curl
-find_package(curl)
+find_package(CURL)
 
 # If curl is not found
 if(NOT CURL_FOUND)
@@ -240,7 +240,7 @@ list(APPEND JSONCPP_ROOT
 )
 
 # Find jsoncpp
-find_package(jsoncpp)
+find_package(JsonCpp)
 
 # Not found
 if(NOT JSONCPP_FOUND)
