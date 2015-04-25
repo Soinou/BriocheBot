@@ -224,7 +224,9 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-
 # Build and bin folder
 build/
 bin/
+
+# Script files
+*.sh
