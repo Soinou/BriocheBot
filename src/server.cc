@@ -160,19 +160,28 @@ void Server::run()
         irc_add_select_descriptors(osu_.session(), &sockets, &out_sockets, &sockets_count);
 
         // Select something. If it went wrong
-        if (select(sockets_count + 1, &sockets, &out_sockets, NULL, &timeout) < 0)
+        int available = select(sockets_count + 1, &sockets, &out_sockets, NULL, &timeout);
+
+        printf("Got socket: %d\n", available);
+
+        // Error
+        if (available < 0)
             // Error
             Utils::throw_error("Server", "run", "Something went wrong when selecting a socket");
 
-        // If there was something wrong when processing the osu! session
-        if (irc_process_select_descriptors(twitch_.session(), &sockets, &out_sockets))
-            // Error
-            Utils::throw_error("Server", "run", Utils::string_format("Error with the Twitch session: %s", twitch_.get_error()));
+        // We have a socket
+        if (available > 0)
+        {
+            // If there was something wrong when processing the osu! session
+            if (irc_process_select_descriptors(twitch_.session(), &sockets, &out_sockets))
+                // Error
+                Utils::throw_error("Server", "run", Utils::string_format("Error with the Twitch session: %s", twitch_.get_error()));
 
-        // If there was something wrong when processing the osu! session
-        if (irc_process_select_descriptors(osu_.session(), &sockets, &out_sockets))
-            // Error
-            Utils::throw_error("Server", "run", Utils::string_format("Error with the osu! session: %s", osu_.get_error()));
+            // If there was something wrong when processing the osu! session
+            if (irc_process_select_descriptors(osu_.session(), &sockets, &out_sockets))
+                // Error
+                Utils::throw_error("Server", "run", Utils::string_format("Error with the osu! session: %s", osu_.get_error()));
+        }
     }
 
     // Stop the twitch session
