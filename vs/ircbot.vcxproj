@@ -78,6 +78,8 @@
     <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="build.bat" />
+    <None Include="clean.bat" />
     <None Include="launch.bat" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

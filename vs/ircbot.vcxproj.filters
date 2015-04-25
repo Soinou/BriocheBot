@@ -247,5 +247,11 @@
     <None Include="launch.bat">
       <Filter>Other Files</Filter>
     </None>
+    <None Include="clean.bat">
+      <Filter>Other Files</Filter>
+    </None>
+    <None Include="build.bat">
+      <Filter>Other Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

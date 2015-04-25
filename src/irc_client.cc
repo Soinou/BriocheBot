@@ -28,13 +28,43 @@
 #include <cassert>
 #include <string>
 
-// IRC events prototypes
-void event_connect(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count);
-void event_channel(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count);
-void event_numeric(irc_session_t* session, unsigned int event, const char* origin, const char** params, unsigned int count);
+// Connect handler
+static void event_connect(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count)
+{
+    // Get the client
+    IrcClient* client = (IrcClient*)irc_get_ctx(session);
+
+    // We should have a client
+    assert(client);
+
+    // The client is now connected
+    client->set_connected(true);
+
+    // Notify of connection
+    client->on_connect();
+}
+
+// Channel handler
+static void event_channel(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count)
+{
+    // Get the client
+    IrcClient* client = (IrcClient*)irc_get_ctx(session);
+
+    // We should have a client
+    assert(client);
+
+    // Notify of message
+    client->on_channel(std::string(origin), std::string(params[0]), std::string(params[1]));
+}
+
+// Numeric handler
+static void event_numeric(irc_session_t* session, unsigned int event, const char* origin, const char** params, unsigned int count)
+{
+    // Just ignore it
+}
 
 IrcClient::IrcClient()
-    : callbacks_(), session_(), server_("localhost"), port_(6667),
+    : callbacks_(), session_(), connected_(false), server_("localhost"), port_(6667),
     password_(""), nick_("default"), username_("default"), realname_("default")
 {
     // Register callbacks
@@ -55,9 +85,6 @@ IrcClient::IrcClient()
 
     // Enable automatic nickname parsing
     irc_option_set(session_, LIBIRC_OPTION_STRIPNICKS);
-
-    // Set Debug
-    irc_option_set(session_, LIBIRC_OPTION_DEBUG);
 }
 
 IrcClient::~IrcClient()
@@ -112,36 +139,4 @@ void IrcClient::join(const std::string& channel)
     if (irc_cmd_join(session_, channel.c_str(), NULL))
         // Throw on error
         Utils::throw_error("IrcClient", "join", Utils::string_format("Impossible to join the channel: %s", irc_strerror(irc_errno(session_))));
-}
-
-// Connect handler
-void event_connect(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count)
-{
-    // Get the client
-    IrcClient* client = (IrcClient*)irc_get_ctx(session);
-
-    // We should have a client
-    assert(client);
-
-    // Notify of connection
-    client->on_connect();
-}
-
-// Channel handler
-void event_channel(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count)
-{
-    // Get the client
-    IrcClient* client = (IrcClient*)irc_get_ctx(session);
-
-    // We should have a client
-    assert(client);
-
-    // Notify of message
-    client->on_channel(std::string(origin), std::string(params[0]), std::string(params[1]));
-}
-
-// Numeric handler
-void event_numeric(irc_session_t* session, unsigned int event, const char* origin, const char** params, unsigned int count)
-{
-    // Just ignore it
 }

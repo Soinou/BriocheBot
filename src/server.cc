@@ -132,15 +132,15 @@ void Server::run()
     running_ = true;
 
     // While the server is running (Which means always)
-    do
+    while (running_)
     {
         // Twitch session has disconnected
-        if (irc_is_connected(twitch_.session()) == 0)
+        if (!twitch_.connected())
             // Reconnect it
             twitch_.connect();
 
         // osu! session has disconnected
-        if (irc_is_connected(osu_.session()) == 0)
+        if (!osu_.connected())
             // Reconnect it
             osu_.connect();
 
@@ -167,13 +167,13 @@ void Server::run()
         // If there was something wrong when processing the osu! session
         if (irc_process_select_descriptors(twitch_.session(), &sockets, &out_sockets))
             // Error
-            Utils::throw_error("Server", "run", "Something went wrong when processing the Twitch session");
+            Utils::throw_error("Server", "run", Utils::string_format("Error with the Twitch session: %s", twitch_.get_error()));
 
         // If there was something wrong when processing the osu! session
         if (irc_process_select_descriptors(osu_.session(), &sockets, &out_sockets))
             // Error
-            Utils::throw_error("Server", "run", "Something went wrong when processing the osu! session");
-    } while (running_);
+            Utils::throw_error("Server", "run", Utils::string_format("Error with the osu! session: %s", osu_.get_error()));
+    }
 
     // Stop the twitch session
     twitch_.stop();

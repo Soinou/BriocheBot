@@ -93,7 +93,6 @@ find_package(Boost 1.55.0 COMPONENTS
 	filesystem
 	date_time
 	regex
-	locale
 	thread
 )
 

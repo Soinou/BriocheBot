@@ -39,6 +39,9 @@ private:
     // The irc callbacks
     irc_callbacks_t callbacks_;
 
+    // If the server is connected
+    bool connected_;
+
     // The server
     std::string server_;
 
@@ -89,6 +92,22 @@ public:
     inline irc_session_t* session() const
     {
         return session_;
+    }
+
+    // Checks if the server is connected
+    inline bool connected()
+    {
+        // Change the connected flag
+        connected_ = irc_is_connected(session_) == 1;
+
+        // Return the connected flag
+        return connected_;
+    }
+
+    // Change the state of the connected flag
+    inline void set_connected(bool connected)
+    {
+        connected_ = connected;
     }
 
     // Server getter
@@ -182,6 +201,12 @@ public:
             irc_option_reset(session_, LIBIRC_OPTION_SSL_NO_VERIFY);
         else
             irc_option_set(session_, LIBIRC_OPTION_SSL_NO_VERIFY);
+    }
+
+    // Get the latest session error
+    inline const char* get_error() const
+    {
+        return irc_strerror(irc_errno(session_));
     }
 
     // Connect handler
