@@ -1,6 +1,6 @@
 --------------------------------------------------------------------
 --
--- Commande !skin (Joueur)
+-- Commande !skin (Alias de !brioche skin)
 --
 --------------------------------------------------------------------
 
@@ -17,22 +17,22 @@ MinArguments = 0;
 MaxArguments = 1;
 
 -- Callback
-function onCommand(sender, twitchUsername)
+function onCommand(senderNickname, twitchUsername)
 
-    -- Variable temporaire pour le joueur
+     -- Variable temporaire pour le joueur
     local player = nil;
 
     -- Un argument
     if twitchUsername ~= nil then
 
         -- On récupère le joueur correspondant
-        player = Player.get(twitchUsername);
+        player = Player.get(twitchUsername)
 
     -- Aucun argument
     else
 
-        -- On récupère le streamer
-        player = server:getCurrentStreamer();
+        -- On récupère le streamer actuel
+        player = server:getCurrentStreamer()
 
     end
 
@@ -40,19 +40,19 @@ function onCommand(sender, twitchUsername)
     if player == nil then
 
         -- Erreur
-        server:sendTwitch("Joueur non trouvé!");
+        server:sendTwitch("Joueur non trouvé!")
 
     -- Pas de skin
     elseif player:getOsuSkin() == "null" then
 
         -- Erreur
-        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " n'a pas défini de skin!");
+        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " n'a pas défini de skin!")
 
     -- Tout est bon
     else
 
         -- On envoie le skin
-        server:sendTwitch("Skin de " .. player:getTwitchUsername() .. ": " .. player:getOsuSkin());
+        server:sendTwitch("Skin de " .. player:getTwitchUsername() .. ": " .. player:getOsuSkin())
 
     end
 

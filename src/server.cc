@@ -1,4 +1,4 @@
-// ircbot2
+// BriocheBot
 // The MIT License(MIT)
 //
 // Copyright(c) 2015 Abricot Soinou <abricot.soinou@gmail.com>
@@ -161,8 +161,6 @@ void Server::run()
 
         // Select something. If it went wrong
         int available = select(sockets_count + 1, &sockets, &out_sockets, NULL, &timeout);
-
-        printf("Got socket: %d\n", available);
 
         // Error
         if (available < 0)

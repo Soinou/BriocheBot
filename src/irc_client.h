@@ -1,4 +1,4 @@
-// ircbot2
+// BriocheBot
 // The MIT License(MIT)
 //
 // Copyright(c) 2015 Abricot Soinou <abricot.soinou@gmail.com>
@@ -38,9 +38,6 @@ private:
 
     // The irc callbacks
     irc_callbacks_t callbacks_;
-
-    // If the server is connected
-    bool connected_;
 
     // The server
     std::string server_;
@@ -97,17 +94,7 @@ public:
     // Checks if the server is connected
     inline bool connected()
     {
-        // Change the connected flag
-        connected_ = irc_is_connected(session_) == 1;
-
-        // Return the connected flag
-        return connected_;
-    }
-
-    // Change the state of the connected flag
-    inline void set_connected(bool connected)
-    {
-        connected_ = connected;
+        return irc_is_connected(session_) == 1;
     }
 
     // Server getter

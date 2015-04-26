@@ -1,4 +1,4 @@
-// ircbot2
+// BriocheBot
 // The MIT License(MIT)
 //
 // Copyright(c) 2015 Abricot Soinou <abricot.soinou@gmail.com>
@@ -37,9 +37,6 @@ static void event_connect(irc_session_t* session, const char* event, const char*
     // We should have a client
     assert(client);
 
-    // The client is now connected
-    client->set_connected(true);
-
     // Notify of connection
     client->on_connect();
 }
@@ -64,7 +61,7 @@ static void event_numeric(irc_session_t* session, unsigned int event, const char
 }
 
 IrcClient::IrcClient()
-    : callbacks_(), session_(), connected_(false), server_("localhost"), port_(6667),
+    : callbacks_(), session_(), server_("localhost"), port_(6667),
     password_(""), nick_("default"), username_("default"), realname_("default")
 {
     // Register callbacks

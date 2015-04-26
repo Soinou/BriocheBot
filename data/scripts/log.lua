@@ -5,12 +5,12 @@
 --------------------------------------------------------------------
 
 -- Appelé en cas de messages
-ScriptType = "message";
+ScriptType = "message"
 
 -- Callback
 function onMessage(sender, message)
 
     -- On log juste le message
-    Logger.info(sender .. ": " .. message);
+    Logger.info(sender .. ": " .. message)
 
 end

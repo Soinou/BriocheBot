@@ -1,3 +1,3 @@
 @echo off
-start ..\bin\Debug\bin\ircbot.exe
+start ..\bin\Debug\bin\BriocheBot.exe
 pause

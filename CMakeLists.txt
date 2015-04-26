@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 # Project name
-project(ircbot)
+project(BriocheBot)
 
 # Default build type is debug
 if(CMAKE_BUILD_TYPE STREQUAL "")
@@ -44,7 +44,7 @@ add_definitions("-DCURL_STATICLIB")
 include_directories("${SRC_DIR}")
 
 # Executable name
-set(EXECUTABLE "ircbot")
+set(EXECUTABLE "BriocheBot")
 
 # Get sources
 file(GLOB_RECURSE EXECUTABLE_SOURCES
@@ -70,10 +70,10 @@ endif()
 
 # Custom Boost root
 list(APPEND BOOST_ROOT
-	"C:/Program Files/Boost/boost_1_57_0"
 	"C:/Program Files/Boost/boost_1_55_0"
-	"C:/Program Files (x86)/Boost/boost_1_57_0"
+	"C:/Program Files/Boost/boost_1_57_0"
 	"C:/Program Files (x86)/Boost/boost_1_55_0"
+	"C:/Program Files (x86)/Boost/boost_1_57_0"
 )
 
 # Static libraries

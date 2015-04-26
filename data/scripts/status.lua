@@ -1,6 +1,6 @@
 --------------------------------------------------------------------
 --
--- Commande !status
+-- Commande !status (Alias de !brioche stream)
 --
 --------------------------------------------------------------------
 
@@ -13,14 +13,14 @@ CommandString = "status";
 -- Nombre minium d'arguments
 MinArguments = 0;
 
--- Nombre maximum d'arguments
-MaxArguments = 0;
+-- Nombre maximum d'arguments (Pas de maximum)
+MaxArguments = -1;
 
 -- Callback
-function onCommand(sender)
+function onCommand(senderNickname)
 
     -- On récupère le joueur qui a envoyé le message
-    local player = Player.get(sender);
+    local player = Player.get(senderNickname);
 
     -- Si le joueur existe
     if player ~= nil then
