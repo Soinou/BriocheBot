@@ -110,7 +110,7 @@ Request* Request::parse(const std::string& sender, const std::string& message)
         int mode = 0;
 
         // If we don't have a mode specified
-        if (matches[3].str().empty())
+        if (matches[4].str().empty())
             // The mode is -1 (Auto)
             mode = -1;
         // Else
