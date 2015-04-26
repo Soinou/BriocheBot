@@ -83,32 +83,33 @@ void ScriptManager::on_command(const std::string& sender, const std::string& com
                     (*i)->on_command(sender, command_string, arguments);
             }
         }
-        // Catch lua exceptions
-        catch (std::runtime_error e)
-        {
-            // Log them
-            Log.error(e.what());
-            fprintf(stderr, "Lua Error: %s\n", e.what());
-        }
     }
-
-    // Called when a message is sent
-    void ScriptManager::on_message(const std::string& sender, const std::string& message)
+    // Catch lua exceptions
+    catch (std::runtime_error e)
     {
-        try
-        {
-            // For each script
-            for (auto i = scripts_.begin(); i != scripts_.end(); i++)
-                // If the script is a message script
-                if ((*i)->type() == Script::Type::Message)
-                    // Call him
-                    (*i)->on_message(sender, message);
-        }
-        // Catch lua exceptions
-        catch (std::runtime_error e)
-        {
-            // Log them
-            Log.error(e.what());
-            fprintf(stderr, "Lua Error: %s\n", e.what());
-        }
+        // Log them
+        Log.error(e.what());
+        fprintf(stderr, "Lua Error: %s\n", e.what());
     }
+}
+
+// Called when a message is sent
+void ScriptManager::on_message(const std::string& sender, const std::string& message)
+{
+    try
+    {
+        // For each script
+        for (auto i = scripts_.begin(); i != scripts_.end(); i++)
+            // If the script is a message script
+            if ((*i)->type() == Script::Type::Message)
+                // Call him
+                (*i)->on_message(sender, message);
+    }
+    // Catch lua exceptions
+    catch (std::runtime_error e)
+    {
+        // Log them
+        Log.error(e.what());
+        fprintf(stderr, "Lua Error: %s\n", e.what());
+    }
+}
