@@ -39,7 +39,7 @@ local function briocheAdd(senderNickname, senderPlayer, twitchUsername, osuUsern
         server:sendTwitch("Le joueur " .. twitchUsername .. " existe déjà!")
 
     -- Sinon si on a les deux pseudos remplis
-    else if twitchUsername ~= nil and osuUsername ~= nil then
+    elseif twitchUsername ~= nil and osuUsername ~= nil then
 
         -- On ajoute le joueur demandé
         Player.add(twitchUsername, osuUsername)
