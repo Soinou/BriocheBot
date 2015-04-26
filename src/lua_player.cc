@@ -75,7 +75,7 @@ static int lua_player_static_add(lua_State* L)
     std::string twitch_username(std::string(luaL_checkstring(L, 1)));
 
     // Get the osu! username
-    std::string osu_username(std::string(luaL_checkstring(L, 1)));
+    std::string osu_username(std::string(luaL_checkstring(L, 2)));
 
     // Get the result of the add operation
     bool result = PlayersDb.add(twitch_username, osu_username, "null", false);
@@ -150,6 +150,51 @@ static int lua_player_set_admin(lua_State* L)
     return 1;
 }
 
+// Call to PlayerDb.remove then PlayerDb.add
+static int lua_player_edit(lua_State* L)
+{
+    // Get the player
+    Player* player = luaW_check<Player>(L, 1);
+
+    // Get the new twitch username
+    std::string new_twitch_username(luaL_checkstring(L, 2));
+
+    // Get the new osu! username
+    std::string new_osu_username(luaL_checkstring(L, 3));
+
+    // Get the old skin
+    std::string new_osu_skin = player->osu_skin();
+
+    // Get the old admin flag
+    bool new_admin = player->admin();
+
+    // Remove the old player
+    if (!PlayersDb.remove(player->twitch_username()))
+    {
+        // If there is an error, push false
+        lua_pushboolean(L, 0);
+
+        // One result
+        return 1;
+    }
+
+    // Add the new player
+    if (!PlayersDb.add(new_twitch_username, new_osu_username, new_osu_skin, new_admin))
+    {
+        // If there is an error, push false
+        lua_pushboolean(L, 0);
+
+        // One result
+        return 1;
+    }
+
+    // Push true
+    lua_pushboolean(L, 1);
+
+    // One result
+    return 1;
+}
+
 // Call to the Player.is method
 static int lua_player_is(lua_State* L)
 {
@@ -186,6 +231,9 @@ static const luaL_reg lua_player_meta[] =
 
     // Admin setter
     { "setAdmin", lua_player_set_admin },
+
+    // Edit
+    { "edit", lua_player_edit },
 
     // Is
     { "is", lua_player_is },

@@ -53,6 +53,42 @@ end
 
 --------------------------------------------------------------------
 --
+-- Commande !brioche edit <Pseudo Twitch> <Pseudo Twitch> <Pseudo osu!>
+--
+-- senderNickname: Le pseudo de l'auteur de la commande
+-- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- twitchUsername: Le pseudo twitch du joueur à supprimer
+-- newTwitchUsername: Le nouveau pseudo twitch du joueur
+-- newOsuUsername: Le nouveau pseudo osu! du joueur
+--
+--------------------------------------------------------------------
+
+local function briocheEdit(senderNickname, senderPlayer, twitchUsername, newTwitchUsername, newOsuUsername)
+
+    -- On tente de récupére le joueur qu'on veut modifier
+    local player = Player.get(twitchUsername)
+
+    -- Si il n'existe pas
+    if player == nil then
+
+        -- Erreur
+        server:sendTwitch("Le joueur " .. twitchUsername .. " n'existe pas!")
+
+    -- Sinon si on a les deux pseudos remplis
+    elseif newTwitchUsername ~= nil and newOsuUsername ~= nil then
+
+        -- On modifie le joueur demandé
+        player:edit(newTwitchUsername, newOsuUsername)
+
+        -- On confirme à twitch
+        server:sendTwitch("Joueur " .. twitchUsername .. " modifié en " .. newTwitchUsername .. " / " .. newOsuUsername)
+
+    end
+
+end
+
+--------------------------------------------------------------------
+--
 -- Commande !brioche del <Pseudo Twitch>
 --
 -- senderNickname: Le pseudo de l'auteur de la commande
@@ -357,6 +393,7 @@ local adminCommands =
 {
     add = briocheAdd,
     del = briocheDel,
+    edit = briocheEdit,
     op = briocheOp,
     deop = briocheDeop,
     skin = briocheSkin,

@@ -202,8 +202,13 @@ bool Players::remove(const std::string& twitch_username)
 
     // If we removed him and this player was cached
     if (result && players_.count(hash) > 0)
+    {
+        // Delete the player we had
+        delete players_[hash];
+
         // Then remove him from the cache
         players_.erase(hash);
+    }
 
     // Return the result
     return result;
