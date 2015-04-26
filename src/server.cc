@@ -54,6 +54,10 @@ void Server::initialize()
         // Error
         Utils::throw_error("Server", "Constructor", "Api key is empty !");
 
+    // Load the two irc clients
+    twitch_.load(config);
+    osu_.load(config);
+
     // Get the default twitch username (First streamer)
     std::string default_twitch_username = config.get("General", "DefaultTwitchUsername", "");
 
@@ -86,11 +90,6 @@ void Server::initialize()
     else
         // Set the default player as the current streamer
         set_current_streamer(PlayersDb.get(default_twitch_username));
-
-    // Load the two bots with this configuration
-    twitch_.load(config);
-
-    osu_.load(config);
 }
 
 void Server::set_current_streamer(Player* current_streamer)

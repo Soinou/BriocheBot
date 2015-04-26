@@ -14,7 +14,7 @@ CommandString = "brioche"
 MinArguments = 1
 
 -- Nombre maximum d'arguments
-MaxArguments = 3
+MaxArguments = 4
 
 --------------------------------------------------------------------
 --
@@ -242,6 +242,41 @@ function briocheSetSkin(senderNickname, senderPlayer, osuSkin)
 
 end
 
+function adminBriocheSetSkin(senderNickname, senderPlayer, twitchUsername, osuSkin)
+
+    -- Si on a deux arguments et non un seul
+    if osuSkin ~= nil then
+
+        -- On récupère le joueur donné
+        local player = Player.get(twitchUsername)
+
+        -- Si le joueur n'existe pas
+        if player == nil then
+
+            -- Erreur
+            server:sendTwitch("Le joueur " .. twitchUsername .. " n'existe pas")
+
+        -- Sinon
+        else
+
+            -- On change son skin
+            player:setOsuSkin(osuSkin)
+
+            -- Et on indique la mise à jour
+            server:sendTwitch("Skin de " .. player:getTwitchUsername() .. " mis à jour!")
+
+        end
+
+    -- Sinon
+    else
+
+        -- On appelle l'autre commande
+        briocheSetSkin(senderNickname, senderPlayer, twitchUsername)
+
+    end
+
+end
+
 --------------------------------------------------------------------
 --
 -- Commande !brioche stream <Pseudo Twitch>
@@ -258,6 +293,40 @@ function briocheStream(senderNickname, senderPlayer)
 
     -- On envoie un message à twitch
     server:sendTwitch("Streameur actuel: " .. senderPlayer:getTwitchUsername())
+
+end
+
+function adminBriocheStream(senderNickname, senderPlayer, twitchUsername)
+
+    -- Si on a un pseudo twitch
+    if twitchUsername ~= nil then
+
+        -- On récupère le joueur
+        local player = Player.get(twitchUsername)
+
+        -- Si le joueur n'existe pas
+        if player == nil then
+
+            -- Erreur
+            server:sendTwitch("Le joueur " .. player .. " n'exite pas")
+
+        -- Sinon
+        else
+
+            -- On le définit en tant que streameur
+            server:setCurrentStreamer(player)
+
+            -- On envoie un message à twitch
+            server:sendTwitch("Streameur actuel: " .. player:getTwitchUsername())
+        end
+
+    -- Sinon
+    else
+
+        -- On appelle la fonction normale
+        briocheStream(senderNickname, senderPlayer)
+
+    end
 
 end
 
@@ -291,8 +360,8 @@ local adminCommands =
     op = briocheOp,
     deop = briocheDeop,
     skin = briocheSkin,
-    setskin = briocheSetSkin,
-    stream = briocheStream,
+    setskin = adminBriocheSetSkin,
+    stream = adminBriocheStream,
     restart = briocheRestart
 }
 
