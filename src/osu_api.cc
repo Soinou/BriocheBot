@@ -28,14 +28,11 @@
 
 #include <json/json.h>
 
-// Base api url
-#define API_URL "http://osu.ppy.sh/api"
-
 // Users url
-#define USERS_URL API_URL"/get_user"
+#define USERS_URL "http://osu.ppy.sh/api/get_user"
 
 // Beatmaps url
-#define BEATMAPS_URL API_URL"/get_beatmaps"
+#define BEATMAPS_URL "http://osu.ppy.sh/api/get_beatmaps"
 
 namespace Osu
 {
@@ -44,7 +41,7 @@ namespace Osu
     {
         CurlWrapper::RequestBuilder builder(USERS_URL);
 
-        builder.append("&k=", key);
+        builder.append("?k=", key);
         builder.append("&u=", username);
         builder.append("&m=", mode);
         builder.append("&type=", "string");
@@ -57,7 +54,7 @@ namespace Osu
     {
         CurlWrapper::RequestBuilder builder(USERS_URL);
 
-        builder.append("&k=", key);
+        builder.append("?k=", key);
         builder.append("&u=", user_id);
         builder.append("&m=", mode);
         builder.append("&type=", "id");
@@ -69,7 +66,7 @@ namespace Osu
     {
         CurlWrapper::RequestBuilder builder(BEATMAPS_URL);
 
-        builder.append("&k=", key);
+        builder.append("?k=", key);
         builder.append("&b=", beatmap_id);
         if (mode != -1)
             builder.append("&m=", mode);
@@ -81,7 +78,7 @@ namespace Osu
     {
         CurlWrapper::RequestBuilder builder(BEATMAPS_URL);
 
-        builder.append("&k=", key);
+        builder.append("?k=", key);
         builder.append("&s=", beatmap_set_id);
         if (mode != -1)
             builder.append("&m=", mode);
