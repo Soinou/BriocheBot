@@ -150,9 +150,6 @@
     <ClInclude Include="..\src\lua_logger.h">
       <Filter>Lua\Wrappers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\request_builder.h">
-      <Filter>Wrappers\libcurl</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\redis.cc">
@@ -233,9 +230,6 @@
     </ClCompile>
     <ClCompile Include="..\src\script_manager.cc">
       <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\request_builder.cc">
-      <Filter>Wrappers\libcurl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
