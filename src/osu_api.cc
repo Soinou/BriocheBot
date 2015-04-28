@@ -182,7 +182,7 @@ namespace Osu
         Beatmap beatmap;
 
         // Get the response from the server
-        std::string json = Curl.perform_get(get_beatmap_url(json, beatmap_id, mode));
+        std::string json = Curl.perform_get(get_beatmap_url(api_key_, beatmap_id, mode));
 
         // If the json string is empty (No response, or bad response)
         if (json.empty())
