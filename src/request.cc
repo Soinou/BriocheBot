@@ -76,7 +76,7 @@ std::string Request::to_osu_string() const
     stream << " ";
     stream << beatmap_.artist << " - " << beatmap_.title << " [" << beatmap_.version << "]";
     stream << "]";
-    stream << "(AR: " << beatmap_.approach_rate;
+    stream << " (AR: " << beatmap_.approach_rate;
     stream << ", CS: " << beatmap_.circle_size;
     stream << ", HP: " << beatmap_.health_drain;
     stream << ", OD: " << beatmap_.overall_difficulty << ")";

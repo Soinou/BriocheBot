@@ -24,7 +24,7 @@
 #include "osu_api.h"
 
 #include "curl.h"
-#include "request_builder.h"
+#include "utils.h"
 
 #include <json/json.h>
 
@@ -39,51 +39,29 @@ namespace Osu
     // Url to get an user from his username
     static std::string get_user_url(const std::string& key, const std::string& username, int mode)
     {
-        CurlWrapper::RequestBuilder builder(USERS_URL);
-
-        builder.append("?k=", key);
-        builder.append("&u=", username);
-        builder.append("&m=", mode);
-        builder.append("&type=", "string");
-
-        return builder.build();
+        return Utils::string_format("%s?k=%s&u=%s&m=%d&type=string", BEATMAPS_URL, key.c_str(), username.c_str(), mode);
     }
 
     // Url to get an user from his id
     static std::string get_user_url(const std::string& key, long user_id, int mode)
     {
-        CurlWrapper::RequestBuilder builder(USERS_URL);
-
-        builder.append("?k=", key);
-        builder.append("&u=", user_id);
-        builder.append("&m=", mode);
-        builder.append("&type=", "id");
-
-        return builder.build();
+        return Utils::string_format("%s?k=%s&u=%ld&m=%d&type=id", BEATMAPS_URL, key.c_str(), user_id, mode);
     }
 
     static std::string get_beatmap_url(const std::string& key, long beatmap_id, int mode)
     {
-        CurlWrapper::RequestBuilder builder(BEATMAPS_URL);
-
-        builder.append("?k=", key);
-        builder.append("&b=", beatmap_id);
         if (mode != -1)
-            builder.append("&m=", mode);
-
-        return builder.build();
+            return Utils::string_format("%s?k=%s&b=%ld&m=%d", BEATMAPS_URL, key.c_str(), beatmap_id, mode);
+        else
+            return Utils::string_format("%s?k=%s&b=%ld", BEATMAPS_URL, key.c_str(), beatmap_id);
     }
 
     static std::string get_beatmap_set_url(const std::string& key, long beatmap_set_id, int mode)
     {
-        CurlWrapper::RequestBuilder builder(BEATMAPS_URL);
-
-        builder.append("?k=", key);
-        builder.append("&s=", beatmap_set_id);
         if (mode != -1)
-            builder.append("&m=", mode);
-
-        return builder.build();
+            return Utils::string_format("%s?k=%s&s=%ld&m=%s", BEATMAPS_URL, key.c_str(), beatmap_set_id, mode);
+        else
+            return Utils::string_format("%s?k=%s&s=%ld", BEATMAPS_URL, key.c_str(), beatmap_set_id);
     }
 
     Api::Api() : api_key_()

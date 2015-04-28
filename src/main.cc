@@ -32,12 +32,27 @@
 
 #include <cstdio>
 #include <stdexcept>
+#include <csignal>
+
+// The server (As static because of signals)
+static Server* server;
+
+// The signal handler
+static void handler(int)
+{
+    // Stop the server if we catch this signal
+    server->stop();
+}
 
 // Main entry point
 int main()
 {
     try
     {
+        // Register our signal callback first
+        signal(SIGINT, handler);
+        signal(SIGTERM, handler);
+
         // If under windows
 #if defined(WIN32) || defined(_WIN32)
         // Initialize the winsocket data
@@ -51,12 +66,12 @@ int main()
         Log.info("Preparing the bot...");
 
         // Create the server
-        Server server;
+        server = new Server();
 
         Log.info("Bot successfully prepared, now running");
 
         // Run the server
-        server.run();
+        server->run();
     }
     // Catch runtime errors
     catch (std::runtime_error e)
@@ -65,6 +80,11 @@ int main()
         Log.error(e.what());
         fprintf(stderr, "Error: %s\n", e.what());
     }
+
+    // If we have a server
+    if (server)
+        // Delete it
+        delete server;
 
     // We should never exit this program, so when it really exits, there is a problem
     return 42;
