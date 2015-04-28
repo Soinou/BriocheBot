@@ -68,7 +68,7 @@ std::string Request::to_osu_string() const
     // Create a stream
     std::stringstream stream;
 
-    // Format: <author>: ["http://osu.ppy.sh/b/<beatmapid>" <artist> - <title> [<version>]] + <comment>
+    // Format: <author>: ["http://osu.ppy.sh/b/<beatmapid>" <artist> - <title> [<version>]] (AR: xx, CS: xx, HP: xx, OD: xx) + <comment>
     stream << author_ << ": ";
     stream << "[";
     stream << "http://osu.ppy.sh/b/";
@@ -76,6 +76,10 @@ std::string Request::to_osu_string() const
     stream << " ";
     stream << beatmap_.artist << " - " << beatmap_.title << " [" << beatmap_.version << "]";
     stream << "]";
+    stream << "(AR: " << beatmap_.approach_rate;
+    stream << ", CS: " << beatmap_.circle_size;
+    stream << ", HP: " << beatmap_.health_drain;
+    stream << ", OD: " << beatmap_.overall_difficulty << ")";
 
     // If we have a comment
     if (!comment_.empty())
