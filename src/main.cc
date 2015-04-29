@@ -42,17 +42,19 @@ static void handler(int)
 {
     // Stop the server if we catch this signal
     server->stop();
+
+    Logger::get_instance().wait();
 }
 
 // Main entry point
 int main()
 {
+    // Register our signal callback first
+    signal(SIGINT, handler);
+    signal(SIGTERM, handler);
+
     try
     {
-        // Register our signal callback first
-        signal(SIGINT, handler);
-        signal(SIGTERM, handler);
-
         // If under windows
 #if defined(WIN32) || defined(_WIN32)
         // Initialize the winsocket data
@@ -63,12 +65,13 @@ int main()
             // Error
             Utils::throw_error("Server", "run", "Impossible to initialize winsock");
 #endif
-        Log.info("Preparing the bot...");
+
+        Meow("server")->info("Preparing the bot...");
 
         // Create the server
         server = new Server();
 
-        Log.info("Bot successfully prepared, now running");
+        Meow("server")->info("Bot successfully prepared, now running");
 
         // Run the server
         server->run();
@@ -77,14 +80,15 @@ int main()
     catch (std::runtime_error e)
     {
         // Log these errors
-        Log.error(e.what());
-        fprintf(stderr, "Error: %s\n", e.what());
+        Meow("server")->error(e.what());
     }
 
     // If we have a server
     if (server)
         // Delete it
         delete server;
+
+    Logger::get_instance().wait();
 
     // We should never exit this program, so when it really exits, there is a problem
     return 42;

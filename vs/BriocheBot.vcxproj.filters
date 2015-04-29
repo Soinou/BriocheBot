@@ -176,9 +176,6 @@
     <ClCompile Include="..\src\osu_user.cc">
       <Filter>Wrappers\osu!api</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utils.cc">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\server.cc">
       <Filter>Server</Filter>
     </ClCompile>
@@ -230,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="..\src\script_manager.cc">
       <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils.cc">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

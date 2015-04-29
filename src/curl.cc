@@ -31,7 +31,7 @@
 #include <cstdlib>
 #include <cassert>
 
-namespace CurlWrapper
+namespace Curl
 {
     static size_t write_function(void* data, const size_t size, const size_t count, Connection* connection)
     {
@@ -93,7 +93,7 @@ namespace CurlWrapper
             buffer.clear();
         }
         else
-            Log.error(Utils::string_format("Impossible to perform a get request! Server returned response %d", response));
+            Meow("errors")->error(Utils::string_format("Impossible to perform a get request! Server returned response %d", response));
 
         return content;
     }

@@ -27,6 +27,7 @@
 #include "players.h"
 #include "player.h"
 #include "osu_api.h"
+#include "logger.h"
 #include "utils.h"
 
 #include <sstream>
@@ -43,20 +44,32 @@ Server::~Server()
 
 void Server::initialize()
 {
+    Meow("server")->info("Reading configuration file...");
+
     // Read the configuration file
     Config config("./config.ini");
 
+    Meow("server")->info("Configuration file successfully read!");
+
     // Set the api key
     OsuApi.set_api_key(config.get("Api", "Key", ""));
+
+    Meow("server")->info("Got osu! api key from the configuration");
 
     // If the api key is empty
     if (OsuApi.api_key().empty())
         // Error
         Utils::throw_error("Server", "Constructor", "Api key is empty !");
 
+    Meow("server")->info("Loading the two irc clients...");
+
     // Load the two irc clients
     twitch_.load(config);
     osu_.load(config);
+
+    Meow("server")->info("Successfully loaded the two irc clients!");
+
+    Meow("server")->info("Reading default informations from the config file...");
 
     // Get the default twitch username (First streamer)
     std::string default_twitch_username = config.get("General", "DefaultTwitchUsername", "");
@@ -76,24 +89,42 @@ void Server::initialize()
 
     // If the default twitch username does not exist
     if (!PlayersDb.exists(default_twitch_username))
+    {
+        Meow("server")->info("Player does not exist, creating him...");
+
         // Add him
         PlayersDb.add(default_twitch_username, default_osu_username, "null", true);
+
+        Meow("server")->info("Player created!");
+    }
 
     // Try to get the current streamer
     Redis::Reply reply = connection_.execute("GET current_streamer");
 
+    Meow("server")->info("Searching the current streamer in the database");
+
     // If the reply is a string reply
     if (reply.type == Redis::Reply::String)
+    {
+        Meow("server")->info("Current streamer already exists, setting him");
+
         // Get the player associated with the username we cached and put him as the current streamer
         current_streamer_ = PlayersDb.get(reply.string);
+    }
     // Else
     else
+    {
+        Meow("server")->info("Current streamer does not exist, falling back to default");
+
         // Set the default player as the current streamer
         set_current_streamer(PlayersDb.get(default_twitch_username));
+    }
 }
 
 void Server::set_current_streamer(Player* current_streamer)
 {
+    Meow("server")->info("Changing the current streamer");
+
     // Change the current streamer
     current_streamer_ = current_streamer;
 

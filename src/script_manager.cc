@@ -88,7 +88,7 @@ void ScriptManager::on_command(const std::string& sender, const std::string& com
     catch (std::runtime_error e)
     {
         // Log them
-        Log.error(e.what());
+        Meow("errors")->error(e.what());
         fprintf(stderr, "Lua Error: %s\n", e.what());
     }
 }
@@ -109,7 +109,7 @@ void ScriptManager::on_message(const std::string& sender, const std::string& mes
     catch (std::runtime_error e)
     {
         // Log them
-        Log.error(e.what());
+        Meow("errors")->error(e.what());
         fprintf(stderr, "Lua Error: %s\n", e.what());
     }
 }

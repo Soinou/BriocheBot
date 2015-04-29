@@ -80,7 +80,7 @@ namespace Osu
         User user;
 
         // Get the response from the server
-        std::string json = Curl.perform_get(get_user_url(api_key_, username, mode));
+        std::string json = Curly.perform_get(get_user_url(api_key_, username, mode));
 
         // If the json string is empty (No response, or bad response)
         if (json.empty())
@@ -118,7 +118,7 @@ namespace Osu
         std::vector<Beatmap> beatmap_set;
 
         // Get the response from the server
-        std::string json = Curl.perform_get(get_beatmap_set_url(api_key_, beatmap_set_id, mode));
+        std::string json = Curly.perform_get(get_beatmap_set_url(api_key_, beatmap_set_id, mode));
 
         // If we have a response
         if (!json.empty())
@@ -160,7 +160,7 @@ namespace Osu
         Beatmap beatmap;
 
         // Get the response from the server
-        std::string json = Curl.perform_get(get_beatmap_url(api_key_, beatmap_id, mode));
+        std::string json = Curly.perform_get(get_beatmap_url(api_key_, beatmap_id, mode));
 
         // If the json string is empty (No response, or bad response)
         if (json.empty())

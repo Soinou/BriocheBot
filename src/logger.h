@@ -24,24 +24,49 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
+#include <mutex>
+#include <queue>
 #include <string>
+#include <thread>
+#include <list>
 
 // Represents a logger
-class Logger
+class Log
 {
 private:
-    // Private constructor
-    Logger();
-    
-    // Delete copy operations
-    Logger(const Logger&) = delete;
+    // The file name to log to
+    std::string file_name_;
 
-    // Delete = operator
-    void operator=(const Logger&) = delete;
+    // If the logger is running
+    bool running_;
+
+    // The background thread
+    std::thread thread_;
+
+    // The message mutex
+    std::mutex mutex_;
+
+    // The things we want to write to the file
+    std::queue<std::string> messages_;
+
+    // Append a message to our queue of messages
+    void append(const std::string& message);
+
+    // The background thread worker
+    void thread_worker();
 
 public:
+    // Private constructor
+    Log(const std::string& file_name);
+
     // Destructor
-    ~Logger();
+    ~Log();
+
+    // File name getter
+    inline const std::string& file_name() const
+    {
+        return file_name_;
+    }
 
     // Trace log
     void trace(const std::string& message);
@@ -61,8 +86,38 @@ public:
     // Fatal log
     void fatal(const std::string& message);
 
-    // Instance getter
-    inline static Logger& get_instance()
+    // Wait for the logger to stop
+    void wait();
+
+};
+
+class Logger
+{
+private:
+    // The list of loggers
+    std::list<Log*> loggers_;
+
+    // Constructor
+    Logger();
+
+    // Delete copy constructor
+    Logger(const Logger&) = delete;
+
+    // Delete copy operator
+    void operator=(const Logger&) = delete;
+
+public:
+    // Destructor
+    ~Logger();
+
+    // Get a logger by its filename
+    Log* get_logger(const std::string& file_name);
+
+    // Wait for the logger to terminate
+    void wait();
+
+    // Singleton get instance
+    static Logger& get_instance()
     {
         static Logger instance;
 
@@ -70,7 +125,7 @@ public:
     }
 };
 
-// Log define
-#define Log Logger::get_instance()
+// Meow to log
+#define Meow Logger::get_instance().get_logger
 
 #endif // LOGGER_H_

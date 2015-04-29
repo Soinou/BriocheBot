@@ -27,7 +27,7 @@
 #include <string>
 
 // Curl wrapper namespace
-namespace CurlWrapper
+namespace Curl
 {
     class Connection
     {
@@ -68,6 +68,6 @@ namespace CurlWrapper
 }
 
 // Singleton get instance macro
-#define Curl CurlWrapper::Connection::get_instance()
+#define Curly Curl::Connection::get_instance()
 
 #endif // CURL_H_

@@ -34,11 +34,14 @@
 // Call to the Logger.trace method
 static int lua_logger_trace(lua_State* L)
 {
+    // Get the file
+    std::string file(luaL_checkstring(L, 1));
+
     // Get the message
-    std::string message(luaL_checkstring(L, 1));
+    std::string message(luaL_checkstring(L, 2));
 
     // Log the message
-    Log.trace(message);
+    Meow(file)->trace(message);
 
     // No result
     return 0;
@@ -47,11 +50,14 @@ static int lua_logger_trace(lua_State* L)
 // Call to the Logger.debug method
 static int lua_logger_debug(lua_State* L)
 {
+    // Get the file
+    std::string file(luaL_checkstring(L, 1));
+
     // Get the message
-    std::string message(luaL_checkstring(L, 1));
+    std::string message(luaL_checkstring(L, 2));
 
     // Log the message
-    Log.debug(message);
+    Meow(file)->debug(message);
 
     // No result
     return 0;
@@ -60,11 +66,14 @@ static int lua_logger_debug(lua_State* L)
 // Call to the Logger.info method
 static int lua_logger_info(lua_State* L)
 {
+    // Get the file
+    std::string file(luaL_checkstring(L, 1));
+
     // Get the message
-    std::string message(luaL_checkstring(L, 1));
+    std::string message(luaL_checkstring(L, 2));
 
     // Log the message
-    Log.info(message);
+    Meow(file)->info(message);
 
     // No result
     return 0;
@@ -73,11 +82,14 @@ static int lua_logger_info(lua_State* L)
 // Call to the Logger.warning method
 static int lua_logger_warning(lua_State* L)
 {
+    // Get the file
+    std::string file(luaL_checkstring(L, 1));
+
     // Get the message
-    std::string message(luaL_checkstring(L, 1));
+    std::string message(luaL_checkstring(L, 2));
 
     // Log the message
-    Log.warning(message);
+    Meow(file)->warning(message);
 
     // No result
     return 0;
@@ -86,11 +98,14 @@ static int lua_logger_warning(lua_State* L)
 // Call to the Logger.error method
 static int lua_logger_error(lua_State* L)
 {
+    // Get the file
+    std::string file(luaL_checkstring(L, 1));
+
     // Get the message
-    std::string message(luaL_checkstring(L, 1));
+    std::string message(luaL_checkstring(L, 2));
 
     // Log the message
-    Log.error(message);
+    Meow(file)->error(message);
 
     // No result
     return 0;
@@ -99,11 +114,14 @@ static int lua_logger_error(lua_State* L)
 // Call to the Logger.fatal method
 static int lua_logger_fatal(lua_State* L)
 {
+    // Get the file
+    std::string file(luaL_checkstring(L, 1));
+
     // Get the message
-    std::string message(luaL_checkstring(L, 1));
+    std::string message(luaL_checkstring(L, 2));
 
     // Log the message
-    Log.fatal(message);
+    Meow(file)->fatal(message);
 
     // No result
     return 0;
@@ -138,5 +156,5 @@ static const luaL_reg lua_logger_static_meta[] =
 // Register the server library
 int luaopen_Logger(lua_State* L)
 {
-    luaW_register<Logger>(L, "Logger", lua_logger_static_meta, lua_logger_meta, NULL);
+    luaW_register<Logger>(L, "Meow", lua_logger_static_meta, lua_logger_meta, NULL);
 }

@@ -23,10 +23,11 @@
 
 #include "command.h"
 
-#include <boost/regex.hpp>
-#include <boost/algorithm/string.hpp>
+#include "utils.h"
 
-static boost::regex command_regex("!([^ ]+)( .+)?");
+#include <regex>
+
+static std::regex command_regex("!([^ ]+)( .+)?");
 
 Command::Command(std::string command, std::vector<std::string> arguments) : command_(command), arguments_(arguments)
 {
@@ -41,13 +42,13 @@ Command::~Command()
 Command* Command::parse(const std::string& message)
 {
     // Regex matches
-    boost::smatch matches;
+    std::smatch matches;
 
     // The command
     Command* command = nullptr;
 
     // If the command regex matches the message
-    if (boost::regex_match(message, matches, command_regex))
+    if (std::regex_match(message, matches, command_regex))
     {
         // Command string is the first match
         std::string command_string = matches[1];
@@ -62,10 +63,10 @@ Command* Command::parse(const std::string& message)
         if (!arguments_string.empty())
         {
             // Remove any spaces in the arguments string
-            boost::trim(arguments_string);
+            Utils::trim(arguments_string);
 
             // Split on spaces
-            boost::split(arguments, arguments_string, boost::is_any_of(" "), boost::token_compress_on);
+            Utils::tokenize(arguments_string, arguments, " ", true);
         }
 
         // Create a new command

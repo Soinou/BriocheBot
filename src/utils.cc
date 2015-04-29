@@ -23,30 +23,21 @@
 
 #include "utils.h"
 
-#include <boost/filesystem.hpp>
-
+#include <algorithm> 
+#include <cctype>
 #include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <dirent.h>
+#include <functional>
+#include <locale>
+#include <memory>
 #include <stdexcept>
-#include <sstream>
+#include <sys/stat.h>
+#include <unistd.h>
 
 namespace Utils
 {
-    void throw_error(const std::string& file, const std::string& method, const std::string& message)
-    {
-        // Create a stream
-        std::stringstream stream;
-
-        // Put the informations in the stream
-        stream << file;
-        stream << " - ";
-        stream << method;
-        stream << ": ";
-        stream << message;
-
-        // Throw the error
-        throw std::runtime_error(stream.str());
-    }
-
     std::string string_format(const std::string fmt_str, ...)
     {
         int final_n, n = ((int)fmt_str.size()) * 2;
@@ -73,33 +64,91 @@ namespace Utils
         return std::string(formatted.get());
     }
 
+    void throw_error(const std::string& file, const std::string& method, const std::string& message)
+    {
+        // Throw the error (Format <File> - <Method>: <Message>)
+        throw std::runtime_error(string_format("%s - %s: %s", file.c_str(), method.c_str(), message.c_str()));
+    }
+
+    bool ends_with(const std::string& value, const std::string& ending)
+    {
+        if (ending.size() > value.size())
+            return false;
+
+        return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+    }
+
+    bool file_exists(const std::string& file_path)
+    {
+        return access(file_path.c_str(), F_OK) != -1;
+    }
+
+    int file_size(const std::string& file_path)
+    {
+        struct stat status;
+
+        if (stat(file_path.c_str(), &status))
+            return -1;
+        else
+            return status.st_size;
+    }
+
+    std::string& ltrim(std::string& s)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        return s;
+    }
+
+    std::string& rtrim(std::string& s)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+        return s;
+    }
+
+    std::string& trim(std::string& s)
+    {
+        return ltrim(rtrim(s));
+    }
+
     std::vector<std::string> get_files_from_folder(const std::string& folder_path, const std::string& extension)
     {
-        // Get the folder as a boost path
-        boost::filesystem::path folder(folder_path);
-
-        // If the folder does not exist
-        if (!boost::filesystem::exists(folder))
-            // Error
-            throw_error("Utils", "get_files_from_folder", string_format("Folder %s does not exist", folder_path.c_str()));
-
-        // If the given folder is not a valid directory
-        if (!boost::filesystem::is_directory(folder))
-            // Error
-            throw_error("Utils", "get_files_from_folder", string_format("Folder %s is not a valid directory", folder_path.c_str()));
-
-        // End iterator
-        boost::filesystem::directory_iterator end;
-
-        // The list of files
+        // The files holder
         std::vector<std::string> files;
 
-        // For each file
-        for (boost::filesystem::directory_iterator i(folder); i != end; ++i)
-            // If the file is a regular file and ends with the given extension
-            if (boost::filesystem::is_regular_file(i->status()) && i->path().extension().string() == extension)
-                // Add it to the list of files
-                files.push_back(i->path().string());
+        // The folder holder
+        DIR* directory;
+
+        // The entity
+        struct dirent* entity;
+
+        // Try to open the folder
+        directory = opendir(folder_path.c_str());
+
+        // If we can't open it
+        if (directory == nullptr)
+            // Error
+            throw_error("Utils", "get_files_from_folder", Utils::string_format("Impossible to open folder : %s", folder_path.c_str()));
+
+        // Read the first file of the directory
+        entity = readdir(directory);
+
+        // While we have a file
+        while (entity != nullptr)
+        {
+            // Get a string with this file name
+            std::string file(entity->d_name);
+
+            // If the file ends with the extension we need
+            if (ends_with(file, extension))
+                // Add this file to our list (Format <Folder path>/<File name>)
+                files.push_back(Utils::string_format("%s/%s", folder_path.c_str(), file.c_str()));
+
+            // Read another entry in the folder
+            entity = readdir(directory);
+        }
+
+        // Close the directory
+        closedir(directory);
 
         // Return the list of files
         return files;

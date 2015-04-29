@@ -24,6 +24,7 @@
 #include "irc_client.h"
 
 #include "utils.h"
+#include "logger.h"
 
 #include <cassert>
 #include <string>
@@ -97,6 +98,8 @@ void IrcClient::connect()
     // We should have a session
     assert(session_);
 
+    Meow("irc")->info(Utils::string_format("Connecting to irc server %s", server_.c_str()));
+
     // Parse the new server address (#Server on SSL and just Server on non-SSL)
     std::string new_server = ssl_ ? Utils::string_format("#%s", server_.c_str()) : server_;
 
@@ -121,6 +124,8 @@ void IrcClient::send(const std::string& target, const std::string& message)
     // We should have a session
     assert(session_);
 
+    Meow("irc")->info(Utils::string_format("Sending '%s' to '%s'", message.c_str(), target.c_str()));
+
     // Try to send a message
     if (irc_cmd_msg(session_, target.c_str(), message.c_str()))
         // Throw on error
@@ -131,6 +136,8 @@ void IrcClient::join(const std::string& channel)
 {
     // We should have a session
     assert(session_);
+
+    Meow("irc")->info(Utils::string_format("Joining channel %s", channel.c_str()));
 
     // Try to join the channel
     if (irc_cmd_join(session_, channel.c_str(), NULL))

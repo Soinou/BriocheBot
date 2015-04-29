@@ -25,11 +25,10 @@
 
 #include "osu_api.h"
 
-#include <boost/regex.hpp>
-
 #include <cstdlib>
 #include <sstream>
 #include <vector>
+#include <regex>
 
 // The regex pattern
 #define REQUEST_REGEX_STRING "https?://osu\\.ppy\\.sh/([bs])/([0-9]+)(&m=([0-9])+)?( *\\+ *(.+))?"
@@ -93,16 +92,16 @@ std::string Request::to_osu_string() const
 Request* Request::parse(const std::string& sender, const std::string& message)
 {
     // The regex we're using (Static because once he's initialized, there's no need to initialize it again)
-    static boost::regex request_regex(REQUEST_REGEX_STRING);
+    static std::regex request_regex(REQUEST_REGEX_STRING);
 
     // Request is by default a nullptr
     Request* request = nullptr;
 
     // The matches holder
-    boost::smatch matches;
+    std::smatch matches;
 
     // If the regex matches against the message
-    if (boost::regex_match(message, matches, request_regex))
+    if (std::regex_match(message, matches, request_regex))
     {
         // Type is the first match
         std::string type = matches[1];

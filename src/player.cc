@@ -23,8 +23,11 @@
 
 #include "player.h"
 
-#include <boost/algorithm/string.hpp>
+#include "utils.h"
+
 #include <json/json.h>
+#include <algorithm>
+#include <string> 
 
 Player::Player() : twitch_username_(""), osu_username_(""), osu_skin_(""), admin_(false)
 {
@@ -64,17 +67,22 @@ std::string Player::to_json() const
 
 int Player::get_hash(const std::string& twitch_username)
 {
+
+
     // Make a static hash maker
     static std::hash<std::string> hash;
 
     // Copy the username in a local string
     std::string input(twitch_username);
 
-    // Pass the string as a lower string
-    boost::algorithm::to_lower(input);
+    // Change the locale
+    std::setlocale(LC_ALL, "en_US.UTF-8");
 
-    // Trim it
-    boost::algorithm::trim(input);
+    // Transform the input to lower case
+    std::transform(input.begin(), input.end(), input.begin(), ::tolower);
+
+    // Trim the input
+    Utils::trim(input);
 
     // Make a hash out of it
     return hash(input);

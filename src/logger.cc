@@ -23,83 +23,221 @@
 
 #include "logger.h"
 
-#include <boost/log/expressions.hpp>
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/utility/setup/file.hpp>
+#include "utils.h"
 
-// Typedef to this monster to blog
-typedef boost::log::sources::severity_logger<boost::log::trivial::severity_level> blog;
+#include <cstdio>
+#include <ctime>
+#include <sys/stat.h>
+#include <unistd.h>
 
-// The static logger
-static std::unique_ptr<blog> logger_ptr(nullptr);
+// Log file
+#define LOG_FILE "logs/%s_%d.log"
 
-Logger::Logger()
+// Max size
+#define MAX_SIZE 1024*1024
+
+// Sleep time of 1 second (Makes the logger write message at a rate of approximatively one per second)
+#define SLEEP_TIME 1
+
+Log::Log(const std::string& file_name) : file_name_(file_name), running_(true), thread_(&Log::thread_worker, this), messages_()
 {
-    // Add a file log
-    boost::log::add_file_log(
-        // File name
-        boost::log::keywords::file_name = "ircbot_%m%d%Y_%H%M%S.log",
-        // Rotation size (Every Mb)
-        boost::log::keywords::rotation_size = 1024 * 1024,
-        // Target folder
-        boost::log::keywords::target = "logs",
-        // Time based rotation (Every night)
-        boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
-        // Message format
-        boost::log::keywords::format = "[%TimeStamp%]: %Message%",
-        // Auto flush
-        boost::log::keywords::auto_flush = true
-        );
 
-    // Filter for info severity
-    boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
+}
 
-    // Add common log attributes
-    boost::log::add_common_attributes();
+Log::~Log()
+{
 
-    // Create the new logger
-    logger_ptr.reset(new blog());
+}
+
+void Log::trace(const std::string& message)
+{
+    append(Utils::string_format("[Trace] %s", message.c_str()));
+}
+
+void Log::debug(const std::string& message)
+{
+    append(Utils::string_format("[Debug] %s", message.c_str()));
+}
+
+void Log::info(const std::string& message)
+{
+    append(Utils::string_format("[Info] %s", message.c_str()));
+}
+
+void Log::warning(const std::string& message)
+{
+    append(Utils::string_format("[Warning] %s", message.c_str()));
+}
+
+void Log::error(const std::string& message)
+{
+    append(Utils::string_format("[Error] %s", message.c_str()));
+}
+
+void Log::fatal(const std::string& message)
+{
+    append(Utils::string_format("[Fatal] %s", message.c_str()));
+}
+
+void Log::wait()
+{
+    // Pass running to false, so the thread will stop
+    running_ = false;
+
+    // Wait for the thread to terminate
+    thread_.join();
+}
+
+void Log::append(const std::string& message)
+{
+    // Lock the mutex
+    mutex_.lock();
+
+    // Push the message
+    messages_.push(message);
+
+    // Unlock the mutex
+    mutex_.unlock();
+}
+
+static inline FILE* file_open(const std::string& file_path)
+{
+    // Open the file
+    FILE* file = fopen(file_path.c_str(), "a");
+
+    // File couldn't not be opened
+    if (file == nullptr)
+        // Error
+        Utils::throw_error("Logger", "thread_worker", Utils::string_format("Couldn't open log file %s", file_path.c_str()));
+
+    // Return the file
+    return file;
+}
+
+void Log::thread_worker()
+{
+    // The actual number appended to the log file end
+    int count = 0;
+
+    // The file pointer
+    FILE* file = nullptr;
+
+    // While the logger is running or we have messages to log
+    while (running_ || !messages_.empty())
+    {
+        try
+        {
+            // While the file is not found
+            while (file == nullptr)
+            {
+                // Get the file name
+                std::string file_path = Utils::string_format(LOG_FILE, file_name_.c_str(), count);
+
+                // If the file exists
+                if (Utils::file_exists(file_path))
+                {
+                    // Get the file size
+                    int size = Utils::file_size(file_path);
+
+                    // If the file size is negative
+                    if (size == -1)
+                        // error
+                        throw std::runtime_error("Logger - thread_worker: Couldn't get the log file size");
+                    // Else, if the file size is correct
+                    else if (size < MAX_SIZE)
+                        // Open the file
+                        file = file_open(file_path);
+                    // Else (The file is too big)
+                    else
+                        // Increase our counter
+                        count++;
+                }
+                // Else, the file doesn't exist
+                else
+                    // Open this file
+                    file = file_open(file_path);
+            }
+
+            // Now that we have the right file, get the current time
+            time_t current_time = time(nullptr);
+
+            // Get the local time
+            struct tm local_time = *localtime(&current_time);
+
+            // Format the time as we want it
+            std::string time_string = Utils::string_format(
+                "%04d/%02d/%02d %02d:%02d:%02d",
+                local_time.tm_year + 1900,
+                local_time.tm_mon,
+                local_time.tm_mday,
+                local_time.tm_hour,
+                local_time.tm_min,
+                local_time.tm_sec
+                );
+
+            // Lock the messages mutex
+            mutex_.lock();
+
+            // If we have a message in our list
+            if (!messages_.empty())
+            {
+                // Get one item from the queue of messages
+                std::string message = messages_.front();
+
+                // Pop the item
+                messages_.pop();
+
+                // Write this item to the file
+                fprintf(file, "[%s] %s\n", time_string.c_str(), message.c_str());
+            }
+
+            // Unlock the mutex
+            mutex_.unlock();
+
+            // Close the file
+            fclose(file);
+
+            // Delete the file
+            file = nullptr;
+        }
+        catch (std::runtime_error e)
+        {
+            // Log errors to standard error stream (But don't stop the thread)
+            fprintf(stderr, "Error: %s\n", e.what());
+        }
+
+        // Sleep a while
+        sleep(SLEEP_TIME);
+    }
+
+}
+
+Logger::Logger() : loggers_()
+{
+
 }
 
 Logger::~Logger()
 {
-
+    for (auto i = loggers_.begin(); i != loggers_.end(); i++)
+        delete (*i);
 }
 
-// Trace log
-void Logger::trace(const std::string& message)
+Log* Logger::get_logger(const std::string& file_name)
 {
-    BOOST_LOG_SEV(*logger_ptr, boost::log::trivial::severity_level::trace) << message;
+    for (auto i = loggers_.begin(); i != loggers_.end(); i++)
+        if ((*i)->file_name() == file_name)
+            return (*i);
+
+    Log* new_log = new Log(file_name);
+
+    loggers_.push_back(new_log);
+
+    return new_log;
 }
 
-// Debug log
-void Logger::debug(const std::string& message)
+void Logger::wait()
 {
-    BOOST_LOG_SEV(*logger_ptr, boost::log::trivial::severity_level::debug) << message;
-}
-
-// Info log
-void Logger::info(const std::string& message)
-{
-    BOOST_LOG_SEV(*logger_ptr, boost::log::trivial::severity_level::info) << message;
-}
-
-// Warning log
-void Logger::warning(const std::string& message)
-{
-    BOOST_LOG_SEV(*logger_ptr, boost::log::trivial::severity_level::warning) << message;
-}
-
-// Error log
-void Logger::error(const std::string& message)
-{
-    BOOST_LOG_SEV(*logger_ptr, boost::log::trivial::severity_level::error) << message;
-}
-
-// Fatal log
-void Logger::fatal(const std::string& message)
-{
-    BOOST_LOG_SEV(*logger_ptr, boost::log::trivial::severity_level::fatal) << message;
+    for (auto i = loggers_.begin(); i != loggers_.end(); i++)
+        (*i)->wait();
 }

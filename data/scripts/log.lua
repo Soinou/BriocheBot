@@ -11,6 +11,6 @@ ScriptType = "message"
 function onMessage(sender, message)
 
     -- On log juste le message
-    Logger.info(sender .. ": " .. message)
+    Meow.info("chat", sender .. ": " .. message)
 
 end
