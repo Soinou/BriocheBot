@@ -60,6 +60,10 @@ add_executable(${EXECUTABLE} ${EXECUTABLE_SOURCES})
 if(WIN32)
 	# Add the -mconsole compilation flag
     set_target_properties(${EXECUTABLE} PROPERTIES COMPILE_FLAGS "-mconsole")
+# Else, if we're building on unix
+elseif(UNIX)
+	# Add the pthread flag
+	set_target_properties(${EXECUTABLE} PROPERTIES COMPILE_FLAGS "-pthread")
 endif()
 
 ########################################################################
