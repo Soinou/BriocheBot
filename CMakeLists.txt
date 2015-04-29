@@ -64,52 +64,6 @@ endif()
 
 ########################################################################
 #
-#       Boost
-#
-########################################################################
-
-# Custom Boost root
-list(APPEND BOOST_ROOT
-	"C:/Program Files/Boost/boost_1_55_0"
-	"C:/Program Files/Boost/boost_1_57_0"
-	"C:/Program Files (x86)/Boost/boost_1_55_0"
-	"C:/Program Files (x86)/Boost/boost_1_57_0"
-)
-
-# Static libraries
-set(Boost_USE_STATIC_LIBS ON)
-
-# Multithreaded
-set(Boost_USE_MULTITHREADED ON)
-
-# Static runtime
-set(Boost_USE_STATIC_RUNTIME OFF)
-
-# Find boost installation
-find_package(Boost 1.55.0 COMPONENTS
-	log
-	log_setup
-	system
-	filesystem
-	date_time
-	regex
-	thread
-)
-
-# Not found
-if(NOT Boost_FOUND)
-	# Error
-	message(FATAL_ERROR "Could not find Boost 1.55.0 or 1.57.0")
-endif()
-
-# Include boost headers
-include_directories(${Boost_INCLUDE_DIRS})
-
-# Link with boost libraries statically
-target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
-
-########################################################################
-#
 #       libircclient
 #
 ########################################################################
