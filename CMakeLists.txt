@@ -226,6 +226,10 @@ if(WIN32)
 
 	# Link with ldap (For Curl)
 	target_link_libraries(${EXECUTABLE} "wldap32")
+# Else, if unix
+elseif(UNIX)
+	# Link with lpthread
+	target_link_libraries(${EXECUTABLE} "pthread")
 endif()
 
 ########################################################################
