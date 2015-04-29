@@ -23,11 +23,12 @@
 
 #include "utils.h"
 
-#include <algorithm> 
+#include <algorithm>
 #include <cctype>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <dirent.h>
 #include <functional>
 #include <locale>
