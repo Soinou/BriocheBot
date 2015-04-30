@@ -65,6 +65,18 @@ namespace Utils
         return std::string(formatted.get());
     }
 
+    std::string time_format(int seconds)
+    {
+        // Get the minutes
+        int minutes = seconds / 60;
+
+        // Get the hours
+        int hours = minutes / 60;
+
+        // Format a string
+        return string_format("%d hour(s) %d minute(s) %d second(s)", hours, minutes % 60, seconds % 60);
+    }
+
     void throw_error(const std::string& file, const std::string& method, const std::string& message)
     {
         // Throw the error (Format <File> - <Method>: <Message>)

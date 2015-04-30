@@ -150,6 +150,9 @@
     <ClInclude Include="..\src\lua_logger.h">
       <Filter>Lua\Wrappers</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\lua_utils.h">
+      <Filter>Lua\Wrappers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\redis.cc">
@@ -230,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="..\src\utils.cc">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua_utils.cc">
+      <Filter>Lua\Wrappers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

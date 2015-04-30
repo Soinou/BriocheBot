@@ -32,6 +32,9 @@ namespace Utils
     // Formats a string using a sprintf-like syntax (God I love that. Taken from http://stackoverflow.com/a/8098080)
     std::string string_format(const std::string fmt_str, ...);
 
+    // Formats seconds to a correct string
+    std::string time_format(int seconds);
+
     // Throws a formatted error with the given arguments
     void throw_error(const std::string& file, const std::string& method, const std::string& message);
 

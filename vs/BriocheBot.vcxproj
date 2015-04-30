@@ -25,6 +25,7 @@
     <ClInclude Include="..\src\lua_request.h" />
     <ClInclude Include="..\src\lua_server.h" />
     <ClInclude Include="..\src\lua_state.h" />
+    <ClInclude Include="..\src\lua_utils.h" />
     <ClInclude Include="..\src\lua_wrapper_types.h" />
     <ClInclude Include="..\src\lua_wrapper.h" />
     <ClInclude Include="..\src\lua_wrapper_utils.h" />
@@ -56,6 +57,7 @@
     <ClCompile Include="..\src\lua_request.cc" />
     <ClCompile Include="..\src\lua_server.cc" />
     <ClCompile Include="..\src\lua_state.cc" />
+    <ClCompile Include="..\src\lua_utils.cc" />
     <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\osu_api.cc" />
     <ClCompile Include="..\src\osu_beatmap.cc" />

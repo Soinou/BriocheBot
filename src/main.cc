@@ -40,10 +40,10 @@ static Server* server;
 // The signal handler
 static void handler(int)
 {
+    Meow("server")->info("Got SIGINT, stopping the server...");
+
     // Stop the server if we catch this signal
     server->stop();
-
-    Logger::get_instance().wait();
 }
 
 // Main entry point
@@ -83,11 +83,16 @@ int main()
         Meow("server")->error(e.what());
     }
 
+    Meow("server")->info(Utils::string_format("Server stopping after %s of uptime", Utils::time_format(server->up_time()).c_str()));
+
     // If we have a server
     if (server)
         // Delete it
         delete server;
 
+    Meow("server")->info("Server stopped, waiting for the loggers to terminate...");
+
+    // Wait for the logger to terminate
     Logger::get_instance().wait();
 
     // We should never exit this program, so when it really exits, there is a problem

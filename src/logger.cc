@@ -36,8 +36,8 @@
 // Max size
 #define MAX_SIZE 1024*1024
 
-// Sleep time of 1 second (Makes the logger write message at a rate of approximatively one per second)
-#define SLEEP_TIME 1
+// Sleep time of 200 milliseconds (Makes the logger write message at a rate of approximatively five per second)
+#define SLEEP_TIME 200
 
 Log::Log(const std::string& file_name) : file_name_(file_name), running_(true), thread_(&Log::thread_worker, this), messages_()
 {
@@ -207,7 +207,7 @@ void Log::thread_worker()
         }
 
         // Sleep a while
-        sleep(SLEEP_TIME);
+        usleep(SLEEP_TIME);
     }
 
 }

@@ -59,6 +59,32 @@ static int lua_server_set_current_streamer(lua_State* L)
     return 0;
 }
 
+// Call to the Server.up_time method
+static int lua_server_up_time(lua_State* L)
+{
+    // Get the server
+    Server* server = luaW_check<Server>(L, 1);
+
+    // Push the stream time
+    lua_pushinteger(L, server->up_time());
+
+    // One result
+    return 1;
+}
+
+// Call to the Server.stream_time method
+static int lua_server_stream_time(lua_State* L)
+{
+    // Get the server
+    Server* server = luaW_check<Server>(L, 1);
+
+    // Push the stream time
+    lua_pushinteger(L, server->stream_time());
+
+    // One result
+    return 1;
+}
+
 // Call to the Server.send_twitch method
 static int lua_server_send_twitch(lua_State* L)
 {
@@ -107,6 +133,12 @@ static int lua_server_stop(lua_State* L)
 // Metatable
 static const luaL_reg lua_server_meta[] =
 {
+    // Up time getter
+    { "upTime", lua_server_up_time },
+
+    // Stream time getter
+    { "streamTime", lua_server_stream_time },
+
     // Twitch username getter
     { "sendTwitch", lua_server_send_twitch },
 

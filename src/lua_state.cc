@@ -27,6 +27,7 @@
 #include "lua_player.h"
 #include "lua_request.h"
 #include "lua_server.h"
+#include "lua_utils.h"
 #include "utils.h"
 
 #include <cstdio>
@@ -69,6 +70,7 @@ namespace Lua
         luaopen_Request(state_);
         luaopen_Server(state_);
         luaopen_Logger(state_);
+        luaopen_Utils(state_);
     }
 
     void State::do_file(const std::string& file_path)

@@ -30,9 +30,9 @@
 #include "logger.h"
 #include "utils.h"
 
-#include <sstream>
-
-Server::Server() : connection_("127.0.0.1", 6379), twitch_(this), osu_(), current_streamer_(nullptr)
+Server::Server()
+    : connection_("127.0.0.1", 6379), twitch_(this), osu_(), current_streamer_(nullptr),
+    start_time_(time(nullptr)), change_time_(time(nullptr))
 {
     initialize();
 }
@@ -128,17 +128,26 @@ void Server::set_current_streamer(Player* current_streamer)
     // Change the current streamer
     current_streamer_ = current_streamer;
 
-    // Create a string stream
-    std::stringstream stream;
-
-    // Parse the redis command
-    stream << "SET current_streamer " << current_streamer_->twitch_username();
-
     // Execute the command to store the current streamer in the db
-    connection_.execute(stream.str());
+    connection_.execute(Utils::string_format("SET current_streamer %s", current_streamer_->twitch_username().c_str()));
 
     // Change the osu! client target
     osu_.set_target(current_streamer_->osu_username());
+
+    // Reinitialize the last time change
+    change_time_ = time(nullptr);
+}
+
+int Server::up_time() const
+{
+    // Return the difference between the current time and the bot start time
+    return time(nullptr) - start_time_;
+}
+
+int Server::stream_time() const
+{
+    // Return the difference between the current time and the last stream change
+    return time(nullptr) - change_time_;
 }
 
 void Server::run()

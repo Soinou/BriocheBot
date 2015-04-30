@@ -28,6 +28,8 @@
 #include "redis.h"
 #include "twitch_client.h"
 
+#include <time.h>
+
 // Forward declaration of the Player class
 class Player;
 
@@ -49,6 +51,12 @@ private:
 
     // The current streamer
     Player* current_streamer_;
+
+    // The bot start time
+    time_t start_time_;
+
+    // The last change time
+    time_t change_time_;
 
     // Initializes the server
     void initialize();
@@ -74,6 +82,12 @@ public:
     {
         return running_;
     }
+
+    // Get the total bot uptime
+    int up_time() const;
+
+    // Get the total stream time of the last streamer
+    int stream_time() const;
 
     // Starts the server
     void run();
