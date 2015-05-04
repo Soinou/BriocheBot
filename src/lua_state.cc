@@ -31,7 +31,6 @@
 #include "utils.h"
 
 #include <cstdio>
-#include <sstream>
 
 namespace Lua
 {
@@ -106,16 +105,8 @@ namespace Lua
 
         // If the field we got is a function
         if (!lua_isfunction(state_, -1))
-        {
-            // Create a stream
-            std::stringstream stream;
-
-            // Put the error in the stream
-            stream << "Field '" << function_name << "' is not a function";
-
             // Throw an error
-            Utils::throw_error("Lua::State", "call", stream.str());
-        }
+            Utils::throw_error("Lua::State", "call", Utils::string_format("Field '%s' is not a function", function_name.c_str()));
     }
 
     void State::call(int arguments_count, int results_count)

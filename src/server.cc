@@ -31,15 +31,17 @@
 #include "utils.h"
 
 Server::Server()
-    : connection_("127.0.0.1", 6379), twitch_(this), osu_(), current_streamer_(nullptr),
+    : connection_("127.0.0.1", 6379), manager_(), twitch_(new TwitchClient(this)), osu_(new OsuClient()), current_streamer_(nullptr),
     start_time_(time(nullptr)), change_time_(time(nullptr))
 {
+    manager_.add_client(twitch_);
+    manager_.add_client(osu_);
+
     initialize();
 }
 
 Server::~Server()
 {
-
 }
 
 void Server::initialize()
@@ -64,8 +66,8 @@ void Server::initialize()
     Meow("server")->info("Loading the two irc clients...");
 
     // Load the two irc clients
-    twitch_.load(config);
-    osu_.load(config);
+    twitch_->load(config);
+    osu_->load(config);
 
     Meow("server")->info("Successfully loaded the two irc clients!");
 
@@ -141,7 +143,7 @@ void Server::set_current_streamer(Player* current_streamer)
         connection_.execute("SET current_streamer null");
 
         // Remove the osu! client target
-        osu_.set_target("");
+        osu_->set_target("");
     }
     // A streamer
     else
@@ -150,7 +152,7 @@ void Server::set_current_streamer(Player* current_streamer)
         connection_.execute(Utils::string_format("SET current_streamer %s", current_streamer_->twitch_username().c_str()));
 
         // Change the osu! client target
-        osu_.set_target(current_streamer_->osu_username());
+        osu_->set_target(current_streamer_->osu_username());
     }
 
     // Reinitialize the last time change
@@ -169,86 +171,32 @@ int Server::stream_time() const
     return time(nullptr) - change_time_;
 }
 
-void Server::run()
+void Server::start()
 {
-    // Connect the Twitch session
-    twitch_.connect();
-
-    // Connect the osu! session
-    osu_.connect();
-
-    // Initialize sockets sets
-    fd_set sockets, out_sockets;
-
-    // Initialize sockets count
-    int sockets_count;
-
-    // Initialize timeout struct
-    struct timeval timeout;
+    // Connect all the clients
+    manager_.connect();
 
     // Set running as true
     running_ = true;
 
     // While the server is running (Which means always)
     while (running_)
-    {
-        // Twitch session has disconnected
-        if (!twitch_.connected())
-            // Reconnect it
-            twitch_.connect();
-
-        // osu! session has disconnected
-        if (!osu_.connected())
-            // Reconnect it
-            osu_.connect();
-
-        // Reset timeout values
-        timeout.tv_sec = 1;
-        timeout.tv_usec = 0;
-
-        // Reset sockets count
-        sockets_count = 0;
-
-        // Reset sockets and out sockets
-        FD_ZERO(&sockets);
-        FD_ZERO(&out_sockets);
-
-        // Add sessions descriptors
-        irc_add_select_descriptors(twitch_.session(), &sockets, &out_sockets, &sockets_count);
-        irc_add_select_descriptors(osu_.session(), &sockets, &out_sockets, &sockets_count);
-
-        // Select something. If it went wrong
-        if (select(sockets_count + 1, &sockets, &out_sockets, nullptr, &timeout) < 0)
+        // If we could not update the irc clients
+        if (!manager_.update())
             // Error
-            Utils::throw_error("Server", "run", "Something went wrong when selecting a socket");
+            Utils::throw_error("Server", "run", "Something went wrong when updating the irc clients");
 
-
-        // If there was something wrong when processing the osu! session
-        if (irc_process_select_descriptors(twitch_.session(), &sockets, &out_sockets))
-            // Error
-            Utils::throw_error("Server", "run", Utils::string_format("Error with the Twitch session: %s", twitch_.get_error()));
-
-        // If there was something wrong when processing the osu! session
-        if (irc_process_select_descriptors(osu_.session(), &sockets, &out_sockets))
-            // Error
-            Utils::throw_error("Server", "run", Utils::string_format("Error with the osu! session: %s", osu_.get_error()));
-    }
-
-    // Stop the twitch session
-    twitch_.stop();
-
-    // Stop the osu! session
-    osu_.stop();
+    manager_.update();
 }
 
 void Server::send_twitch(const std::string& message)
 {
-    twitch_.send(twitch_.target(), message);
+    twitch_->send(twitch_->target(), message);
 }
 
 void Server::send_osu(const std::string& message)
 {
-    osu_.send(osu_.target(), message);
+    osu_->send(osu_->target(), message);
 }
 
 void Server::stop()

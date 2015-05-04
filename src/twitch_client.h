@@ -34,7 +34,7 @@
 class Server;
 
 // Represents a twitch irc client
-class TwitchClient : public IrcClient
+class TwitchClient : public Irc::Client
 {
 private:
     // The parent server

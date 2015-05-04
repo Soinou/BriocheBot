@@ -27,7 +27,7 @@
 
 #include <cstdlib>
 
-OsuClient::OsuClient() : IrcClient(), target_("")
+OsuClient::OsuClient() : Irc::Client(), target_("")
 {
     // No ssl
     set_ssl(false);

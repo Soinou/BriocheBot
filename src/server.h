@@ -24,6 +24,7 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
+#include "irc_manager.h"
 #include "osu_client.h"
 #include "redis.h"
 #include "twitch_client.h"
@@ -40,11 +41,14 @@ private:
     // The connection to the redis server
     Redis::Connection connection_;
 
+    // The irc manager
+    Irc::Manager manager_;
+
     // The twitch client
-    TwitchClient twitch_;
+    TwitchClient* twitch_;
 
     // The osu! client
-    OsuClient osu_;
+    OsuClient* osu_;
 
     // If the server is running
     bool running_;
@@ -90,7 +94,7 @@ public:
     int stream_time() const;
 
     // Starts the server
-    void run();
+    void start();
 
     // Sends a message to the twitch client
     void send_twitch(const std::string& message);

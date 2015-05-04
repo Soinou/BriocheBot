@@ -21,48 +21,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef OSU_CLIENT_H_
-#define OSU_CLIENT_H_
+#ifndef IRC_SOCKETS_H_
+#define IRC_SOCKETS_H_
 
-#include "config.h"
-#include "irc_client.h"
+// Sockets based on the system
+#if defined(WIN32) || defined(_WIN32)
+#include <winsock2.h>
+#else
+#include <sys/select.h>
+#endif
 
-#include <string>
-
-// Represents a twitch irc client
-class OsuClient : public Irc::Client
-{
-private:
-    // The default target
-    std::string target_;
-
-public:
-    // Constructor
-    OsuClient();
-
-    // Destructor
-    ~OsuClient();
-
-    // Target getter
-    inline const std::string& target() const
-    {
-        return target_;
-    }
-
-    // Target setter
-    inline void set_target(const std::string& target)
-    {
-        target_ = target;
-    }
-
-    // Loads the bot
-    void load(Config& config);
-
-    // Called on successful connection
-    void on_connect();
-
-    // Called on channel message
-    void on_channel(const std::string& sender, const std::string& channel, const std::string& message);
-};
-
-#endif // OSU_CLIENT_H_
+#endif // IRC_SOCKETS_H_

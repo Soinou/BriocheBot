@@ -74,7 +74,7 @@ int main()
         Meow("server")->info("Bot successfully prepared, now running");
 
         // Run the server
-        server->run();
+        server->start();
     }
     // Catch runtime errors
     catch (std::runtime_error e)

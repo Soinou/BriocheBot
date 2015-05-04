@@ -21,48 +21,61 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef OSU_CLIENT_H_
-#define OSU_CLIENT_H_
+#ifndef IRC_MANAGER_H_
+#define IRC_MANAGER_H_
 
-#include "config.h"
-#include "irc_client.h"
+#include "irc_sockets.h"
 
-#include <string>
+#include <vector>
 
-// Represents a twitch irc client
-class OsuClient : public Irc::Client
+// Irc namespace
+namespace Irc
 {
-private:
-    // The default target
-    std::string target_;
+    // Forward declaration of the client class
+    class Client;
 
-public:
-    // Constructor
-    OsuClient();
-
-    // Destructor
-    ~OsuClient();
-
-    // Target getter
-    inline const std::string& target() const
+    // An irc client manager
+    class Manager
     {
-        return target_;
-    }
+    public:
+        // Little typedef
+        typedef struct timeval time_value;
 
-    // Target setter
-    inline void set_target(const std::string& target)
-    {
-        target_ = target;
-    }
+    private:
+        // The list of clients
+        std::vector<Client*> clients_;
 
-    // Loads the bot
-    void load(Config& config);
+        // Input sockets
+        fd_set sockets_in_;
 
-    // Called on successful connection
-    void on_connect();
+        // Output sockets
+        fd_set sockets_out_;
 
-    // Called on channel message
-    void on_channel(const std::string& sender, const std::string& channel, const std::string& message);
-};
+        // Max socket
+        int max_socket_;
 
-#endif // OSU_CLIENT_H_
+        // Timeout
+        time_value timeout_;
+
+    public:
+        // Constructor
+        Manager();
+
+        // Destructor
+        ~Manager();
+
+        // Adds a client (Clients deletion will be handled by the manager)
+        void add_client(Client* client);
+
+        // Connects all the clients
+        void connect();
+
+        // Updates all the clients (Returns false on failure)
+        bool update();
+
+        // Stops all the clients
+        void stop();
+    };
+}
+
+#endif // IRC_MANAGER_H_

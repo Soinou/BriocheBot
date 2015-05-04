@@ -19,6 +19,7 @@
     <ClInclude Include="..\src\ini.h" />
     <ClInclude Include="..\src\ini_reader.h" />
     <ClInclude Include="..\src\irc_client.h" />
+    <ClInclude Include="..\src\irc_manager.h" />
     <ClInclude Include="..\src\logger.h" />
     <ClInclude Include="..\src\lua_logger.h" />
     <ClInclude Include="..\src\lua_player.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="..\src\script_manager.h" />
     <ClInclude Include="..\src\server.h" />
     <ClInclude Include="..\src\service.h" />
+    <ClInclude Include="..\src\irc_sockets.h" />
     <ClInclude Include="..\src\twitch_client.h" />
     <ClInclude Include="..\src\utils.h" />
   </ItemGroup>
@@ -51,6 +53,7 @@
     <ClCompile Include="..\src\ini.c" />
     <ClCompile Include="..\src\ini_reader.cc" />
     <ClCompile Include="..\src\irc_client.cc" />
+    <ClCompile Include="..\src\irc_manager.cc" />
     <ClCompile Include="..\src\logger.cc" />
     <ClCompile Include="..\src\lua_logger.cc" />
     <ClCompile Include="..\src\lua_player.cc" />

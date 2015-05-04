@@ -28,7 +28,7 @@
 
 #include <cstdlib>
 
-TwitchClient::TwitchClient(Server* server) : IrcClient(), server_(server), target_("")
+TwitchClient::TwitchClient(Server* server) : Irc::Client(), server_(server), target_("")
 {
     // No ssl
     set_ssl(false);

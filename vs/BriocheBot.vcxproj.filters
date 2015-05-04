@@ -153,6 +153,12 @@
     <ClInclude Include="..\src\script_manager.h">
       <Filter>Lua</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\irc_manager.h">
+      <Filter>Wrappers\libircclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\irc_sockets.h">
+      <Filter>Wrappers\libircclient</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\redis.cc">
@@ -236,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="..\src\script_manager.cc">
       <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\irc_manager.cc">
+      <Filter>Wrappers\libircclient</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
