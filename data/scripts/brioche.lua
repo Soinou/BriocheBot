@@ -236,11 +236,17 @@ function briocheSkin(senderNickname, senderPlayer, twitchUsername)
 
     end
 
-    -- Pas de joueur
-    if player == nil then
+    -- Un pseudo twitch précisé mais le joueur n'est pas trouvé
+    if twitchUsername ~= nil and player == nil then
 
         -- Erreur
         server:sendTwitch("Joueur non trouvé!")
+
+	-- Pas de pseudo twitch précisé mais le joueur n'existe pas non plus
+	elseif player == nil then
+
+		-- Pas de streamer
+		server:sendTwitch("Aucun streamer actuellement")
 
     -- Pas de skin
     elseif player:getOsuSkin() == "null" then
@@ -344,7 +350,7 @@ function adminBriocheStream(senderNickname, senderPlayer, twitchUsername)
         if player == nil then
 
             -- Erreur
-            server:sendTwitch("Le joueur " .. player .. " n'exite pas")
+            server:sendTwitch("Le joueur " .. player .. " n'existe pas")
 
         -- Sinon
         else
@@ -361,6 +367,64 @@ function adminBriocheStream(senderNickname, senderPlayer, twitchUsername)
 
         -- On appelle la fonction normale
         briocheStream(senderNickname, senderPlayer)
+
+    end
+
+end
+
+--------------------------------------------------------------------
+--
+-- Commande !brioche stop
+--
+-- senderNickname: Le pseudo de l'auteur de la commande
+-- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+--
+--------------------------------------------------------------------
+
+function briocheStop(senderNickname, senderPlayer)
+
+    -- On récupère le streamer actuel
+    local player = server:getCurrentStreamer()
+
+    -- Personne
+    if player == nil then
+
+        -- Erreur
+        server:sendTwitch("Aucun streamer actuellement")
+
+    -- Quelqu'un
+    else
+
+        -- Si le joueur est admin
+        if senderPlayer:getAdmin() then
+
+            -- On récupère son temps de stream
+            local hours, minutes, seconds = Utils.getTime(server:streamTime())
+
+            -- On envoie un petit message à Twitch
+            server:sendTwitch("Stream de " .. player:getTwitchUsername() .. " arrêté après " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s)");
+
+            -- On vire le streamer actuel
+            server:setCurrentStreamer(nil)
+
+        -- Sinon
+        else
+
+            -- Si le streamer actuel est le joueur qui a fait la commande
+            if server:getCurrentStreamer():is(senderNickname) then
+
+                -- On récupère son temps de stream
+                local hours, minutes, seconds = Utils.getTime(server:streamTime())
+
+                -- On envoie un petit message à Twitch
+                server:sendTwitch("Stream de " .. player:getTwitchUsername() .. " arrêté après " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s)");
+
+                -- On vire le streamer actuel
+                server:setCurrentStreamer(nil)
+
+            end
+
+        end
 
     end
 
@@ -399,6 +463,7 @@ local adminCommands =
     skin = briocheSkin,
     setskin = adminBriocheSetSkin,
     stream = adminBriocheStream,
+    stop = briocheStop,
     restart = briocheRestart
 }
 
@@ -407,7 +472,8 @@ local playerCommands =
 {
     skin = briocheSkin,
     setskin = briocheSetSkin,
-    stream = briocheStream
+    stream = briocheStream,
+    stop = briocheStop
 }
 
 -- La table des commandes accessibles aux viewers

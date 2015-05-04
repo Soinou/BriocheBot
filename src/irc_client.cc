@@ -121,15 +121,19 @@ void IrcClient::stop()
 
 void IrcClient::send(const std::string& target, const std::string& message)
 {
-    // We should have a session
-    assert(session_);
+    // If we have a target
+    if (!target.empty())
+    {
+        // We should have a session
+        assert(session_);
 
-    Meow("irc")->info(Utils::string_format("Sending '%s' to '%s'", message.c_str(), target.c_str()));
+        Meow("irc")->info(Utils::string_format("Sending '%s' to '%s'", message.c_str(), target.c_str()));
 
-    // Try to send a message
-    if (irc_cmd_msg(session_, target.c_str(), message.c_str()))
-        // Throw on error
-        Utils::throw_error("IrcClient", "send", Utils::string_format("Impossible to send the message: %s", irc_strerror(irc_errno(session_))));
+        // Try to send a message
+        if (irc_cmd_msg(session_, target.c_str(), message.c_str()))
+            // Throw on error
+            Utils::throw_error("IrcClient", "send", Utils::string_format("Impossible to send the message: %s", irc_strerror(irc_errno(session_))));
+    }
 }
 
 void IrcClient::join(const std::string& channel)

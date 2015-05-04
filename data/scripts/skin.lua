@@ -19,7 +19,7 @@ MaxArguments = 1;
 -- Callback
 function onCommand(senderNickname, twitchUsername)
 
-     -- Variable temporaire pour le joueur
+    -- Variable temporaire pour le joueur
     local player = nil;
 
     -- Un argument
@@ -36,11 +36,17 @@ function onCommand(senderNickname, twitchUsername)
 
     end
 
-    -- Pas de joueur
-    if player == nil then
+    -- Un pseudo twitch précisé mais le joueur n'est pas trouvé
+    if twitchUsername ~= nil and player == nil then
 
         -- Erreur
         server:sendTwitch("Joueur non trouvé!")
+
+    -- Pas de pseudo twitch précisé mais le joueur n'existe pas non plus
+    elseif player == nil then
+
+        -- Pas de streamer
+        server:sendTwitch("Aucun streamer actuellement")
 
     -- Pas de skin
     elseif player:getOsuSkin() == "null" then

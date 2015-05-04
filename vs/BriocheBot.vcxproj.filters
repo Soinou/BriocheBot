@@ -135,12 +135,6 @@
     <ClInclude Include="..\src\lua_server.h">
       <Filter>Lua\Wrappers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\script.h">
-      <Filter>Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\script_manager.h">
-      <Filter>Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\icommand_listener.h">
       <Filter>Listeners</Filter>
     </ClInclude>
@@ -152,6 +146,12 @@
     </ClInclude>
     <ClInclude Include="..\src\lua_utils.h">
       <Filter>Lua\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\script.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\script_manager.h">
+      <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -219,23 +219,23 @@
     <ClCompile Include="..\src\lua_server.cc">
       <Filter>Lua\Wrappers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\script.cc">
-      <Filter>Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\lua_state.cc">
       <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua_logger.cc">
       <Filter>Lua\Wrappers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\script_manager.cc">
-      <Filter>Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\utils.cc">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua_utils.cc">
       <Filter>Lua\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\script.cc">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\script_manager.cc">
+      <Filter>Lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +252,39 @@
     </None>
     <None Include="build.bat">
       <Filter>Other Files</Filter>
+    </None>
+    <None Include="..\data\scripts\ban.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\brioche.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\help.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\log.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\requests.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\skin.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\status.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\time.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\to.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\unban.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\uptime.lua">
+      <Filter>Scripts</Filter>
     </None>
   </ItemGroup>
 </Project>

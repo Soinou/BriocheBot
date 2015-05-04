@@ -108,8 +108,14 @@ void Server::initialize()
     {
         Meow("server")->info("Current streamer already exists, setting him");
 
-        // Get the player associated with the username we cached and put him as the current streamer
-        current_streamer_ = PlayersDb.get(reply.string);
+        // We stored null in the db
+        if (reply.string == "null")
+            // No streamer
+            current_streamer_ = nullptr;
+        // We have a streamer
+        else
+            // Get the player associated with the username we cached and put him as the current streamer
+            current_streamer_ = PlayersDb.get(reply.string);
     }
     // Else
     else
@@ -128,11 +134,24 @@ void Server::set_current_streamer(Player* current_streamer)
     // Change the current streamer
     current_streamer_ = current_streamer;
 
-    // Execute the command to store the current streamer in the db
-    connection_.execute(Utils::string_format("SET current_streamer %s", current_streamer_->twitch_username().c_str()));
+    // No streamer
+    if (current_streamer == nullptr)
+    {
+        // Execute the command to store the current streamer in the db
+        connection_.execute("SET current_streamer null");
 
-    // Change the osu! client target
-    osu_.set_target(current_streamer_->osu_username());
+        // Remove the osu! client target
+        osu_.set_target("");
+    }
+    // A streamer
+    else
+    {
+        // Execute the command to store the current streamer in the db
+        connection_.execute(Utils::string_format("SET current_streamer %s", current_streamer_->twitch_username().c_str()));
+
+        // Change the osu! client target
+        osu_.set_target(current_streamer_->osu_username());
+    }
 
     // Reinitialize the last time change
     change_time_ = time(nullptr);
@@ -199,26 +218,20 @@ void Server::run()
         irc_add_select_descriptors(osu_.session(), &sockets, &out_sockets, &sockets_count);
 
         // Select something. If it went wrong
-        int available = select(sockets_count + 1, &sockets, &out_sockets, NULL, &timeout);
-
-        // Error
-        if (available < 0)
+        if (select(sockets_count + 1, &sockets, &out_sockets, nullptr, &timeout) < 0)
             // Error
             Utils::throw_error("Server", "run", "Something went wrong when selecting a socket");
 
-        // We have a socket
-        if (available > 0)
-        {
-            // If there was something wrong when processing the osu! session
-            if (irc_process_select_descriptors(twitch_.session(), &sockets, &out_sockets))
-                // Error
-                Utils::throw_error("Server", "run", Utils::string_format("Error with the Twitch session: %s", twitch_.get_error()));
 
-            // If there was something wrong when processing the osu! session
-            if (irc_process_select_descriptors(osu_.session(), &sockets, &out_sockets))
-                // Error
-                Utils::throw_error("Server", "run", Utils::string_format("Error with the osu! session: %s", osu_.get_error()));
-        }
+        // If there was something wrong when processing the osu! session
+        if (irc_process_select_descriptors(twitch_.session(), &sockets, &out_sockets))
+            // Error
+            Utils::throw_error("Server", "run", Utils::string_format("Error with the Twitch session: %s", twitch_.get_error()));
+
+        // If there was something wrong when processing the osu! session
+        if (irc_process_select_descriptors(osu_.session(), &sockets, &out_sockets))
+            // Error
+            Utils::throw_error("Server", "run", Utils::string_format("Error with the osu! session: %s", osu_.get_error()));
     }
 
     // Stop the twitch session

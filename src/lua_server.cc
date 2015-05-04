@@ -49,11 +49,19 @@ static int lua_server_set_current_streamer(lua_State* L)
     // Get the server
     Server* server = luaW_check<Server>(L, 1);
 
-    // Get the player
-    Player* player = luaW_check<Player>(L, 2);
+    // If the next argument is nil
+    if (lua_isnil(L, 2))
+        // Remove the current streamer
+        server->set_current_streamer(nullptr);
+    // Else
+    else
+    {
+        // Get the player
+        Player* player = luaW_check<Player>(L, 2);
 
-    // Set this player as the server current streamer
-    server->set_current_streamer(player);
+        // Set this player as the server current streamer
+        server->set_current_streamer(player);
+    }
 
     // No result
     return 0;

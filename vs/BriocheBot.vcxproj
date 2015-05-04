@@ -78,6 +78,17 @@
     <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\data\scripts\ban.lua" />
+    <None Include="..\data\scripts\brioche.lua" />
+    <None Include="..\data\scripts\help.lua" />
+    <None Include="..\data\scripts\log.lua" />
+    <None Include="..\data\scripts\requests.lua" />
+    <None Include="..\data\scripts\skin.lua" />
+    <None Include="..\data\scripts\status.lua" />
+    <None Include="..\data\scripts\time.lua" />
+    <None Include="..\data\scripts\to.lua" />
+    <None Include="..\data\scripts\unban.lua" />
+    <None Include="..\data\scripts\uptime.lua" />
     <None Include="build.bat" />
     <None Include="clean.bat" />
     <None Include="launch.bat" />
