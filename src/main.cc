@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "logger.h"
-#include "server.h"
-#include "utils.h"
+#include "utils/logger.h"
+#include "server/server.h"
+#include "utils/utils.h"
 
 #if defined(WIN32) || defined(_WIN32)
 // Include winsock2 on windows
@@ -70,6 +70,9 @@ int main()
 
         // Create the server
         server = new Server();
+
+        // Initialize the server
+        server->initialize();
 
         Meow("server")->info("Bot successfully prepared, now running");
 
