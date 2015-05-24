@@ -98,6 +98,12 @@ int main()
     // Wait for the logger to terminate
     Logger::get_instance().wait();
 
+    // If we are on windows
+#ifdef WIN32
+    // Cleanup the sockets
+    WSACleanup();
+#endif
+
     // We should never exit this program, so when it really exits, there is a problem
     return 42;
 }

@@ -82,18 +82,18 @@ file(GLOB_RECURSE JSONCPP_SRC "${JSONCPP_DIR}/*.h" "${JSONCPP_DIR}/*.cpp")
 
 ########################################################################
 #
-#       curl
+#       HappyHttp
 #
 ########################################################################
 
-# Get curl directory
-set(CURL_DIR "${LIB_DIR}/curl")
+# Get happyhttp directory
+set(HAPPYHTTP_DIR "${LIB_DIR}/happyhttp")
 
-# Include curl directory
-include_directories("${CURL_DIR}")
+# Include happyhttp directory
+include_directories("${HAPPYHTTP_DIR}")
 
-# Get curl sources
-file(GLOB_RECURSE CURL_SRC "${CURL_DIR}/*.[ch]")
+# Get happyhttp sources
+file(GLOB_RECURSE HAPPYHTTP_SRC "${HAPPYHTTP_DIR}/*.cpp" "${HAPPYHTTP_DIR}/*.h")
 
 ########################################################################
 #
@@ -130,7 +130,7 @@ add_executable(${EXECUTABLE}
     ${LIBIRCCLIENT_SRC}
     ${HIREDIS_SRC}
     ${JSONCPP_SRC}
-    ${CURL_SRC}
+    ${HAPPYHTTP_SRC}
     ${LUA_SRC}
     ${EXECUTABLE_SOURCES}
 )

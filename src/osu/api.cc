@@ -23,16 +23,19 @@
 
 #include "osu/api.h"
 
-#include "utils/curl.h"
+#include "utils/http.h"
 #include "utils/utils.h"
 
 #include <json/json.h>
 
+// Api url
+#define API_URL "osu.ppy.sh"
+
 // Users url
-#define USERS_URL "http://osu.ppy.sh/api/get_user"
+#define USERS_URL "/api/get_user"
 
 // Beatmaps url
-#define BEATMAPS_URL "http://osu.ppy.sh/api/get_beatmaps"
+#define BEATMAPS_URL "/api/get_beatmaps"
 
 namespace Osu
 {
@@ -80,7 +83,7 @@ namespace Osu
         User user;
 
         // Get the response from the server
-        std::string json = Curly.perform_get(get_user_url(api_key_, username, mode));
+        std::string json = Bringz.get(API_URL, 80, get_user_url(api_key_, username, mode));
 
         // If the json string is empty (No response, or bad response)
         if (json.empty())
@@ -118,7 +121,7 @@ namespace Osu
         std::vector<Beatmap> beatmap_set;
 
         // Get the response from the server
-        std::string json = Curly.perform_get(get_beatmap_set_url(api_key_, beatmap_set_id, mode));
+        std::string json = Bringz.get(API_URL, 80, get_beatmap_set_url(api_key_, beatmap_set_id, mode));
 
         // If we have a response
         if (!json.empty())
@@ -160,7 +163,7 @@ namespace Osu
         Beatmap beatmap;
 
         // Get the response from the server
-        std::string json = Curly.perform_get(get_beatmap_url(api_key_, beatmap_id, mode));
+        std::string json = Bringz.get(API_URL, 80, get_beatmap_url(api_key_, beatmap_id, mode));
 
         // If the json string is empty (No response, or bad response)
         if (json.empty())
