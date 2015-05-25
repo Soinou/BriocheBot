@@ -30,9 +30,12 @@ namespace Redis
     Connection::Connection(const std::string& host, int port) : redis_context_(redisConnect(host.c_str(), port))
     {
         // If the connection is not established
-        if (redis_context_ != nullptr && redis_context_->err)
+        if (redis_context_ == nullptr || redis_context_->err)
+        {
             // Error
-            Utils::throw_error("Connection", "Constructor", "Impossible to connect to the redis server");
+            Utils::throw_error("Connection", "Constructor",
+                               Utils::string_format("Impossible to connect to the redis server: %s", redis_context_->errstr));
+        }
     }
 
     Connection::~Connection()
@@ -99,7 +102,7 @@ namespace Redis
         redisReply* reply = nullptr;
 
         // Call the redis command function
-        reply = (redisReply*) redisCommand(redis_context_, command.c_str());
+        reply = (redisReply*)redisCommand(redis_context_, command.c_str());
 
         // Parse the reply we got
         Reply new_reply = parse_reply(reply);
