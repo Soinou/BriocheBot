@@ -86,12 +86,19 @@ int main()
         Meow("server")->error(e.what());
     }
 
-    Meow("server")->info(Utils::string_format("Server stopping after %s of uptime", Utils::time_format(server->up_time()).c_str()));
-
-    // If we have a server
+    // If the server could initialize
     if (server)
+    {
+        // Log
+        Meow("server")->info(Utils::string_format("Server stopping after %s of uptime", Utils::time_format(server->up_time()).c_str()));
+
         // Delete it
         delete server;
+    }
+    // Else
+    else
+        // Nope
+        Meow("server")->error("Server could not initialize correctly!");
 
     Meow("server")->info("Server stopped, waiting for the loggers to terminate...");
 
