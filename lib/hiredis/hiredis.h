@@ -36,8 +36,13 @@
 #include <sys/time.h> /* for struct timeval */
 
 // MinGW Compatibility
+#ifndef EINPROGRESS
 #define EINPROGRESS 112
+#endif
+
+#ifndef EHOSTUNREACH
 #define EHOSTUNREACH 110
+#endif
 
 #define HIREDIS_MAJOR 0
 #define HIREDIS_MINOR 11
