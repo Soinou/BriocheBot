@@ -24,6 +24,7 @@
 #include "irc/manager.h"
 
 #include "irc/client.h"
+#include "utils/utils.h"
 
 #include <cassert>
 
@@ -69,7 +70,7 @@ namespace Irc
         }
     }
 
-    bool Manager::update()
+    void Manager::update()
     {
         // Reset the timeout
         timeout_.tv_sec = 1;
@@ -88,25 +89,18 @@ namespace Irc
                 (*i)->connect();
 
             // Add his descriptors
-            if (!(*i)->add_descriptors(&sockets_in_, &sockets_out_, &max_socket_))
-                // Return false on errors
-                return false;
+            (*i)->add_select_descriptors(&sockets_in_, &sockets_out_, &max_socket_);
         }
 
         // Select the existing sockets. If error
         if (select(max_socket_ + 1, &sockets_in_, &sockets_out_, nullptr, &timeout_) < 0)
             // Return false
-            return false;
+            Utils::throw_error("Manager", "update", "Impossible to select a valid socket");
 
         // For each client
         for (auto i = clients_.begin(); i != clients_.end(); i++)
             // Process the descriptors
-            if (!(*i)->process_descriptors(&sockets_in_, &sockets_out_))
-                // Return false on errors
-                return false;
-
-        // Alright, everything is good !
-        return true;
+            (*i)->process_select_descriptors(&sockets_in_, &sockets_out_);
     }
 
     void Manager::stop()
@@ -118,7 +112,7 @@ namespace Irc
             assert(*i);
 
             // Stop him
-            (*i)->stop();
+            (*i)->disconnect();
         }
     }
 }

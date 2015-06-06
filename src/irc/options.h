@@ -21,14 +21,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_SOCKETS_H_
-#define IRC_SOCKETS_H_
+#ifndef IRC_OPTIONS_H_
+#define IRC_OPTIONS_H_
 
-// Sockets based on the system
-#if defined(WIN32) || defined(_WIN32)
-#include <winsock2.h>
-#else
-#include <sys/select.h>
-#endif
+#include <string>
 
-#endif // IRC_SOCKETS_H_
+namespace Irc
+{
+    
+}
+
+#endif // IRC_OPTIONS_H_

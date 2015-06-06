@@ -47,19 +47,25 @@ namespace Utils
     // Gets the size of a file (Taken from http://stackoverflow.com/a/8384/4832906)
     int file_size(const std::string& file_path);
 
-    // Trim from start (Taken from http://stackoverflow.com/a/217605/4832906)
+    // Trims from start (Taken from http://stackoverflow.com/a/217605/4832906)
     std::string& ltrim(std::string& s);
 
-    // Trim from end (Taken from http://stackoverflow.com/a/217605/4832906)
+    // Trims from end (Taken from http://stackoverflow.com/a/217605/4832906)
     std::string& rtrim(std::string& s);
 
-    // Trim from both ends (Taken from http://stackoverflow.com/a/217605/4832906)
+    // Trims from both ends (Taken from http://stackoverflow.com/a/217605/4832906)
     std::string& trim(std::string& s);
+
+    // Splits a string on a given delimiter (Taken from http://stackoverflow.com/a/16749483/4832906)
+    std::vector<std::string>& split(const std::string& s, char delim, std::vector<std::string>& elems);
+
+    // Splits a string on a given delimiter (Taken from http://stackoverflow.com/a/16749483/4832906)
+    std::vector<std::string> split(const std::string& s, char delim);
 
     // Get all files from a folder with the given extension (Rough idea taken from http://stackoverflow.com/a/612176/4832906)
     std::vector<std::string> get_files_from_folder(const std::string& folder_path, const std::string& extension);
 
-    // Tokenize a string using delimiters (Taken from http://stackoverflow.com/a/1493195/4832906)
+    // Tokenizes a string using delimiters (Taken from http://stackoverflow.com/a/1493195/4832906)
     template < class ContainerT >
     void tokenize(const std::string& str, ContainerT& tokens,
                   const std::string& delimiters = " ", bool trimEmpty = false)

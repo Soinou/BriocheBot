@@ -1,4 +1,4 @@
-// irc
+// BriocheBot
 // The MIT License(MIT)
 //
 // Copyright(c) 2015 Abricot Soinou <abricot.soinou@gmail.com>
@@ -21,61 +21,67 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_MANAGER_H_
-#define IRC_MANAGER_H_
+#ifndef IRC_SESSION_H_
+#define IRC_SESSION_H_
 
 #include "irc/socket.h"
 
-#include <vector>
-
-// Irc namespace
 namespace Irc
 {
-    // Forward declaration of the client class
-    class Client;
-
-    // An irc client manager
-    class Manager
+    // The different session states
+    enum State
     {
-    public:
-        // Little typedef
-        typedef struct timeval time_value;
+        kConnecting,
+        kConnected
+    };
 
+    // The session object
+    class Session
+    {
     private:
-        // The list of clients
-        std::vector<Client*> clients_;
+        // The socket
+        Socket socket_;
 
-        // Input sockets
-        fd_set sockets_in_;
-
-        // Output sockets
-        fd_set sockets_out_;
-
-        // Max socket
-        int max_socket_;
-
-        // Timeout
-        time_value timeout_;
+        // The current state
+        State state_;
 
     public:
         // Constructor
-        Manager();
+        Session();
 
         // Destructor
-        ~Manager();
+        ~Session();
 
-        // Adds a client (Clients deletion will be handled by the manager)
-        void add_client(Client* client);
+        // Socket getter
+        inline const Socket& socket() const
+        {
+            return socket_;
+        }
 
-        // Connects all the clients
-        void connect();
+        // State getter
+        inline const State& state() const
+        {
+            return state_;
+        }
 
-        // Updates all the clients
-        void update();
+        // Connects the session to the given host and the given port
+        void connect(const std::string& address, int port);
 
-        // Stops all the clients
-        void stop();
+        // Disconnects the session
+        void disconnect();
+
+        // Sends the given message
+        void send(const std::string& message);
+
+        // Receives a message
+        std::string receive();
+
+        // 
+        void add_select_descriptors();
+
+        void process_select_descriptors();
+
     };
 }
 
-#endif // IRC_MANAGER_H_
+#endif // IRC_SESSION_H_

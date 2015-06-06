@@ -66,6 +66,9 @@
     <ClCompile Include="..\src\irc\client.cc" />
     <ClCompile Include="..\src\irc\manager.cc" />
     <ClCompile Include="..\src\irc\osu.cc" />
+    <ClCompile Include="..\src\irc\parser.cc" />
+    <ClCompile Include="..\src\irc\scanner.cc" />
+    <ClCompile Include="..\src\irc\socket.cc" />
     <ClCompile Include="..\src\irc\twitch.cc" />
     <ClCompile Include="..\src\lua\logger.cc" />
     <ClCompile Include="..\src\lua\player.cc" />
@@ -153,7 +156,9 @@
     <ClInclude Include="..\src\irc\client.h" />
     <ClInclude Include="..\src\irc\manager.h" />
     <ClInclude Include="..\src\irc\osu.h" />
-    <ClInclude Include="..\src\irc\sockets.h" />
+    <ClInclude Include="..\src\irc\parser.h" />
+    <ClInclude Include="..\src\irc\scanner.h" />
+    <ClInclude Include="..\src\irc\socket.h" />
     <ClInclude Include="..\src\irc\twitch.h" />
     <ClInclude Include="..\src\lua\logger.h" />
     <ClInclude Include="..\src\lua\player.h" />
@@ -217,9 +222,9 @@
     <NMakeCleanCommandLine>clean.bat</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>build.bat</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>..\src;..\lib\libircclient;..\lib\hiredis;..\lib\jsoncpp;..\lib\happyhttp;..\lib\lua;$(IncludePath)</IncludePath>
+    <IncludePath>..\src;..\lib\hiredis;..\lib\jsoncpp;..\lib\happyhttp;..\lib\lua;$(IncludePath)</IncludePath>
     <AdditionalOptions>/Yu</AdditionalOptions>
-    <SourcePath>..\src;..\lib\libircclient\src;..\lib\libircclient\include;$(SourcePath)</SourcePath>
+    <SourcePath>..\src;..\src\irc;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>build.bat</NMakeBuildCommandLine>

@@ -1,4 +1,4 @@
-// irc
+// BriocheBot
 // The MIT License(MIT)
 //
 // Copyright(c) 2015 Abricot Soinou <abricot.soinou@gmail.com>
@@ -21,61 +21,68 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_MANAGER_H_
-#define IRC_MANAGER_H_
+#ifndef IRC_PARSER_H_
+#define IRC_PARSER_H_
 
-#include "irc/socket.h"
+#include "irc/scanner.h"
 
+#include <string>
 #include <vector>
 
-// Irc namespace
 namespace Irc
 {
-    // Forward declaration of the client class
-    class Client;
-
-    // An irc client manager
-    class Manager
+    // Represents a 
+    struct Message
     {
-    public:
-        // Little typedef
-        typedef struct timeval time_value;
+        // Server
+        std::string server;
 
+        // Nickname
+        std::string nick;
+
+        // User
+        std::string user;
+
+        // Host
+        std::string host;
+
+        // Command
+        std::string command;
+
+        // Middle message
+        std::string middle;
+
+        // Trailing message
+        std::string trailing;
+    };
+
+    // Irc parser, meant to inherit from
+    class Parser
+    {
     private:
-        // The list of clients
-        std::vector<Client*> clients_;
+        // The lexical scanner
+        Scanner scanner_;
 
-        // Input sockets
-        fd_set sockets_in_;
+        // The message
+        Message message_;
 
-        // Output sockets
-        fd_set sockets_out_;
-
-        // Max socket
-        int max_socket_;
-
-        // Timeout
-        time_value timeout_;
+        void parse_prefix();
+        void parse_nick();
+        void parse_user();
+        void parse_host();
+        void parse_command();
+        void parse_parameters();
 
     public:
         // Constructor
-        Manager();
+        Parser(const std::string& line);
 
         // Destructor
-        ~Manager();
+        ~Parser();
 
-        // Adds a client (Clients deletion will be handled by the manager)
-        void add_client(Client* client);
-
-        // Connects all the clients
-        void connect();
-
-        // Updates all the clients
-        void update();
-
-        // Stops all the clients
-        void stop();
+        // Parse the message in the line and returns it
+        Message parse();
     };
 }
 
-#endif // IRC_MANAGER_H_
+#endif // IRC_PARSER_H_

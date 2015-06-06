@@ -30,11 +30,6 @@
 
 TwitchClient::TwitchClient(Server* server) : Irc::Client(), server_(server), target_("")
 {
-    // No ssl
-    set_ssl(false);
-
-    // No ssl check
-    set_ssl_verify(false);
 }
 
 TwitchClient::~TwitchClient()
@@ -44,39 +39,32 @@ TwitchClient::~TwitchClient()
 
 void TwitchClient::load(Config& config)
 {
+    // Create a new irc options object
+    Irc::Options options;
+
     // Get informations from the config file
-    std::string server = config.get("Twitch", "Server", "");
-    int port = atoi(config.get("Twitch", "Port", "").c_str());
-    std::string username = config.get("Twitch", "Username", "");
-    std::string password = config.get("Twitch", "Password", "");
+    options.server = config.get("Twitch", "Server", "");
+    options.port = atoi(config.get("Twitch", "Port", "").c_str());
+    options.username = config.get("Twitch", "Username", "");
+    options.realname = options.username;
+    options.password = config.get("Twitch", "Password", "");
     std::string target = config.get("Twitch", "Target", "");
 
     // Test for empty strings
-    if (server.empty())
+    if (options.server.empty())
         Utils::throw_error("TwitchClient", "load", "Twitch server is not set");
 
-    if (username.empty())
+    if (options.username.empty())
         Utils::throw_error("TwitchClient", "load", "Twitch username is not set");
 
-    if (password.empty())
+    if (options.password.empty())
         Utils::throw_error("TwitchClient", "load", "Twitch password is not set");
 
     if (target.empty())
         Utils::throw_error("TwitchClient", "load", "Twitch target is not set");
 
-    // Server
-    set_server(server);
-
-    // Port
-    set_port(port);
-
-    // Nickname, username and realname
-    set_nick(username);
-    set_username(username);
-    set_realname(username);
-
-    // Password
-    set_password(password);
+    // Set options
+    set_options(options);
 
     // Target
     set_target(target);
@@ -94,8 +82,10 @@ void TwitchClient::on_connect()
     send(target_, "Hey!");
 }
 
-void TwitchClient::on_channel(const std::string& sender, const std::string& channel, const std::string& message)
+void TwitchClient::on_message(const std::string& sender, const std::string& channel, const std::string& message)
 {
+    printf("Twitch: [%s] %s: (%s)\n", channel.c_str(), sender.c_str(), message.c_str());
+
     // Trigger a message event first (Requests/Logs)
     manager_.on_message(sender, message);
 

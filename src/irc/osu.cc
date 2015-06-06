@@ -24,58 +24,45 @@
 #include "irc/osu.h"
 
 #include "utils/utils.h"
+#include "irc/options.h"
 
 #include <cstdlib>
 
 OsuClient::OsuClient() : Irc::Client(), target_("")
 {
-    // No ssl
-    set_ssl(false);
-
-    // No ssl check
-    set_ssl_verify(false);
 }
 
 OsuClient::~OsuClient()
 {
-
 }
 
 void OsuClient::load(Config& config)
 {
+    Irc::Options options;
+
     // Get informations from the config file
-    std::string server = config.get("Osu", "Server", "");
-    int port = atoi(config.get("Osu", "Port", "").c_str());
-    std::string username = config.get("Osu", "Username", "");
-    std::string password = config.get("Osu", "Password", "");
+    options.server = config.get("Osu", "Server", "");
+    options.port = atoi(config.get("Osu", "Port", "").c_str());
+    options.username = config.get("Osu", "Username", "");
+    options.realname = options.username;
+    options.password = config.get("Osu", "Password", "");
     std::string target = config.get("Osu", "Target", "");
 
     // Test for empty strings
-    if (server.empty())
+    if (options.server.empty())
         Utils::throw_error("OsuClient", "load", "osu! server is not set");
 
-    if (username.empty())
+    if (options.username.empty())
         Utils::throw_error("OsuClient", "load", "osu! username is not set");
 
-    if (password.empty())
+    if (options.password.empty())
         Utils::throw_error("OsuClient", "load", "osu! password is not set");
 
     if (target.empty())
         Utils::throw_error("OsuClient", "load", "osu! target is not set");
 
-    // Server
-    set_server(server);
-
-    // Port
-    set_port(port);
-
-    // Nickname, username and realname
-    set_nick(username);
-    set_username(username);
-    set_realname(username);
-
-    // Password
-    set_password(password);
+    // Set options
+    set_options(options);
 
     // Target
     set_target(target);
@@ -83,14 +70,11 @@ void OsuClient::load(Config& config)
 
 void OsuClient::on_connect()
 {
-    // Join the linked channel
-    join(target_);
-
     // Send some message (Yeah, the only reason this file SHOULD be in UTF-8. Damn accents)
     send(target_, "Paré à transmettre les requêtes!");
 }
 
-void OsuClient::on_channel(const std::string& sender, const std::string& channel, const std::string& message)
+void OsuClient::on_message(const std::string& sender, const std::string& channel, const std::string& message)
 {
     // Ignore any message
 }

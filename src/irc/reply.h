@@ -1,4 +1,4 @@
-// irc
+// BriocheBot
 // The MIT License(MIT)
 //
 // Copyright(c) 2015 Abricot Soinou <abricot.soinou@gmail.com>
@@ -21,61 +21,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_MANAGER_H_
-#define IRC_MANAGER_H_
+#ifndef IRC_REPLY_H_
+#define IRC_REPLY_H_
 
-#include "irc/socket.h"
-
+#include <string>
 #include <vector>
 
-// Irc namespace
-namespace Irc
+struct Reply
 {
-    // Forward declaration of the client class
-    class Client;
+    // Constructor
+    Reply(const std::string& line);
 
-    // An irc client manager
-    class Manager
-    {
-    public:
-        // Little typedef
-        typedef struct timeval time_value;
+    // Prefix
+    std::string prefix;
 
-    private:
-        // The list of clients
-        std::vector<Client*> clients_;
+    // Nick
+    std::string nick;
 
-        // Input sockets
-        fd_set sockets_in_;
+    // User
+    std::string user;
 
-        // Output sockets
-        fd_set sockets_out_;
+    // Host
+    std::string host;
 
-        // Max socket
-        int max_socket_;
+    // Server
+    std::string server;
 
-        // Timeout
-        time_value timeout_;
+    // Command
+    std::string command;
 
-    public:
-        // Constructor
-        Manager();
+    // Raw command
+    std::string raw_command;
 
-        // Destructor
-        ~Manager();
+    // Command type
+    std::string command_type;
 
-        // Adds a client (Clients deletion will be handled by the manager)
-        void add_client(Client* client);
+    // Parameters
+    std::vector<std::string> parameters;
+};
 
-        // Connects all the clients
-        void connect();
-
-        // Updates all the clients
-        void update();
-
-        // Stops all the clients
-        void stop();
-    };
-}
-
-#endif // IRC_MANAGER_H_
+#endif // IRC_REPLY_H_

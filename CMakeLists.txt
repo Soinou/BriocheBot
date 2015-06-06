@@ -37,21 +37,6 @@ add_definitions("-DCURL_STATICLIB")
 
 ########################################################################
 #
-#       libircclient
-#
-########################################################################
-
-# Get libircclient directory
-set(LIBIRCCLIENT_DIR "${LIB_DIR}/libircclient")
-
-# Include libircclient directory
-include_directories("${LIBIRCCLIENT_DIR}")
-
-# Get libircclient sources
-set(LIBIRCCLIENT_SRC "${LIBIRCCLIENT_DIR}/libircclient.c")
-
-########################################################################
-#
 #       hiredis
 #
 ########################################################################

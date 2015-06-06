@@ -23,143 +23,210 @@
 
 #include "irc/client.h"
 
+#include "irc/parser.h"
+#include "utils/logger.h"
 #include "utils/utils.h"
 
-#include <cassert>
+// If we have to output everything or not
+#define VERBOSE false
 
 namespace Irc
 {
-    // Connect handler
-    static void event_connect(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count)
+    Client::Client() : socket_(), state_(State::kInitializing), options_(), output_()
     {
-        // Get the client
-        Client* client = (Client*)irc_get_ctx(session);
-
-        // We should have a client
-        assert(client);
-
-        // Notify of connection
-        client->on_connect();
-    }
-
-    // Channel handler
-    static void event_channel(irc_session_t* session, const char* event, const char* origin, const char** params, unsigned int count)
-    {
-        // Get the client
-        Client* client = (Client*)irc_get_ctx(session);
-
-        // We should have a client
-        assert(client);
-
-        // Notify of message
-        client->on_channel(std::string(origin), std::string(params[0]), std::string(params[1]));
-    }
-
-    // Numeric handler
-    static void event_numeric(irc_session_t* session, unsigned int event, const char* origin, const char** params, unsigned int count)
-    {
-        // Just ignore it
-    }
-
-    Client::Client()
-        : callbacks_(), session_(), server_("localhost"), port_(6667),
-        password_(""), nick_("default"), username_("default"), realname_("default")
-    {
-        // Register callbacks
-        callbacks_.event_connect = event_connect;
-        callbacks_.event_channel = event_channel;
-        callbacks_.event_numeric = event_numeric;
-
-        // Create the session
-        session_ = irc_create_session(&callbacks_);
-
-        // If there is no session
-        if (!session_)
-            // Throw an error
-            Utils::throw_error("Client", "Constructor", Utils::string_format("Impossible to initialize the irc session: %s", irc_strerror(irc_errno(session_))));
-
-        // Set session context
-        irc_set_ctx(session_, this);
-
-        // Enable automatic nickname parsing
-        irc_option_set(session_, LIBIRC_OPTION_STRIPNICKS);
     }
 
     Client::~Client()
     {
-        // We should have a session
-        assert(session_);
+    }
 
-        irc_destroy_session(session_);
+    void Client::handle(const Message& message)
+    {
+        // Call on raw
+        on_raw(message);
+
+        // Copy the command in a local variable
+        std::string command = message.command;
+
+        // RPL_ENDOFMOTD
+        if (command == "376")
+            // We are officially connected
+            on_connect();
+        // PING
+        else if (command == "PING")
+            // Respond with a pong
+            output_.push("PONG");
+        // PRIVMSG
+        else if (command == "PRIVMSG")
+        {
+            // First character of the destination is a #
+            if (message.middle[0] == '#')
+                // It's a channel message
+                on_message(message.nick, message.middle, message.trailing);
+            // No #
+            else
+                // It's a private message
+                on_private_message(message.nick, message.trailing);
+        }
     }
 
     void Client::connect()
     {
-        // We should have a session
-        assert(session_);
+        // Create the socket
+        socket_.create();
 
-        // Parse the new server address (#Server on SSL and just Server on non-SSL)
-        std::string new_server = ssl_ ? Utils::string_format("#%s", server_.c_str()) : server_;
+        // Connect the socket
+        socket_.connect(options_.server, options_.port);
 
-        // If we could not connect
-        if (irc_connect(session_, new_server.c_str(), port_, password_.empty() ? 0 : password_.c_str(),
-            nick_.c_str(), username_.c_str(), realname_.c_str()))
-            // Throw an error
-            Utils::throw_error("Client", "connect", Utils::string_format("Impossible to connect to the server: %s", irc_strerror(irc_errno(session_))));
+        // Change the state to connecting
+        state_ = State::kConnecting;
     }
 
-    bool Client::add_descriptors(fd_set* sockets_in, fd_set* sockets_out, int* max_socket)
+    void Client::add_select_descriptors(fd_set* sockets_in, fd_set* sockets_out, int* max_socket)
     {
-        // Stupid asserts for stupidity
-        assert(sockets_in);
-        assert(sockets_out);
-        assert(max_socket);
+        // Socket is not valid
+        if (!socket_.is_valid())
+            // Error
+            Utils::throw_error("Client", "add_select_descriptors", "Socket is not valid");
 
-        // Add the descriptors
-        return irc_add_select_descriptors(session_, sockets_in, sockets_out, max_socket) == 0;
+        // We are connecting
+        if (state_ == State::kConnecting)
+            // Add only output descriptors
+            socket_.add_select_descriptors(sockets_out, max_socket);
+        // We are connected
+        else if (state_ == State::kConnected)
+        {
+            // Add input descriptors
+            socket_.add_select_descriptors(sockets_in, max_socket);
+
+            // If we have something to send
+            if (!output_.empty())
+                // Add output descriptors
+                socket_.add_select_descriptors(sockets_out, max_socket);
+        }
+        // Not a valid state
+        else
+            // Error
+            Utils::throw_error("Client", "add_select_descriptors", "State is not valid");
     }
 
-    bool Client::process_descriptors(fd_set* sockets_in, fd_set* sockets_out)
+    void Client::process_select_descriptors(fd_set* sockets_in, fd_set* sockets_out)
     {
-        // Stupid asserts for stupidity
-        assert(sockets_in);
-        assert(sockets_out);
+        // Socket is not valid
+        if (!socket_.is_valid())
+            // Error
+            Utils::throw_error("Client", "process_select_descriptors", "Invalid state");
 
-        return irc_process_select_descriptors(session_, sockets_in, sockets_out) == 0;
+        // We are connecting
+        if (state_ == State::kConnecting)
+        {
+            // Send usual commands
+            output_.push(Utils::string_format("PASS %s", options_.password.c_str()));
+            output_.push(Utils::string_format("NICK %s", options_.username.c_str()));
+            output_.push(Utils::string_format("USER %s unknown unknown %s", options_.username.c_str(), options_.realname.c_str()));
+
+            // We are now probably connected
+            state_ = State::kConnected;
+        }
+        // We are connected
+        else if (state_ == State::kConnected)
+        {
+            // If our socket is in the input sockets
+            if (socket_.is_in(sockets_in))
+            {
+                // Get socket data
+                std::string data = socket_.receive();
+
+                // Split lines
+                std::vector<std::string> lines = Utils::split(data, '\n');
+
+                // Parse each line
+                for (auto i = lines.begin(); i != lines.end(); i++)
+                {
+                    // Create a new parser
+                    Parser parser((*i));
+
+                    // Parse the message
+                    Message message = parser.parse();
+
+                    // Handle the message
+                    handle(message);
+                }
+            }
+        }
+        // This state is not possible
+        else
+            // Error
+            Utils::throw_error("Client", "process_select_descriptors", "Invalid state");
+
+        // Once everything is done, if the output socket is available
+        if (socket_.is_in(sockets_out))
+        {
+            // While we have something in our output queue
+            while (!output_.empty())
+            {
+                // Get the message on the top of the queue
+                const std::string& message = output_.front();
+
+                // Send it
+                socket_.send(message);
+
+                // Pop it
+                output_.pop();
+            }
+        }
     }
 
-    void Client::stop()
+    void Client::disconnect()
     {
-        // We should have a session
-        assert(session_);
+        // Disconnect the socket
+        socket_.disconnect();
 
-        // Disconnect the session
-        irc_disconnect(session_);
+        // Change the client state
+        state_ = State::kDisconnected;
     }
 
     void Client::send(const std::string& target, const std::string& message)
     {
-        // If we have a target
-        if (!target.empty())
-        {
-            // We should have a session
-            assert(session_);
-
-            // Try to send a message
-            if (irc_cmd_msg(session_, target.c_str(), message.c_str()))
-                // Throw on error
-                Utils::throw_error("Client", "send", Utils::string_format("Impossible to send the message: %s", irc_strerror(irc_errno(session_))));
-        }
+        output_.push(Utils::string_format("PRIVMSG %s :%s", target.c_str(), message.c_str()));
     }
 
     void Client::join(const std::string& channel)
     {
-        // We should have a session
-        assert(session_);
+        output_.push(Utils::string_format("JOIN %s", channel.c_str()));
+    }
 
-        // Try to join the channel
-        if (irc_cmd_join(session_, channel.c_str(), NULL))
-            // Throw on error
-            Utils::throw_error("Client", "join", Utils::string_format("Impossible to join the channel: %s", irc_strerror(irc_errno(session_))));
+    void Client::join(const std::string& channel, const std::string& password)
+    {
+        output_.push(Utils::string_format("JOIN %s :%s", channel.c_str(), password.c_str()));
+    }
+
+    // Default handlers
+
+    void Client::on_connect()
+    {
+        if (VERBOSE)
+            Meow("irc")->info("[Irc::Client](on_connect): Connected!");
+    }
+
+    void Client::on_message(const std::string& sender, const std::string& channel, const std::string& message)
+    {
+        if (VERBOSE)
+            Meow("irc")->info(Utils::string_format("[Irc::Client](on_message): [%s] %s: %s", channel.c_str(), sender.c_str(), message.c_str()));
+    }
+
+    void Client::on_private_message(const std::string& sender, const std::string& message)
+    {
+        if (VERBOSE)
+            Meow("irc")->info(Utils::string_format("[Irc::Client](on_private_message): %s: %s", sender.c_str(), message.c_str()));
+    }
+
+    void Client::on_raw(const Message& message)
+    {
+        if (VERBOSE)
+            Meow("irc")->info(Utils::string_format("[Irc::Client](on_raw): %s / %s ! %s @ %s [ %s ] : %s - %s\n",
+            message.server.c_str(),
+            message.nick.c_str(), message.user.c_str(), message.host.c_str(),
+            message.command.c_str(), message.middle.c_str(), message.trailing.c_str()));
     }
 }

@@ -286,6 +286,15 @@
     <ClCompile Include="..\src\utils\http.cc">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\irc\socket.cc">
+      <Filter>irc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\irc\parser.cc">
+      <Filter>irc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\irc\scanner.cc">
+      <Filter>irc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\utils\config.h">
@@ -328,9 +337,6 @@
       <Filter>irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\manager.h">
-      <Filter>irc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\irc\sockets.h">
       <Filter>irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\scripts\manager.h">
@@ -557,6 +563,15 @@
     </ClInclude>
     <ClInclude Include="..\src\utils\http.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\irc\socket.h">
+      <Filter>irc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\irc\parser.h">
+      <Filter>irc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\irc\scanner.h">
+      <Filter>irc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

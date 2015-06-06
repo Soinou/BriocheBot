@@ -72,7 +72,7 @@ public:
     void on_connect();
 
     // Called on channel message
-    void on_channel(const std::string& sender, const std::string& channel, const std::string& message);
+    void on_message(const std::string& sender, const std::string& channel, const std::string& message);
 };
 
 #endif // IRC_TWITCH_H_

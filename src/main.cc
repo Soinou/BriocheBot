@@ -24,6 +24,7 @@
 #include "utils/logger.h"
 #include "server/server.h"
 #include "utils/utils.h"
+#include "irc/client.h"
 
 #if defined(WIN32) || defined(_WIN32)
 // Include winsock2 on windows

@@ -350,7 +350,7 @@ function adminBriocheStream(senderNickname, senderPlayer, twitchUsername)
         if player == nil then
 
             -- Erreur
-            server:sendTwitch("Le joueur " .. player .. " n'existe pas")
+            server:sendTwitch("Le joueur " .. twitchUsername .. " n'existe pas")
 
         -- Sinon
         else

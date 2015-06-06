@@ -24,43 +24,67 @@
 #ifndef IRC_CLIENT_H_
 #define IRC_CLIENT_H_
 
-#include "libircclient.h"
+#include "irc/socket.h"
+#include "irc/options.h"
+#include "irc/parser.h"
 
 #include <string>
+#include <queue>
 
 // Irc namespace
 namespace Irc
 {
+    // Represents all the possible irc states
+    enum State
+    {
+        kInitializing,
+        kDisconnecting,
+        kDisconnected,
+        kConnecting,
+        kConnected,
+        kError
+    };
+
+    // A structure holding irc related options
+    struct Options
+    {
+        // The server
+        std::string server;
+
+        // The port
+        unsigned int port;
+
+        // The server password
+        std::string password;
+
+        // The nick
+        std::string nick;
+
+        // The username
+        std::string username;
+
+        // The real name
+        std::string realname;
+    };
+
     // Represents an irc client
     class Client
     {
     private:
-        // The irc session
-        irc_session_t* session_;
+        // The socket used by the client
+        Socket socket_;
 
-        // The irc callbacks
-        irc_callbacks_t callbacks_;
+        // The actual client state
+        State state_;
 
-        // The server
-        std::string server_;
+        // The client options
+        Options options_;
 
-        // The port
-        unsigned int port_;
+        // The output queue
+        std::queue<std::string> output_;
 
-        // The server password
-        std::string password_;
-
-        // The nick
-        std::string nick_;
-
-        // The username
-        std::string username_;
-
-        // The real name
-        std::string realname_;
-
-        // If we should use ssl
-        bool ssl_;
+        // Handles a message and calls the right handlers
+        void handle(const Message& message);
 
     public:
         // Constructor
@@ -69,17 +93,47 @@ namespace Irc
         // Destructor
         ~Client();
 
-        // Connects the client using the given settings
+        // Socket getter
+        inline const Socket& socket() const
+        {
+            return socket_;
+        }
+
+        // State getter
+        inline const State& state() const
+        {
+            return state_;
+        }
+
+        // Options getter
+        inline const Options& options() const
+        {
+            return options_;
+        }
+
+        // Options setter
+        inline void set_options(const Options& options)
+        {
+            options_ = options;
+        }
+
+        // Checks if the client is correctly connected
+        inline bool connected()
+        {
+            return socket_.is_valid();
+        }
+
+        // Connects the client using the given options
         void connect();
 
         // Add the session descriptors to the given sets
-        bool add_descriptors(fd_set* sockets_in, fd_set* sockets_out, int* max_socket);
+        void add_select_descriptors(fd_set* sockets_in, fd_set* sockets_out, int* max_socket);
 
         // Process the session descriptors
-        bool process_descriptors(fd_set* sockets_in, fd_set* sockets_out);
+        void process_select_descriptors(fd_set* sockets_in, fd_set* sockets_out);
 
-        // Stops the client
-        void stop();
+        // Forcefully disconnects the client
+        void disconnect();
 
         // Sends a message to the given target
         void send(const std::string& target, const std::string& message);
@@ -87,128 +141,20 @@ namespace Irc
         // Joins a given channel
         void join(const std::string& channel);
 
-        // Callbacks getter
-        inline const irc_callbacks_t& callbacks() const
-        {
-            return callbacks_;
-        }
+        // Joins a channel with a password
+        void join(const std::string& channel, const std::string& password);
 
-        // Session getter
-        inline irc_session_t* session() const
-        {
-            return session_;
-        }
+        // Called on connect
+        virtual void on_connect();
 
-        // Checks if the server is connected
-        inline bool connected()
-        {
-            return irc_is_connected(session_) == 1;
-        }
+        // Called on message
+        virtual void on_message(const std::string& sender, const std::string& channel, const std::string& message);
 
-        // Server getter
-        inline const std::string& server() const
-        {
-            return server_;
-        }
+        // Called on private message
+        virtual void on_private_message(const std::string& sender, const std::string& message);
 
-        // Server setter
-        inline void set_server(const std::string& server)
-        {
-            server_ = server;
-        }
-
-        // Port getter
-        inline unsigned int port() const
-        {
-            return port_;
-        }
-
-        // Port setter
-        inline void set_port(unsigned int port)
-        {
-            port_ = port;
-        }
-
-        // Password getter
-        inline const std::string& password() const
-        {
-            return password_;
-        }
-
-        // Password setter
-        inline void set_password(const std::string& password)
-        {
-            password_ = password;
-        }
-
-        // Nick getter
-        inline const std::string& nick() const
-        {
-            return nick_;
-        }
-
-        // Nick setter
-        inline void set_nick(const std::string& nick)
-        {
-            nick_ = nick;
-        }
-
-        // Username getter
-        inline const std::string& username() const
-        {
-            return username_;
-        }
-
-        // Username setter
-        inline void set_username(const std::string& username)
-        {
-            username_ = username;
-        }
-
-        // Realname getter
-        inline const std::string& realname() const
-        {
-            return realname_;
-        }
-
-        // Realname setter
-        inline void set_realname(const std::string& realname)
-        {
-            realname_ = realname;
-        }
-
-        // SSL getter
-        inline bool ssl() const
-        {
-            return ssl_;
-        }
-
-        // SSL setter
-        inline void set_ssl(bool ssl)
-        {
-            ssl_ = ssl;
-        }
-
-        // SSL Verify setter
-        inline void set_ssl_verify(bool verify)
-        {
-            if (verify)
-                irc_option_reset(session_, LIBIRC_OPTION_SSL_NO_VERIFY);
-            else
-                irc_option_set(session_, LIBIRC_OPTION_SSL_NO_VERIFY);
-        }
-
-        // Get the latest session error
-        inline const char* get_error() const
-        {
-            return irc_strerror(irc_errno(session_));
-        }
-
-        // Connect handler
-        virtual void on_connect() = 0;
-
-        // Channel message handler
-        virtual void on_channel(const std::string& sender, const std::string& channel, const std::string& message) = 0;
+        // Called on raw message
+        virtual void on_raw(const Message& message);
     };
 }
 

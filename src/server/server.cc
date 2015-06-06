@@ -124,6 +124,9 @@ void Server::initialize()
         else
             // Get the player associated with the username we cached and put him as the current streamer
             current_streamer_ = PlayersDb.get(reply.string);
+
+        // Change the osu! client target
+        osu_->set_target(reply.string);
     }
     // Else
     else
@@ -188,10 +191,8 @@ void Server::start()
     // While the server is running (Which means always)
     while (running_)
     {
-        // If we could not update the irc clients
-        if (!manager_.update())
-            // Error
-            Utils::throw_error("Server", "run", "Something went wrong when updating the irc clients");
+        // Update the irc clients
+        manager_.update();
 
         // Sleep for a bit
         std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
