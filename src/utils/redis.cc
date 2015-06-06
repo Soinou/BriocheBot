@@ -24,6 +24,7 @@
 #include "utils/redis.h"
 
 #include "utils/utils.h"
+#include <errno.h>
 
 namespace Redis
 {
@@ -32,6 +33,7 @@ namespace Redis
         // If the connection is not established
         if (redis_context_ == nullptr || redis_context_->err)
         {
+            fprintf(stderr, "redis error: %d - %d - %s\n", errno, redis_context_->err, redis_context_->errstr);
             // Error
             Utils::throw_error("Connection", "Constructor",
                                Utils::string_format("Impossible to connect to the redis server: %s", redis_context_->errstr));

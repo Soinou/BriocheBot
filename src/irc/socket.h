@@ -36,8 +36,8 @@ typedef SOCKET socket_t;
 // On Unix
 #else
 
-// Forward declare the fd_set struct
-struct fd_set;
+// Include select header
+#include <sys/select.h>
 
 // Unix socket type is a simple int
 typedef int socket_t;

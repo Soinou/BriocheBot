@@ -34,7 +34,13 @@
 #define IS_SOCKET_ERROR(socket) (socket == SOCKET_ERROR)
 #define CLOSE_SOCKET(socket) closesocket(socket)
 #else
-#include <sys/select.h>
+#include <sys/types.h> // fd_set
+#include <sys/socket.h> // sockets
+#include <unistd.h> // close
+#include <netinet/in.h> // ???
+#include <fcntl.h> // fcntl
+#include <cstring> // memcpy
+#include <netdb.h> // gethostbyname
 #define LAST_SOCKET_ERROR errno
 #define IS_SOCKET_ERROR(socket) (socket < 0)
 #define CLOSE_SOCKET(socket) close(socket)
@@ -78,7 +84,7 @@ namespace Irc
 
         // Activate non-blocking mode on the socket (With the correct platform function)
 #if !defined (_WIN32)
-        if (fcntl(*sock, F_SETFL, fcntl(*sock, F_GETFL, 0) | O_NONBLOCK) != 0)
+        if (fcntl(socket_, F_SETFL, fcntl(socket_, F_GETFL, 0) | O_NONBLOCK) != 0)
 #else
         unsigned long mode = 0;
 
