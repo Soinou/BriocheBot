@@ -32,8 +32,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BIN_DIR}/bin")
 # Setup CMake compilation flags
 set(CMAKE_CXX_FLAGS "-std=gnu++0x")
 
-# Link with static curl
-add_definitions("-DCURL_STATICLIB")
+# Add some definitions
+add_definitions("-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600")
 
 ########################################################################
 #
@@ -82,6 +82,33 @@ file(GLOB_RECURSE HAPPYHTTP_SRC "${HAPPYHTTP_DIR}/*.cpp" "${HAPPYHTTP_DIR}/*.h")
 
 ########################################################################
 #
+#       libuv
+#
+########################################################################
+
+# Get libuv directory
+set(LIBUV_DIR "${LIB_DIR}/libuv")
+
+# Include libuv directory
+include_directories("${LIBUV_DIR}")
+
+# Platform specific directives
+if(WIN32)
+    # Include win directory on windows
+    include_directories("${LIBUV_DIR}/win")
+
+    # Include sources in src and src/win directories
+    file(GLOB LIBUV_SRC "${LIBUV_DIR}/*.c" "${LIBUV_DIR}/win/*.c")
+else()
+    # Include unix directory on unix
+    include_directories("${LIBUV_DIR}/unix")
+
+    # Include sources in src and src/unix directories
+    file(GLOB LIBUV_SRC "${LIBUV_DIR}/*.c" "${LIBUV_DIR}/unix/*.c")
+endif()
+
+########################################################################
+#
 #       Lua
 #
 ########################################################################
@@ -116,6 +143,7 @@ add_executable(${EXECUTABLE}
     ${HIREDIS_SRC}
     ${JSONCPP_SRC}
     ${HAPPYHTTP_SRC}
+    ${LIBUV_SRC}
     ${LUA_SRC}
     ${EXECUTABLE_SOURCES}
 )
@@ -138,11 +166,12 @@ endif()
 
 # If compiling on windows
 if(WIN32)
-	# Link with winsock2 libraries (For libircclient and Curl)
+	# Link with windows libraries (For libuv)
 	target_link_libraries(${EXECUTABLE} "ws2_32")
-
-	# Link with ldap (For Curl)
 	target_link_libraries(${EXECUTABLE} "wldap32")
+    target_link_libraries(${EXECUTABLE} "iphlpapi")
+    target_link_libraries(${EXECUTABLE} "psapi")
+    target_link_libraries(${EXECUTABLE} "userenv")
 # Else, if unix
 elseif(UNIX)
 	# Link with lpthread

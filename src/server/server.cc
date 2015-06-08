@@ -182,21 +182,11 @@ int Server::stream_time() const
 
 void Server::start()
 {
-    // Connect all the clients
-    manager_.connect();
+    // Start the client manager
+    manager_.start();
 
     // Set running as true
     running_ = true;
-
-    // While the server is running (Which means always)
-    while (running_)
-    {
-        // Update the irc clients
-        manager_.update();
-
-        // Sleep for a bit
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-    }
 }
 
 void Server::send_twitch(const std::string& message)
@@ -211,6 +201,9 @@ void Server::send_osu(const std::string& message)
 
 void Server::stop()
 {
-    // Set running to false, the server will stop itself
+    // Set running to false
     running_ = false;
+
+    // Stop the client manager
+    manager_.stop();
 }

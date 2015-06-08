@@ -24,14 +24,8 @@
 #include "utils/logger.h"
 #include "server/server.h"
 #include "utils/utils.h"
-#include "irc/client.h"
+#include "uv/loop.h"
 
-#if defined(WIN32) || defined(_WIN32)
-// Include winsock2 on windows
-#include <winsock2.h>
-#endif
-
-#include <cstdio>
 #include <stdexcept>
 #include <csignal>
 
@@ -45,6 +39,9 @@ static void handler(int)
 
     // Stop the server if we catch this signal
     server->stop();
+
+    // And also stop all the loggers
+    Logger::get_instance().stop();
 }
 
 // Main entry point
@@ -56,17 +53,6 @@ int main()
 
     try
     {
-        // If under windows
-#if defined(WIN32) || defined(_WIN32)
-        // Initialize the winsocket data
-        WSADATA socket_data;
-
-        // If there is an error when initializing winsocket
-        if (WSAStartup(MAKEWORD(2, 2), &socket_data) != 0)
-            // Error
-            Utils::throw_error("Server", "run", "Impossible to initialize winsock");
-#endif
-
         Meow("server")->info("Preparing the bot...");
 
         // Create the server
@@ -79,6 +65,9 @@ int main()
 
         // Run the server
         server->start();
+
+        // Run the main loop
+        the_loop.run();
     }
     // Catch runtime errors
     catch (std::runtime_error e)
@@ -102,15 +91,6 @@ int main()
         Meow("server")->error("Server could not initialize correctly!");
 
     Meow("server")->info("Server stopped, waiting for the loggers to terminate...");
-
-    // Wait for the logger to terminate
-    Logger::get_instance().wait();
-
-    // If we are on windows
-#ifdef WIN32
-    // Cleanup the sockets
-    WSACleanup();
-#endif
 
     // We should never exit this program, so when it really exits, there is a problem
     return 42;

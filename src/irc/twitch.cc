@@ -84,8 +84,6 @@ void TwitchClient::on_connect()
 
 void TwitchClient::on_message(const std::string& sender, const std::string& channel, const std::string& message)
 {
-    printf("Twitch: [%s] %s: (%s)\n", channel.c_str(), sender.c_str(), message.c_str());
-
     // Trigger a message event first (Requests/Logs)
     manager_.on_message(sender, message);
 

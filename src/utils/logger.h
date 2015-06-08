@@ -24,10 +24,10 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
-#include <mutex>
+#include "uv/timer.h"
+
 #include <queue>
 #include <string>
-#include <thread>
 #include <list>
 
 // Represents a logger
@@ -40,23 +40,23 @@ private:
     // The file name to log to
     std::string file_name_;
 
+    // The current file count (Number appended to the file name)
+    int file_count_;
+
     // If the logger is running
     bool running_;
-
-    // The background thread
-    std::thread thread_;
-
-    // The message mutex
-    std::mutex mutex_;
 
     // The things we want to write to the file
     std::queue<std::string> messages_;
 
+    // The timer
+    Uv::Timer timer_;
+
     // Append a message to our queue of messages
     void append(const std::string& status, const std::string& message);
 
-    // The background thread worker
-    void thread_worker();
+    // The timer callback
+    void timer_callback(Uv::Timer* timer);
 
 public:
     // Private constructor
@@ -101,9 +101,8 @@ public:
     // Fatal log
     void fatal(const std::string& message);
 
-    // Wait for the logger to stop
-    void wait();
-
+    // Stops the logger
+    void stop();
 };
 
 class Logger
@@ -128,8 +127,8 @@ public:
     // Get a logger by its filename
     Log* get_logger(const std::string& file_name);
 
-    // Wait for the logger to terminate
-    void wait();
+    // Stop all the loggers
+    void stop();
 
     // Singleton get instance
     static Logger& get_instance()

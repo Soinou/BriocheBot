@@ -24,11 +24,9 @@
 #include "utils/logger.h"
 
 #include "utils/utils.h"
+#include "uv/files.h"
 
 #include <cstdio>
-#include <ctime>
-#include <sys/stat.h>
-#include <chrono>
 
 // Log file
 #define LOG_FILE "logs/%s_%d.log"
@@ -40,8 +38,11 @@
 #define SLEEP_TIME 200
 
 Log::Log(const std::string& file_name)
-    : debug_(true), file_name_(file_name), running_(true), thread_(&Log::thread_worker, this), messages_()
+    : debug_(true), file_name_(file_name), file_count_(0),
+    running_(true), messages_(), timer_(SLEEP_TIME, std::bind(&Log::timer_callback, this, std::placeholders::_1))
 {
+    // Start the timer directly
+    timer_.start();
 }
 
 Log::~Log()
@@ -79,20 +80,14 @@ void Log::fatal(const std::string& message)
     append("Fatal", message);
 }
 
-void Log::wait()
+void Log::stop()
 {
-    // Pass running to false, so the thread will stop
+    // Pass running to false, so the timer will automatically stop itself
     running_ = false;
-
-    // Wait for the thread to terminate
-    thread_.join();
 }
 
 void Log::append(const std::string& status, const std::string& message)
 {
-    // Lock the mutex
-    mutex_.lock();
-
     // If we're in debug mode
     if (debug_)
         // Also append to stdout
@@ -100,123 +95,50 @@ void Log::append(const std::string& status, const std::string& message)
 
     // Push the message
     messages_.push(Utils::string_format("[%s] %s", status.c_str(), message.c_str()));
-
-    // Unlock the mutex
-    mutex_.unlock();
 }
 
-static inline FILE* file_open(const std::string& file_path)
+void Log::timer_callback(Uv::Timer* timer)
 {
-    // Open the file
-    FILE* file = fopen(file_path.c_str(), "a");
+    // Check if we have messages
+    bool empty = messages_.empty();
 
-    // File couldn't not be opened
-    if (file == nullptr)
-        // Error
-        Utils::throw_error("Logger", "thread_worker", Utils::string_format("Couldn't open log file %s", file_path.c_str()));
-
-    // Return the file
-    return file;
-}
-
-void Log::thread_worker()
-{
-    // The actual number appended to the log file end
-    int count = 0;
-
-    // The file pointer
-    FILE* file = nullptr;
-
-    // While the logger is running or we have messages to log
-    while (running_ || !messages_.empty())
+    // If we have to stop and our message queue is empty
+    if (!running_ && empty)
+        // Stop the timer
+        timer->stop();
+    // Else if we have something to write
+    else if (!empty)
     {
-        try
+        // Get the file name
+        std::string file_path = Utils::string_format(LOG_FILE, file_name_.c_str(), file_count_);
+
+        // Get the size of the file
+        Uv::file_size(file_path, [this, &file_path](bool result, uint64_t size)
         {
-            // While the file is not found
-            while (file == nullptr)
+            // File exist and is too big
+            if (result && size > MAX_SIZE)
+                // Increase file count
+                file_count_++;
+            // File doesn't exist or size is correct
+            else
             {
-                // Get the file name
-                std::string file_path = Utils::string_format(LOG_FILE, file_name_.c_str(), count);
+                // Get the current time
+                std::string current_time = Utils::current_time();
 
-                // If the file exists
-                if (Utils::file_exists(file_path))
-                {
-                    // Get the file size
-                    int size = Utils::file_size(file_path);
-
-                    // If the file size is negative
-                    if (size == -1)
-                        // error
-                        throw std::runtime_error("Logger - thread_worker: Couldn't get the log file size");
-                    // Else, if the file size is correct
-                    else if (size < MAX_SIZE)
-                        // Open the file
-                        file = file_open(file_path);
-                    // Else (The file is too big)
-                    else
-                        // Increase our counter
-                        count++;
-                }
-                // Else, the file doesn't exist
-                else
-                    // Open this file
-                    file = file_open(file_path);
-
-                std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-            }
-
-            // Now that we have the right file, get the current time
-            time_t current_time = time(nullptr);
-
-            // Get the local time
-            struct tm local_time = *localtime(&current_time);
-
-            // Format the time as we want it
-            std::string time_string = Utils::string_format(
-                "%04d/%02d/%02d %02d:%02d:%02d",
-                local_time.tm_year + 1900,
-                local_time.tm_mon,
-                local_time.tm_mday,
-                local_time.tm_hour,
-                local_time.tm_min,
-                local_time.tm_sec
-                );
-
-            // Lock the messages mutex
-            mutex_.lock();
-
-            // If we have a message in our list
-            if (!messages_.empty())
-            {
-                // Get one item from the queue of messages
+                // Get the first item from the queue of messages
                 std::string message = messages_.front();
 
                 // Pop the item
                 messages_.pop();
 
-                // Write this item to the file
-                fprintf(file, "[%s] %s\n", time_string.c_str(), message.c_str());
+                // Try to write the message to the file
+                Uv::write_contents(file_path, Utils::string_format("[%s] %s\n", current_time.c_str(), message.c_str()), true, [this](bool result, std::string message)
+                {
+                    // We don't really care about errors (Should probably never happen)
+                });
             }
-
-            // Unlock the mutex
-            mutex_.unlock();
-
-            // Close the file
-            fclose(file);
-
-            // Delete the file
-            file = nullptr;
-        }
-        catch (std::runtime_error e)
-        {
-            // Log errors to standard error stream (But don't stop the thread)
-            fprintf(stderr, "Error: %s\n", e.what());
-        }
-
-        // Sleep a while
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+        });
     }
-
 }
 
 Logger::Logger() : loggers_()
@@ -243,8 +165,8 @@ Log* Logger::get_logger(const std::string& file_name)
     return new_log;
 }
 
-void Logger::wait()
+void Logger::stop()
 {
     for (auto i = loggers_.begin(); i != loggers_.end(); i++)
-        (*i)->wait();
+        (*i)->stop();
 }

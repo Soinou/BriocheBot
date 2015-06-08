@@ -24,9 +24,6 @@
 #include "irc/manager.h"
 
 #include "irc/client.h"
-#include "utils/utils.h"
-
-#include <cassert>
 
 namespace Irc
 {
@@ -39,80 +36,29 @@ namespace Irc
     {
         // For each client
         for (auto i = clients_.begin(); i != clients_.end(); i++)
-        {
-            // We should have one
-            assert(*i);
-
             // Delete him
             delete (*i);
-        }
     }
 
     void Manager::add_client(Client* client)
     {
-        // We should have a client
-        assert(client);
-
         // Push him to our list
         clients_.push_back(client);
     }
 
-    void Manager::connect()
+    void Manager::start()
     {
         // For each client
         for (auto i = clients_.begin(); i != clients_.end(); i++)
-        {
-            // We should have one
-            assert(*i);
-
-            // Connect him
-            (*i)->connect();
-        }
-    }
-
-    void Manager::update()
-    {
-        // Reset the timeout
-        timeout_.tv_sec = 1;
-        timeout_.tv_usec = 0;
-
-        // Reset the descriptors sets
-        FD_ZERO(&sockets_in_);
-        FD_ZERO(&sockets_out_);
-
-        // For each client
-        for (auto i = clients_.begin(); i != clients_.end(); i++)
-        {
-            // If the connection was somehow dropped
-            if (!(*i)->connected())
-                // Reconnect it
-                (*i)->connect();
-
-            // Add his descriptors
-            (*i)->add_select_descriptors(&sockets_in_, &sockets_out_, &max_socket_);
-        }
-
-        // Select the existing sockets. If error
-        if (select(max_socket_ + 1, &sockets_in_, &sockets_out_, nullptr, &timeout_) < 0)
-            // Return false
-            Utils::throw_error("Manager", "update", "Impossible to select a valid socket");
-
-        // For each client
-        for (auto i = clients_.begin(); i != clients_.end(); i++)
-            // Process the descriptors
-            (*i)->process_select_descriptors(&sockets_in_, &sockets_out_);
+            // Start him
+            (*i)->start();
     }
 
     void Manager::stop()
     {
         // For each client
         for (auto i = clients_.begin(); i != clients_.end(); i++)
-        {
-            // We should have one
-            assert(*i);
-
             // Stop him
-            (*i)->disconnect();
-        }
+            (*i)->stop();
     }
 }

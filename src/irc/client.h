@@ -24,7 +24,8 @@
 #ifndef IRC_CLIENT_H_
 #define IRC_CLIENT_H_
 
-#include "irc/socket.h"
+#include "uv/socket.h"
+#include "uv/timer.h"
 #include "irc/options.h"
 #include "irc/parser.h"
 
@@ -71,8 +72,11 @@ namespace Irc
     class Client
     {
     private:
+        // The timer for write operations
+        Uv::Timer timer_;
+
         // The socket used by the client
-        Socket socket_;
+        Uv::Socket socket_;
 
         // The actual client state
         State state_;
@@ -82,6 +86,21 @@ namespace Irc
 
         // The output queue
         std::queue<std::string> output_;
+
+        // Called when the write timer is ready
+        void on_write_timer(Uv::Timer* timer);
+
+        // Called when the underlying socket has connected
+        void on_socket_connect(Uv::Socket* socket, bool result);
+
+        // Called when the underlying socket has data
+        void on_socket_data(Uv::Socket* socket, std::string data);
+
+        // Called when the underlying socket has written something
+        void on_socket_write(Uv::Socket* socket, bool result);
+
+        // Called when the underlying socket has closed
+        void on_socket_close(Uv::Socket* socket);
 
         // Handles a message and calls the right handlers
         void handle(const Message& message);
@@ -94,7 +113,7 @@ namespace Irc
         ~Client();
 
         // Socket getter
-        inline const Socket& socket() const
+        inline const Uv::Socket& socket() const
         {
             return socket_;
         }
@@ -120,20 +139,14 @@ namespace Irc
         // Checks if the client is correctly connected
         inline bool connected()
         {
-            return socket_.is_valid();
+            return socket_.connected();
         }
 
-        // Connects the client using the given options
-        void connect();
+        // Starts the client using the given options
+        void start();
 
-        // Add the session descriptors to the given sets
-        void add_select_descriptors(fd_set* sockets_in, fd_set* sockets_out, int* max_socket);
-
-        // Process the session descriptors
-        void process_select_descriptors(fd_set* sockets_in, fd_set* sockets_out);
-
-        // Forcefully disconnects the client
-        void disconnect();
+        // Stops the client
+        void stop();
 
         // Sends a message to the given target
         void send(const std::string& target, const std::string& message);

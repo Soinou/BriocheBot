@@ -38,7 +38,7 @@ private:
 public:
     // Constructor
     Config(const std::string& path);
-    
+
     // Destructor
     ~Config();
 

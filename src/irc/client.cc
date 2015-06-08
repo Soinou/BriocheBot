@@ -26,18 +26,103 @@
 #include "irc/parser.h"
 #include "utils/logger.h"
 #include "utils/utils.h"
+#include "uv/dns.h"
 
 // If we have to output everything or not
 #define VERBOSE false
 
+// Write interval
+#define WRITE_INTERVAL 200
+
 namespace Irc
 {
-    Client::Client() : socket_(), state_(State::kInitializing), options_(), output_()
+    Client::Client()
+        : timer_(WRITE_INTERVAL, std::bind(&Client::on_write_timer, this, std::placeholders::_1)),
+        socket_(), state_(State::kInitializing), options_(), output_()
     {
+        socket_.set_on_connect([this](Uv::Socket* socket, bool result) { on_socket_connect(socket, result); });
+        socket_.set_on_data([this](Uv::Socket* socket, std::string data) { on_socket_data(socket, data); });
+        socket_.set_on_write([this](Uv::Socket* socket, bool result) { on_socket_write(socket, result); });
+        socket_.set_on_close([this](Uv::Socket* socket) { on_socket_close(socket); });
     }
 
     Client::~Client()
     {
+    }
+
+    void Client::on_write_timer(Uv::Timer* timer)
+    {
+        // If we are disconnecting or disconnected
+        if (state_ == kDisconnecting || state_ == kDisconnected)
+            // Stop the timer
+            timer->stop();
+        // Else
+        else
+        {
+            // While we have something in our output queue
+            while (!output_.empty())
+            {
+                // Get the message on the top of the queue
+                std::string message = output_.front();
+
+                // Append line endings to the message
+                message += 0x0D;
+                message += 0x0A;
+
+                // Send it
+                socket_.write(message);
+
+                // Pop it
+                output_.pop();
+            }
+        }
+    }
+
+    void Client::on_socket_connect(Uv::Socket* socket, bool result)
+    {
+        // Start to read from the socket
+        socket_.read_start();
+
+        // Send usual commands
+        output_.push(Utils::string_format("PASS %s", options_.password.c_str()));
+        output_.push(Utils::string_format("NICK %s", options_.username.c_str()));
+        output_.push(Utils::string_format("USER %s unknown unknown %s", options_.username.c_str(), options_.realname.c_str()));
+
+        // We are connected
+        state_ = State::kConnected;
+
+        // Start the write timer
+        timer_.start();
+    }
+
+    void Client::on_socket_data(Uv::Socket* socket, std::string data)
+    {
+        // Split lines
+        std::vector<std::string> lines = Utils::split(data, '\n');
+
+        // Parse each line
+        for (auto i = lines.begin(); i != lines.end(); i++)
+        {
+            // Create a new parser
+            Parser parser((*i));
+
+            // Parse the message
+            Message message = parser.parse();
+
+            // Handle the message
+            handle(message);
+        }
+    }
+
+    void Client::on_socket_write(Uv::Socket* socket, bool result)
+    {
+        // Ignore it ?
+    }
+
+    void Client::on_socket_close(Uv::Socket* socket)
+    {
+        // We are disconnected
+        state_ = State::kDisconnected;
     }
 
     void Client::handle(const Message& message)
@@ -70,120 +155,26 @@ namespace Irc
         }
     }
 
-    void Client::connect()
+    void Client::start()
     {
-        // Create the socket
-        socket_.create();
+        // Get the server ip/port
+        Uv::get_address(options_.server, std::to_string(options_.port), [this](bool result, std::string message, sockaddr address)
+        {
+            // Connect the socket
+            socket_.connect(address);
 
-        // Connect the socket
-        socket_.connect(options_.server, options_.port);
-
-        // Change the state to connecting
-        state_ = State::kConnecting;
+            // We are connecting
+            state_ = State::kConnecting;
+        });
     }
 
-    void Client::add_select_descriptors(fd_set* sockets_in, fd_set* sockets_out, int* max_socket)
+    void Client::stop()
     {
-        // Socket is not valid
-        if (!socket_.is_valid())
-            // Error
-            Utils::throw_error("Client", "add_select_descriptors", "Socket is not valid");
+        // Stop the socket
+        socket_.close();
 
-        // We are connecting
-        if (state_ == State::kConnecting)
-            // Add only output descriptors
-            socket_.add_select_descriptors(sockets_out, max_socket);
-        // We are connected
-        else if (state_ == State::kConnected)
-        {
-            // Add input descriptors
-            socket_.add_select_descriptors(sockets_in, max_socket);
-
-            // If we have something to send
-            if (!output_.empty())
-                // Add output descriptors
-                socket_.add_select_descriptors(sockets_out, max_socket);
-        }
-        // Not a valid state
-        else
-            // Error
-            Utils::throw_error("Client", "add_select_descriptors", "State is not valid");
-    }
-
-    void Client::process_select_descriptors(fd_set* sockets_in, fd_set* sockets_out)
-    {
-        // Socket is not valid
-        if (!socket_.is_valid())
-            // Error
-            Utils::throw_error("Client", "process_select_descriptors", "Invalid state");
-
-        // We are connecting
-        if (state_ == State::kConnecting)
-        {
-            // Send usual commands
-            output_.push(Utils::string_format("PASS %s", options_.password.c_str()));
-            output_.push(Utils::string_format("NICK %s", options_.username.c_str()));
-            output_.push(Utils::string_format("USER %s unknown unknown %s", options_.username.c_str(), options_.realname.c_str()));
-
-            // We are now probably connected
-            state_ = State::kConnected;
-        }
-        // We are connected
-        else if (state_ == State::kConnected)
-        {
-            // If our socket is in the input sockets
-            if (socket_.is_in(sockets_in))
-            {
-                // Get socket data
-                std::string data = socket_.receive();
-
-                // Split lines
-                std::vector<std::string> lines = Utils::split(data, '\n');
-
-                // Parse each line
-                for (auto i = lines.begin(); i != lines.end(); i++)
-                {
-                    // Create a new parser
-                    Parser parser((*i));
-
-                    // Parse the message
-                    Message message = parser.parse();
-
-                    // Handle the message
-                    handle(message);
-                }
-            }
-        }
-        // This state is not possible
-        else
-            // Error
-            Utils::throw_error("Client", "process_select_descriptors", "Invalid state");
-
-        // Once everything is done, if the output socket is available
-        if (socket_.is_in(sockets_out))
-        {
-            // While we have something in our output queue
-            while (!output_.empty())
-            {
-                // Get the message on the top of the queue
-                const std::string& message = output_.front();
-
-                // Send it
-                socket_.send(message);
-
-                // Pop it
-                output_.pop();
-            }
-        }
-    }
-
-    void Client::disconnect()
-    {
-        // Disconnect the socket
-        socket_.disconnect();
-
-        // Change the client state
-        state_ = State::kDisconnected;
+        // We are disconnecting
+        state_ = State::kDisconnecting;
     }
 
     void Client::send(const std::string& target, const std::string& message)

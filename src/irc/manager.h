@@ -24,8 +24,6 @@
 #ifndef IRC_MANAGER_H_
 #define IRC_MANAGER_H_
 
-#include "irc/socket.h"
-
 #include <vector>
 
 // Irc namespace
@@ -37,25 +35,9 @@ namespace Irc
     // An irc client manager
     class Manager
     {
-    public:
-        // Little typedef
-        typedef struct timeval time_value;
-
     private:
         // The list of clients
         std::vector<Client*> clients_;
-
-        // Input sockets
-        fd_set sockets_in_;
-
-        // Output sockets
-        fd_set sockets_out_;
-
-        // Max socket
-        int max_socket_;
-
-        // Timeout
-        time_value timeout_;
 
     public:
         // Constructor
@@ -67,11 +49,8 @@ namespace Irc
         // Adds a client (Clients deletion will be handled by the manager)
         void add_client(Client* client);
 
-        // Connects all the clients
-        void connect();
-
-        // Updates all the clients
-        void update();
+        // Starts all the clients
+        void start();
 
         // Stops all the clients
         void stop();

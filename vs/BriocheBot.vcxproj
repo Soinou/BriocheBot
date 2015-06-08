@@ -20,14 +20,69 @@
     <ClCompile Include="..\lib\jsoncpp\json_reader.cpp" />
     <ClCompile Include="..\lib\jsoncpp\json_value.cpp" />
     <ClCompile Include="..\lib\jsoncpp\json_writer.cpp" />
-    <ClCompile Include="..\lib\libircclient\colors.c" />
-    <ClCompile Include="..\lib\libircclient\dcc.c" />
-    <ClCompile Include="..\lib\libircclient\errors.c" />
-    <ClCompile Include="..\lib\libircclient\libircclient.c" />
-    <ClCompile Include="..\lib\libircclient\portable.c" />
-    <ClCompile Include="..\lib\libircclient\sockets.c" />
-    <ClCompile Include="..\lib\libircclient\ssl.c" />
-    <ClCompile Include="..\lib\libircclient\utils.c" />
+    <ClCompile Include="..\lib\libuv\fs-poll.c" />
+    <ClCompile Include="..\lib\libuv\inet.c" />
+    <ClCompile Include="..\lib\libuv\threadpool.c" />
+    <ClCompile Include="..\lib\libuv\unix\aix.c" />
+    <ClCompile Include="..\lib\libuv\unix\android-ifaddrs.c" />
+    <ClCompile Include="..\lib\libuv\unix\async.c" />
+    <ClCompile Include="..\lib\libuv\unix\core.c" />
+    <ClCompile Include="..\lib\libuv\unix\darwin-proctitle.c" />
+    <ClCompile Include="..\lib\libuv\unix\darwin.c" />
+    <ClCompile Include="..\lib\libuv\unix\dl.c" />
+    <ClCompile Include="..\lib\libuv\unix\freebsd.c" />
+    <ClCompile Include="..\lib\libuv\unix\fs.c" />
+    <ClCompile Include="..\lib\libuv\unix\fsevents.c" />
+    <ClCompile Include="..\lib\libuv\unix\getaddrinfo.c" />
+    <ClCompile Include="..\lib\libuv\unix\getnameinfo.c" />
+    <ClCompile Include="..\lib\libuv\unix\kqueue.c" />
+    <ClCompile Include="..\lib\libuv\unix\linux-core.c" />
+    <ClCompile Include="..\lib\libuv\unix\linux-inotify.c" />
+    <ClCompile Include="..\lib\libuv\unix\linux-syscalls.c" />
+    <ClCompile Include="..\lib\libuv\unix\loop-watcher.c" />
+    <ClCompile Include="..\lib\libuv\unix\loop.c" />
+    <ClCompile Include="..\lib\libuv\unix\netbsd.c" />
+    <ClCompile Include="..\lib\libuv\unix\openbsd.c" />
+    <ClCompile Include="..\lib\libuv\unix\pipe.c" />
+    <ClCompile Include="..\lib\libuv\unix\poll.c" />
+    <ClCompile Include="..\lib\libuv\unix\process.c" />
+    <ClCompile Include="..\lib\libuv\unix\proctitle.c" />
+    <ClCompile Include="..\lib\libuv\unix\pthread-fixes.c" />
+    <ClCompile Include="..\lib\libuv\unix\signal.c" />
+    <ClCompile Include="..\lib\libuv\unix\stream.c" />
+    <ClCompile Include="..\lib\libuv\unix\sunos.c" />
+    <ClCompile Include="..\lib\libuv\unix\tcp.c" />
+    <ClCompile Include="..\lib\libuv\unix\thread.c" />
+    <ClCompile Include="..\lib\libuv\unix\timer.c" />
+    <ClCompile Include="..\lib\libuv\unix\tty.c" />
+    <ClCompile Include="..\lib\libuv\unix\udp.c" />
+    <ClCompile Include="..\lib\libuv\uv-common.c" />
+    <ClCompile Include="..\lib\libuv\version.c" />
+    <ClCompile Include="..\lib\libuv\win\async.c" />
+    <ClCompile Include="..\lib\libuv\win\core.c" />
+    <ClCompile Include="..\lib\libuv\win\dl.c" />
+    <ClCompile Include="..\lib\libuv\win\error.c" />
+    <ClCompile Include="..\lib\libuv\win\fs-event.c" />
+    <ClCompile Include="..\lib\libuv\win\fs.c" />
+    <ClCompile Include="..\lib\libuv\win\getaddrinfo.c" />
+    <ClCompile Include="..\lib\libuv\win\getnameinfo.c" />
+    <ClCompile Include="..\lib\libuv\win\handle.c" />
+    <ClCompile Include="..\lib\libuv\win\loop-watcher.c" />
+    <ClCompile Include="..\lib\libuv\win\pipe.c" />
+    <ClCompile Include="..\lib\libuv\win\poll.c" />
+    <ClCompile Include="..\lib\libuv\win\process-stdio.c" />
+    <ClCompile Include="..\lib\libuv\win\process.c" />
+    <ClCompile Include="..\lib\libuv\win\req.c" />
+    <ClCompile Include="..\lib\libuv\win\signal.c" />
+    <ClCompile Include="..\lib\libuv\win\stream.c" />
+    <ClCompile Include="..\lib\libuv\win\tcp.c" />
+    <ClCompile Include="..\lib\libuv\win\thread.c" />
+    <ClCompile Include="..\lib\libuv\win\timer.c" />
+    <ClCompile Include="..\lib\libuv\win\tty.c" />
+    <ClCompile Include="..\lib\libuv\win\udp.c" />
+    <ClCompile Include="..\lib\libuv\win\util.c" />
+    <ClCompile Include="..\lib\libuv\win\winapi.c" />
+    <ClCompile Include="..\lib\libuv\win\winsock.c" />
     <ClCompile Include="..\lib\lua\lapi.c" />
     <ClCompile Include="..\lib\lua\lauxlib.c" />
     <ClCompile Include="..\lib\lua\lbaselib.c" />
@@ -68,7 +123,6 @@
     <ClCompile Include="..\src\irc\osu.cc" />
     <ClCompile Include="..\src\irc\parser.cc" />
     <ClCompile Include="..\src\irc\scanner.cc" />
-    <ClCompile Include="..\src\irc\socket.cc" />
     <ClCompile Include="..\src\irc\twitch.cc" />
     <ClCompile Include="..\src\lua\logger.cc" />
     <ClCompile Include="..\src\lua\player.cc" />
@@ -93,6 +147,12 @@
     <ClCompile Include="..\src\utils\redis.cc" />
     <ClCompile Include="..\src\utils\service.cc" />
     <ClCompile Include="..\src\utils\utils.cc" />
+    <ClCompile Include="..\src\uv\buffer.cc" />
+    <ClCompile Include="..\src\uv\dns.cc" />
+    <ClCompile Include="..\src\uv\files.cc" />
+    <ClCompile Include="..\src\uv\loop.cc" />
+    <ClCompile Include="..\src\uv\socket.cc" />
+    <ClCompile Include="..\src\uv\timer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\happyhttp\happyhttp.h" />
@@ -117,14 +177,35 @@
     <ClInclude Include="..\lib\jsoncpp\json\version.h" />
     <ClInclude Include="..\lib\jsoncpp\json\writer.h" />
     <ClInclude Include="..\lib\jsoncpp\json_tool.h" />
-    <ClInclude Include="..\lib\libircclient\dcc.h" />
-    <ClInclude Include="..\lib\libircclient\libircclient.h" />
-    <ClInclude Include="..\lib\libircclient\libirc_errors.h" />
-    <ClInclude Include="..\lib\libircclient\libirc_events.h" />
-    <ClInclude Include="..\lib\libircclient\libirc_options.h" />
-    <ClInclude Include="..\lib\libircclient\libirc_rfcnumeric.h" />
-    <ClInclude Include="..\lib\libircclient\params.h" />
-    <ClInclude Include="..\lib\libircclient\session.h" />
+    <ClInclude Include="..\lib\libuv\android-ifaddrs.h" />
+    <ClInclude Include="..\lib\libuv\heap-inl.h" />
+    <ClInclude Include="..\lib\libuv\pthread-fixes.h" />
+    <ClInclude Include="..\lib\libuv\queue.h" />
+    <ClInclude Include="..\lib\libuv\stdint-msvc2008.h" />
+    <ClInclude Include="..\lib\libuv\tree.h" />
+    <ClInclude Include="..\lib\libuv\unix\atomic-ops.h" />
+    <ClInclude Include="..\lib\libuv\unix\internal.h" />
+    <ClInclude Include="..\lib\libuv\unix\linux-syscalls.h" />
+    <ClInclude Include="..\lib\libuv\unix\spinlock.h" />
+    <ClInclude Include="..\lib\libuv\uv-aix.h" />
+    <ClInclude Include="..\lib\libuv\uv-bsd.h" />
+    <ClInclude Include="..\lib\libuv\uv-common.h" />
+    <ClInclude Include="..\lib\libuv\uv-darwin.h" />
+    <ClInclude Include="..\lib\libuv\uv-errno.h" />
+    <ClInclude Include="..\lib\libuv\uv-linux.h" />
+    <ClInclude Include="..\lib\libuv\uv-sunos.h" />
+    <ClInclude Include="..\lib\libuv\uv-threadpool.h" />
+    <ClInclude Include="..\lib\libuv\uv-unix.h" />
+    <ClInclude Include="..\lib\libuv\uv-version.h" />
+    <ClInclude Include="..\lib\libuv\uv-win.h" />
+    <ClInclude Include="..\lib\libuv\uv.h" />
+    <ClInclude Include="..\lib\libuv\win\atomicops-inl.h" />
+    <ClInclude Include="..\lib\libuv\win\handle-inl.h" />
+    <ClInclude Include="..\lib\libuv\win\internal.h" />
+    <ClInclude Include="..\lib\libuv\win\req-inl.h" />
+    <ClInclude Include="..\lib\libuv\win\stream-inl.h" />
+    <ClInclude Include="..\lib\libuv\win\winapi.h" />
+    <ClInclude Include="..\lib\libuv\win\winsock.h" />
     <ClInclude Include="..\lib\lua\lapi.h" />
     <ClInclude Include="..\lib\lua\lauxlib.h" />
     <ClInclude Include="..\lib\lua\lcode.h" />
@@ -158,7 +239,6 @@
     <ClInclude Include="..\src\irc\osu.h" />
     <ClInclude Include="..\src\irc\parser.h" />
     <ClInclude Include="..\src\irc\scanner.h" />
-    <ClInclude Include="..\src\irc\socket.h" />
     <ClInclude Include="..\src\irc\twitch.h" />
     <ClInclude Include="..\src\lua\logger.h" />
     <ClInclude Include="..\src\lua\player.h" />
@@ -184,9 +264,16 @@
     <ClInclude Include="..\src\utils\config.h" />
     <ClInclude Include="..\src\utils\http.h" />
     <ClInclude Include="..\src\utils\logger.h" />
+    <ClInclude Include="..\src\utils\non_copyable.h" />
     <ClInclude Include="..\src\utils\redis.h" />
     <ClInclude Include="..\src\utils\service.h" />
     <ClInclude Include="..\src\utils\utils.h" />
+    <ClInclude Include="..\src\uv\buffer.h" />
+    <ClInclude Include="..\src\uv\dns.h" />
+    <ClInclude Include="..\src\uv\files.h" />
+    <ClInclude Include="..\src\uv\loop.h" />
+    <ClInclude Include="..\src\uv\socket.h" />
+    <ClInclude Include="..\src\uv\timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\lib\jsoncpp\json_valueiterator.inl" />
@@ -222,9 +309,9 @@
     <NMakeCleanCommandLine>clean.bat</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>build.bat</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>..\src;..\lib\hiredis;..\lib\jsoncpp;..\lib\happyhttp;..\lib\lua;$(IncludePath)</IncludePath>
+    <IncludePath>..\src;..\lib\hiredis;..\lib\jsoncpp;..\lib\happyhttp;..\lib\libuv;..\lib\lua;$(IncludePath)</IncludePath>
     <AdditionalOptions>/Yu</AdditionalOptions>
-    <SourcePath>..\src;..\src\irc;$(SourcePath)</SourcePath>
+    <SourcePath>..\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>build.bat</NMakeBuildCommandLine>

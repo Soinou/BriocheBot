@@ -66,6 +66,29 @@ namespace Utils
         return std::string(formatted.get());
     }
 
+    std::string current_time()
+    {
+        // Get the current time
+        time_t current_time = time(nullptr);
+
+        // Get the local time
+        struct tm local_time = *localtime(&current_time);
+
+        // Format the time as we want it
+        std::string time_string = Utils::string_format(
+            "%04d/%02d/%02d %02d:%02d:%02d",
+            local_time.tm_year + 1900,
+            local_time.tm_mon,
+            local_time.tm_mday,
+            local_time.tm_hour,
+            local_time.tm_min,
+            local_time.tm_sec
+            );
+
+        // Return the time string
+        return time_string;
+    }
+
     std::string time_format(int seconds)
     {
         // Get the minutes
@@ -90,21 +113,6 @@ namespace Utils
             return false;
 
         return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
-    }
-
-    bool file_exists(const std::string& file_path)
-    {
-        return access(file_path.c_str(), F_OK) != -1;
-    }
-
-    int file_size(const std::string& file_path)
-    {
-        struct stat status;
-
-        if (stat(file_path.c_str(), &status))
-            return -1;
-        else
-            return status.st_size;
     }
 
     std::string& ltrim(std::string& s)
@@ -149,6 +157,7 @@ namespace Utils
         return elems;
     }
 
+    // TODO: This needs to go
     std::vector<std::string> get_files_from_folder(const std::string& folder_path, const std::string& extension)
     {
         // The files holder
