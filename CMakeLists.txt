@@ -32,8 +32,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BIN_DIR}/bin")
 # Setup CMake compilation flags
 set(CMAKE_CXX_FLAGS "-std=gnu++0x")
 
-# Add some definitions
-add_definitions("-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600")
+# Add some definitions on windows
+if(WIN32)
+    add_definitions("-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600")
+endif()
 
 ########################################################################
 #
