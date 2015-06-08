@@ -30,7 +30,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BIN_DIR}/bin")
 
 # Setup CMake compilation flags
-set(CMAKE_CXX_FLAGS "-std=gnu++0x")
+set(CMAKE_C_FLAGS "-std=gnu89")
+set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 # Add some definitions on windows
 if(WIN32)
@@ -168,7 +169,7 @@ endif()
 
 # If compiling on windows
 if(WIN32)
-	# Link with windows libraries (For libuv)
+    # Link with windows libraries
 	target_link_libraries(${EXECUTABLE} "ws2_32")
 	target_link_libraries(${EXECUTABLE} "wldap32")
     target_link_libraries(${EXECUTABLE} "iphlpapi")
@@ -176,6 +177,7 @@ if(WIN32)
     target_link_libraries(${EXECUTABLE} "userenv")
 # Else, if unix
 elseif(UNIX)
-	# Link with lpthread
-	target_link_libraries(${EXECUTABLE} "pthread")
+    # Link with unix libraries
+    target_link_libraries(${EXECUTABLE} "dl")
+    target_link_libraries(${EXECUTABLE} "pthread")
 endif()
