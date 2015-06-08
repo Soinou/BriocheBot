@@ -113,7 +113,7 @@ void Log::timer_callback(Uv::Timer* timer)
         std::string file_path = Utils::string_format(LOG_FILE, file_name_.c_str(), file_count_);
 
         // Get the size of the file
-        Uv::file_size(file_path, [this, &file_path](bool result, uint64_t size)
+        Uv::file_size(file_path, [this, file_path](bool result, uint64_t size)
         {
             // File exist and is too big
             if (result && size > MAX_SIZE)

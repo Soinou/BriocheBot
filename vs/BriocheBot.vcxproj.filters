@@ -292,43 +292,22 @@
     <ClCompile Include="..\lib\libuv\version.c">
       <Filter>lib\libuv</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\aix.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\android-ifaddrs.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\async.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\core.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\darwin.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\darwin-proctitle.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\dl.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\freebsd.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\fs.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\fsevents.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\getaddrinfo.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\getnameinfo.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\kqueue.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\linux-core.c">
@@ -346,12 +325,6 @@
     <ClCompile Include="..\lib\libuv\unix\loop-watcher.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\netbsd.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\openbsd.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\pipe.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
@@ -364,16 +337,10 @@
     <ClCompile Include="..\lib\libuv\unix\proctitle.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\pthread-fixes.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\signal.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\stream.c">
-      <Filter>lib\libuv\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\libuv\unix\sunos.c">
       <Filter>lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\tcp.c">
