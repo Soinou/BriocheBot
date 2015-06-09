@@ -31,7 +31,7 @@
 #include <regex>
 
 // The request regex
-static std::regex request_regex("https?://osu\\.ppy\\.sh/([bs])/([0-9]+)(&m=([0-9])+)?( *\\+ *(.+))?");
+static std::regex request_regex("https?://osu\\.ppy\\.sh/([bs])/([0-9]+)(&m=([0-9])+)? *(.+)?");
 
 Request::Request(const std::string& author, const Osu::Beatmap& beatmap, const std::string& comment)
     : author_(author), beatmap_(beatmap), comment_(comment)
@@ -56,7 +56,7 @@ std::string Request::to_twitch_string() const
     // If we have a comment
     if (!comment_.empty())
         // Add it
-        stream << " + " << comment_;
+        stream << " " << comment_;
 
     // Return the stream
     return stream.str();
@@ -83,7 +83,7 @@ std::string Request::to_osu_string() const
     // If we have a comment
     if (!comment_.empty())
         // Add it
-        stream << " + " << comment_;
+        stream << " " << comment_;
 
     // Return the stream
     return stream.str();
@@ -119,7 +119,7 @@ Request* Request::parse(const std::string& sender, const std::string& message)
             mode = atoi(matches[4].str().c_str());
 
         // Get the comment
-        std::string comment = matches[6].str();
+        std::string comment = matches[5].str();
 
         // Create the osu! beatmap
         Osu::Beatmap beatmap;

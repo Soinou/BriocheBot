@@ -27,7 +27,10 @@
 
 #include "happyhttp.h"
 
-#ifndef WIN32
+#if defined(WIN32) | defined(_WIN32)
+#include <winsock2.h>
+#define vsnprintf _vsnprintf
+#else
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -35,13 +38,6 @@
 #include <netdb.h>	// for gethostbyname()
 #include <errno.h>
 #include <unistd.h>
-#endif
-
-
-
-#ifdef WIN32
-#include <winsock2.h>
-#define vsnprintf _vsnprintf
 #endif
 
 #include <cstdio>
