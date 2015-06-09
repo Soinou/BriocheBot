@@ -38,11 +38,18 @@ namespace Uv
 
     Buffer::~Buffer()
     {
-
     }
 
-    uv_buf_t* make_buffer(const std::string& data)
+    void Buffer::allocate(int size)
     {
-        return &Buffer(data);
+        buffer_.base = new char[size];
+        buffer_.len = size;
+    }
+
+    void Buffer::free()
+    {
+        delete buffer_.base;
+        buffer_.base = nullptr;
+        buffer_.len = 0;
     }
 }

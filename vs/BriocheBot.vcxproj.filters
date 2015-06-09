@@ -436,9 +436,6 @@
     <ClCompile Include="..\src\uv\loop.cc">
       <Filter>uv</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\uv\files.cc">
-      <Filter>uv</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\uv\timer.cc">
       <Filter>uv</Filter>
     </ClCompile>
@@ -449,6 +446,9 @@
       <Filter>uv</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\buffer.cc">
+      <Filter>uv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uv\file.cc">
       <Filter>uv</Filter>
     </ClCompile>
   </ItemGroup>
@@ -795,9 +795,6 @@
     <ClInclude Include="..\src\utils\non_copyable.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\uv\files.h">
-      <Filter>uv</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\uv\timer.h">
       <Filter>uv</Filter>
     </ClInclude>
@@ -808,6 +805,9 @@
       <Filter>uv</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\buffer.h">
+      <Filter>uv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uv\file.h">
       <Filter>uv</Filter>
     </ClInclude>
   </ItemGroup>

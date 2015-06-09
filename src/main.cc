@@ -90,8 +90,6 @@ int main()
         // Nope
         Meow("server")->error("Server could not initialize correctly!");
 
-    Meow("server")->info("Server stopped, waiting for the loggers to terminate...");
-
     // We should never exit this program, so when it really exits, there is a problem
     return 42;
 }

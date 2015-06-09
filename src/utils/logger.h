@@ -24,6 +24,7 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
+#include "uv/file.h"
 #include "uv/timer.h"
 
 #include <queue>
@@ -36,6 +37,9 @@ class Log
 private:
     // If we're logging in debug mode
     bool debug_;
+
+    // The file where we write to
+    Uv::File file_;
 
     // The file name to log to
     std::string file_name_;
@@ -57,6 +61,13 @@ private:
 
     // The timer callback
     void timer_callback(Uv::Timer* timer);
+
+    // File callbacks
+    void on_file_open(Uv::File* file, bool result);
+    void on_file_size(Uv::File* file, uint64_t size);
+    void on_file_read(Uv::File* file, std::string data, bool result);
+    void on_file_write(Uv::File* file, bool result);
+    void on_file_close(Uv::File* file);
 
 public:
     // Private constructor

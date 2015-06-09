@@ -47,6 +47,12 @@ namespace Uv
         // Destructor
         ~Buffer();
 
+        // Allocate space for the buffer
+        void allocate(int size);
+
+        // Free the previous space used by the buffer
+        void free();
+
         // Get the underlying buffer
         inline const uv_buf_t& get() const
         {
@@ -59,21 +65,18 @@ namespace Uv
             return buffer_.len;
         }
 
+        // Overload to the dereference operator
+        char* operator*()
+        {
+            return buffer_.base;
+        }
+
         // Overload of the reference operator
         uv_buf_t* operator&()
         {
             return &buffer_;
         }
-
-        // Buffer as string
-        const std::string tostring()
-        {
-            return std::string(buffer_.base, buffer_.len);
-        }
     };
-
-    // Make a uv buffer from a string
-    uv_buf_t* make_buffer(const std::string& data);
 }
 
 #endif // UV_BUFFER_H_
