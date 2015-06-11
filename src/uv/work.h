@@ -21,65 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_PARSER_H_
-#define IRC_PARSER_H_
+#ifndef UV_WORK_H_
+#define UV_WORK_H_
 
-#include "irc/scanner.h"
-#include "irc/reply.h"
-#include "utils/macros.h"
+#include <functional>
 
-#include <string>
-#include <vector>
-
-namespace Irc
+namespace Uv
 {
-    // Irc parser, meant to inherit from
-    class Parser
-    {
-    private:
-        // The lexical scanner
-        Scanner scanner_;
+    // Runnable function
+    typedef std::function<void()> runnable_function;
 
-        // The reply
-        Reply reply_;
-
-        // Parse a prefix
-        void parse_prefix();
-
-        // Parse a nickname
-        void parse_nick();
-
-        // Parse a user
-        void parse_user();
-
-        // Parse a host
-        void parse_host();
-
-        // Parse a reply type
-        void parse_type();
-
-        // Parse paremeters of a name reply
-        void parse_name();
-
-        // Parse parameters of a message reply
-        void parse_message();
-
-        // Parse parameters of a join reply
-        void parse_join();
-
-        // Parse parameters of a part reply
-        void parse_part();
-
-    public:
-        // Constructor
-        Parser(const std::string& line);
-
-        // Destructor
-        ~Parser();
-
-        // Parse the reply in the line and returns it
-        Reply parse();
-    };
+    // Runs a given function asynchronously
+    void run(runnable_function runnable);
 }
 
-#endif // IRC_PARSER_H_
+#endif // UV_WORK_H_

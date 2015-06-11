@@ -25,7 +25,7 @@
 
 namespace Irc
 {
-    Parser::Parser(const std::string& line) : scanner_(line), message_()
+    Parser::Parser(const std::string& line) : scanner_(line), reply_()
     {
     }
 
@@ -34,8 +34,11 @@ namespace Irc
 
     }
 
-    Message Parser::parse()
+    Reply Parser::parse()
     {
+        // Get the raw line into our reply
+        reply_.raw = scanner_.line();
+
         // Next token
         scanner_.advance();
 
@@ -46,10 +49,10 @@ namespace Irc
         // Else
         else
             // Directly parse a command
-            parse_command();
+            parse_type();
 
-        // Return the message
-        return message_;
+        // Return the reply
+        return reply_;
     }
 
     void Parser::parse_prefix()
@@ -71,7 +74,7 @@ namespace Irc
             // Format is [nickname!user@host]
 
             // The string we had is the nickname, so store it
-            message_.nick = value;
+            reply_.nickname = value;
 
             // Parse the username
             parse_user();
@@ -82,7 +85,7 @@ namespace Irc
             // Format is [nickname@host]
 
             // The string we had is the nickname, so store it
-            message_.nick = value;
+            reply_.nickname = value;
 
             // Parse the host
             parse_host();
@@ -91,15 +94,15 @@ namespace Irc
         else if (scanner_.next().type == Token::Type::kWord)
         {
             // The string we had was the server, so store it
-            message_.server = value;
+            reply_.server = value;
 
             // Parse the command
-            parse_command();
+            parse_type();
         }
+        // Else
         else
-        {
-            // Throw error
-        }
+            // Reply is invalid
+            reply_.type = Reply::kInvalid;
     }
 
     void Parser::parse_user()
@@ -107,59 +110,220 @@ namespace Irc
         // Skip the "!"
         scanner_.advance();
 
-        // Get the username
-        message_.user = scanner_.next().representation;
+        // If the next token is a word
+        if (scanner_.next().type == Token::kWord)
+        {
+            // Get the username
+            reply_.username = scanner_.next().representation;
 
-        // Advance
-        scanner_.advance();
+            // Advance
+            scanner_.advance();
 
-        // Parse host
-        parse_host();
+            // Parse host
+            parse_host();
+        }
+        // Else
+        else
+            // Reply is invalid
+            reply_.type = Reply::kInvalid;
     }
 
     void Parser::parse_host()
     {
-        // Skip the "@"
-        scanner_.advance();
-
-        // Get the host
-        message_.host = scanner_.next().representation;
-
-        // Advance
-        scanner_.advance();
-
-        // Parse command
-        parse_command();
-    }
-
-    void Parser::parse_command()
-    {
-        // Get the command
-        message_.command = scanner_.next().representation;
-
-        // Advance
-        scanner_.advance();
-
-        // Parse parameters
-        parse_parameters();
-    }
-
-    void Parser::parse_parameters()
-    {
-        // Get the middle parameter
-        message_.middle = scanner_.next().representation;
-
-        // Advance
-        scanner_.advance();
-
-        // Skip eventual ":"
-        if (scanner_.next().type == Token::Type::kSemiColon)
+        // If the token is an @
+        if (scanner_.next().type == Token::kAt)
+        {
+            // Skip the "@"
             scanner_.advance();
 
-        // Add the next token to our trailing message
-        message_.trailing = scanner_.next().representation;
+            // If the next token is a word
+            if (scanner_.next().type == Token::kWord)
+            {
+                // Get the host
+                reply_.host = scanner_.next().representation;
 
-        // Get all the remaining characters and put it into our trailing message
-        message_.trailing += scanner_.remaining();
+                // Advance
+                scanner_.advance();
+
+                // Parse command
+                parse_type();
+            }
+            // Else
+            else
+                // Reply is invalid
+                reply_.type = Reply::kInvalid;
+        }
+        // Else
+        else
+            // Reply is invalid
+            reply_.type = Reply::kInvalid;
+    }
+
+    void Parser::parse_type()
+    {
+        // Get the token as a string
+        std::string command = scanner_.next().representation;
+
+        // RPL_ENDMOTD
+        if (command == "376")
+            reply_.type = Reply::kConnected;
+        // PING
+        else if (command == "PING")
+            reply_.type = Reply::kPing;
+        // RPL_NAMREPLY
+        else if (command == "353")
+        {
+            reply_.type = Reply::kName;
+
+            // Advance
+            scanner_.advance();
+
+            // Parse parameters
+            parse_name();
+        }
+        // PRIVMSG
+        else if (command == "PRIVMSG")
+        {
+            reply_.type = Reply::kMessage;
+
+            // Advance
+            scanner_.advance();
+
+            // Parse parameters
+            parse_message();
+        }
+        // JOIN
+        else if (command == "JOIN")
+        {
+            reply_.type = Reply::kJoin;
+
+            // Advance
+            scanner_.advance();
+
+            // Parse parameters
+            parse_join();
+        }
+        // PART
+        else if (command == "PART")
+        {
+            reply_.type = Reply::kPart;
+
+            // Advance
+            scanner_.advance();
+
+            // Parse parameters
+            parse_part();
+        }
+        // Invalid
+        else
+            reply_.type = Reply::kInvalid;
+    }
+
+    void Parser::parse_name()
+    {
+        // If we have a word
+        if (scanner_.next().type == Token::kWord)
+        {
+            // Skip it, this is our username, we don't want it
+            scanner_.advance();
+
+            // Skip the */=/@ character, we don't really care about it
+            if (scanner_.next().representation == "*"
+                || scanner_.next().representation == "@"
+                || scanner_.next().representation == "=")
+                scanner_.advance();
+
+            // If we now have a word
+            if (scanner_.next().type == Token::kWord)
+            {
+                // Push it, this is the channel name
+                reply_.parameters.push_back(scanner_.next().representation);
+
+                // Advance
+                scanner_.advance();
+
+                // If we have a semi colon, skip it
+                if (scanner_.next().type == Token::kSemiColon)
+                    scanner_.advance();
+
+                // While we have a token
+                while (scanner_.next().type != Token::kEnd)
+                {
+                    // If this token is a word
+                    if (scanner_.next().type == Token::kWord)
+                    {
+                        // This is an username, push it to our parameters
+                        reply_.parameters.push_back(scanner_.next().representation);
+
+                        // Then advance
+                        scanner_.advance();
+                    }
+                    // Else
+                    else
+                    {
+                        // Invalid reply
+                        reply_.type = Reply::kInvalid;
+                        // Stop here
+                        break;
+                    }
+                }
+            }
+            // Else
+            else
+                // Invalid reply
+                reply_.type = Reply::kInvalid;
+        }
+        // Else
+        else
+            // Invalid reply
+            reply_.type = Reply::kInvalid;
+    }
+
+    void Parser::parse_message()
+    {
+        // If we have a word
+        if (scanner_.next().type == Token::kWord)
+        {
+            // This is the target, get it
+            reply_.parameters.push_back(scanner_.next().representation);
+
+            // Advance
+            scanner_.advance();
+
+            // If the token is a semi colon, skip it
+            if (scanner_.next().type == Token::kSemiColon)
+                scanner_.advance();
+
+            // Then get everything we got left and push it
+            reply_.parameters.push_back(scanner_.remaining());
+        }
+        // Else
+        else
+            // Reply is invalid
+            reply_.type = Reply::kInvalid;
+    }
+
+    void Parser::parse_join()
+    {
+        // If we have a word
+        if (scanner_.next().type == Token::kWord)
+            // This is the channel joined, get it
+            reply_.parameters.push_back(scanner_.next().representation);
+        // Else
+        else
+            // Invalid reply
+            reply_.type = Reply::kInvalid;
+    }
+
+    void Parser::parse_part()
+    {
+        // If we have a word
+        if (scanner_.next().type == Token::kWord)
+            // This is the channel joined, get it
+            reply_.parameters.push_back(scanner_.next().representation);
+        // Else
+        else
+            // Invalid reply
+            reply_.type = Reply::kInvalid;
     }
 }

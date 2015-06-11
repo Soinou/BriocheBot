@@ -21,65 +21,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLAYERS_H_
-#define PLAYERS_H_
+#ifndef MODELS_ISERIALIZABLE_H_
+#define MODELS_ISERIALIZABLE_H_
 
-#include "utils/redis.h"
+#include <json/json.h>
 
-#include <map>
-#include <string>
-
-// Forward declaration of the Player class
-class Player;
-
-// Players database
-class Players
+class ISerializable
 {
-private:
-    // Redis connection
-    Redis::Connection connection_;
-
-    // The map of the last cached players
-    std::map<int, Player*> players_;
-
-    // Constructor
-    Players();
-
-    // Delete copy constructor
-    Players(const Players&) = delete;
-
-    // Delete copy operator
-    void operator=(const Players&) = delete;
-
 public:
+    // Constructor
+    ISerializable();
+
     // Destructor
-    ~Players();
+    ~ISerializable();
 
-    // Checks if a player exists
-    bool exists(const std::string& twitch_username);
+    // Get the hash key of the serializable
+    virtual std::tuple<std::string, std::string> get_hash() const = 0;
 
-    // Get a player from its twitch username
-    Player* get(const std::string& twitch_username);
+    // Converts the serializable object to a json object
+    virtual Json::Value to_json() const = 0;
 
-    // Changes the skin of a player
-    bool update(Player* player);
+    // Initializes the object from a json object
+    virtual void from_json(const Json::Value& json) = 0;
 
-    // Adds a new player
-    bool add(const std::string& twitch_username, const std::string& osu_username, const std::string& osu_skin, bool admin);
-
-    // Removes a players
-    bool remove(const std::string& twitch_username);
-
-    // Singleton get instance
-    static Players& get_instance()
+    // Overload of the operator =, calling from_json
+    inline void operator=(const Json::Value& json)
     {
-        static Players instance;
-
-        return instance;
+        from_json(json);
     }
 };
 
-// Players get instance shortcut
-#define PlayersDb Players::get_instance()
-
-#endif // PLAYERS_H_
+#endif // MODELS_ISERIALIZABLE_H_

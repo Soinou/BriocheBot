@@ -18,11 +18,11 @@ MaxArguments = 1
 
 function onCommand(sender, username)
 
-    -- On récupère le joueur
-    local player = Player.get(sender)
+    -- On récupère le streamer qui a envoyé la commande
+    local streamer = Viewer.get(sender)
 
-    -- Si le joueur existe
-    if player ~= nil then
+    -- Si le streamer existe
+    if streamer ~= nil and streamer:getType() ~= kViewer then
 
         -- On envoie la commande
         server:sendTwitch("/unban " .. username)

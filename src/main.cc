@@ -21,8 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "utils/logger.h"
+#include "models/viewers.h"
 #include "server/server.h"
+#include "utils/logger.h"
 #include "utils/utils.h"
 #include "uv/loop.h"
 
@@ -53,6 +54,9 @@ int main()
 
     try
     {
+        // Load the viewers
+        the_viewers.load();
+
         Meow("server")->info("Preparing the bot...");
 
         // Create the server

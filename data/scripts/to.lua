@@ -19,11 +19,11 @@ MaxArguments = 2
 -- Callback
 function onCommand(sender, username, time)
 
-    -- On récupère le joueur qui a envoyé le message
-    local player = Player.get(sender)
+    -- On récupère le streamer qui a envoyé le message
+    local streamer = Viewer.get(sender)
 
-    -- Si le joueur existe
-    if player ~= nil then
+    -- Si le joueur existe et n'est pas un viewer
+    if streamer ~= nil and streamer:getType() ~= kViewer then
 
         -- Si le temps n'est pas précisé
         if time == nil then

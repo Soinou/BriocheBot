@@ -24,7 +24,7 @@
 #include "lua/state.h"
 
 #include "lua/logger.h"
-#include "lua/player.h"
+#include "lua/viewer.h"
 #include "lua/request.h"
 #include "lua/server.h"
 #include "lua/utils.h"
@@ -65,7 +65,7 @@ namespace Lua
         luaL_openlibs(state_);
 
         // Open user defined libraries
-        luaopen_Player(state_);
+        luaopen_Viewer(state_);
         luaopen_Request(state_);
         luaopen_Server(state_);
         luaopen_Logger(state_);

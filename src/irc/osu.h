@@ -36,6 +36,9 @@ private:
     // The default target
     std::string target_;
 
+    // Called on successful connection
+    void handle_on_connect();
+
 public:
     // Constructor
     OsuClient();
@@ -57,12 +60,6 @@ public:
 
     // Loads the bot
     void load(Config& config);
-
-    // Called on successful connection
-    void on_connect();
-
-    // Called on channel message
-    void on_message(const std::string& sender, const std::string& channel, const std::string& message);
 };
 
 #endif // IRC_OSU_H_

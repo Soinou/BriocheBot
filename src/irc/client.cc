@@ -28,6 +28,8 @@
 #include "utils/utils.h"
 #include "uv/dns.h"
 
+#include <algorithm>
+
 // If we have to output everything or not
 #define VERBOSE false
 
@@ -36,9 +38,14 @@
 
 namespace Irc
 {
-    Client::Client()
-        : timer_(WRITE_INTERVAL, std::bind(&Client::on_write_timer, this, std::placeholders::_1)),
-        socket_(), state_(State::kInitializing), options_(), output_()
+    ///////////////////////////////////////////////////////////
+    //
+    // Constructors/Destructors
+    //
+    ///////////////////////////////////////////////////////////
+
+    Client::Client() : mutex_(), timer_(WRITE_INTERVAL, std::bind(&Client::on_write_timer, this, std::placeholders::_1)),
+        socket_(), state_(State::kInitializing), options_(), users_(), output_()
     {
         socket_.set_on_connect([this](Uv::Socket* socket, bool result) { on_socket_connect(socket, result); });
         socket_.set_on_data([this](Uv::Socket* socket, std::string data) { on_socket_data(socket, data); });
@@ -50,6 +57,12 @@ namespace Irc
     {
     }
 
+    ///////////////////////////////////////////////////////////
+    //
+    // Libuv callbacks
+    //
+    ///////////////////////////////////////////////////////////
+
     void Client::on_write_timer(Uv::Timer* timer)
     {
         // If we are disconnecting or disconnected
@@ -59,15 +72,14 @@ namespace Irc
         // Else
         else
         {
-            // While we have something in our output queue
-            while (!output_.empty())
+            // While we have something in our output queue and we are in connected state
+            while (!output_.empty() && state_ == kConnected)
             {
                 // Get the message on the top of the queue
                 std::string message = output_.front();
 
                 // Append line endings to the message
-                message += 0x0D;
-                message += 0x0A;
+                message += "\r\n";
 
                 // Send it
                 socket_.write(message);
@@ -84,15 +96,12 @@ namespace Irc
         socket_.read_start();
 
         // Send usual commands
-        output_.push(Utils::string_format("PASS %s", options_.password.c_str()));
-        output_.push(Utils::string_format("NICK %s", options_.username.c_str()));
-        output_.push(Utils::string_format("USER %s unknown unknown %s", options_.username.c_str(), options_.realname.c_str()));
+        socket_.write(Utils::string_format("PASS %s\r\n", options_.password.c_str()));
+        socket_.write(Utils::string_format("NICK %s\r\n", options_.username.c_str()));
+        socket_.write(Utils::string_format("USER %s unknown unknown %s\r\n", options_.username.c_str(), options_.realname.c_str()));
 
-        // We are connected
-        state_ = State::kConnected;
-
-        // Start the write timer
-        timer_.start();
+        // We are connecting
+        state_ = kConnecting;
     }
 
     void Client::on_socket_data(Uv::Socket* socket, std::string data)
@@ -106,11 +115,11 @@ namespace Irc
             // Create a new parser
             Parser parser((*i));
 
-            // Parse the message
-            Message message = parser.parse();
+            // Parse the reply
+            Reply reply = parser.parse();
 
-            // Handle the message
-            handle(message);
+            // Handle the reply
+            handle(reply);
         }
     }
 
@@ -122,38 +131,185 @@ namespace Irc
     void Client::on_socket_close(Uv::Socket* socket)
     {
         // We are disconnected
-        state_ = State::kDisconnected;
+        state_ = kDisconnected;
     }
 
-    void Client::handle(const Message& message)
+    ///////////////////////////////////////////////////////////
+    //
+    // Irc handlers
+    //
+    ///////////////////////////////////////////////////////////
+
+    void Client::handle(const Reply& reply)
     {
-        // Call on raw
-        on_raw(message);
+        // Emit on raw
+        on_raw.emit(reply);
 
-        // Copy the command in a local variable
-        std::string command = message.command;
-
-        // RPL_ENDOFMOTD
-        if (command == "376")
-            // We are officially connected
-            on_connect();
-        // PING
-        else if (command == "PING")
-            // Respond with a pong
-            output_.push("PONG");
-        // PRIVMSG
-        else if (command == "PRIVMSG")
+        // Do something depending on the reply type
+        switch (reply.type)
         {
-            // First character of the destination is a #
-            if (message.middle[0] == '#')
-                // It's a channel message
-                on_message(message.nick, message.middle, message.trailing);
-            // No #
-            else
-                // It's a private message
-                on_private_message(message.nick, message.trailing);
+            case Reply::kConnected:
+                state_ = kConnected;
+                timer_.start();
+                on_connect.emit();
+                break;
+            case Reply::kName:
+                handle_on_name(reply);
+                break;
+            case Reply::kPing:
+                output_.push("PONG");
+                break;
+            case Reply::kJoin:
+                handle_on_join(reply);
+                break;
+            case Reply::kPart:
+                handle_on_part(reply);
+                break;
+            case Reply::kMessage:
+                handle_on_message(reply);
+                break;
+            case Reply::kInvalid:
+            default:
+                break;
         }
     }
+
+    void Client::handle_on_name(const Reply& reply)
+    {
+        // Lock the mutex
+        mutex_.lock();
+
+        // Get the first object of our parameters list
+        auto i = reply.parameters.begin();
+
+        // Get the channel
+        std::string channel = *i;
+
+        // While we have names
+        while (++i != reply.parameters.end())
+            // Push the name to the list of users for this channel
+            users_[channel].push_back(*i);
+
+        // Unlock the mutex
+        mutex_.unlock();
+    }
+
+    void Client::handle_on_join(const Reply& reply)
+    {
+        // Lock the mutex
+        mutex_.lock();
+
+        // Get the channel and the username
+        std::string channel = reply.parameters[0];
+        std::string username = reply.username;
+
+        // Get the channel list
+        std::vector<std::string>& channel_list = users_[channel];
+
+        // If the user doesn't exist yet in our list
+        if (std::find(channel_list.begin(), channel_list.end(), username) == channel_list.end())
+        {
+            // Add him to our list
+            channel_list.push_back(username);
+
+            // Emit on join
+            on_join.emit(channel, username);
+        }
+
+        // Unlock the mutex
+        mutex_.unlock();
+    }
+
+    void Client::handle_on_part(const Reply& reply)
+    {
+        // Lock the mutex
+        mutex_.lock();
+
+        // Get the channel and the username
+        std::string channel = reply.parameters[0];
+        std::string username = reply.username;
+
+        // Get the channel list
+        std::vector<std::string>& channel_list = users_[channel];
+
+        // Try to remove the user from our list
+        auto i = std::remove_if(channel_list.begin(), channel_list.end(), [&username](const std::string& element)
+        {
+            return element == username;
+        });
+
+        // If we could remove him
+        if (i != channel_list.end())
+        {
+            // Reprocess the vector
+            channel_list.erase(i);
+
+            // Emit on part
+            on_part.emit(channel, username);
+        }
+
+        // Unlock the mutex
+        mutex_.unlock();
+    }
+
+    void Client::handle_on_message(const Reply& reply)
+    {
+        // Get the target
+        std::string target = reply.parameters[0];
+
+        // Get the sender username
+        std::string username = reply.username;
+
+        // Get the message
+        std::string message = reply.parameters[1];
+
+        // First character of the target is #
+        if (target[0] == '#')
+            // It's a channel message
+            on_message.emit(target, username, message);
+        // Else
+        else
+            // It's a private message
+            on_private_message.emit(username, message);
+    }
+
+    ///////////////////////////////////////////////////////////
+    //
+    // Protected methods
+    //
+    ///////////////////////////////////////////////////////////
+
+    void Client::add_users(const std::string& channel, const std::vector<std::string>& list)
+    {
+        // Lock the mutex
+        mutex_.lock();
+
+        // Get the right list
+        std::vector<std::string>& channel_list = users_[channel];
+
+        // For each name in the given list
+        for (auto i = list.begin(); i != list.end(); i++)
+        {
+            // If we can't find this user in our list
+            if (std::find(channel_list.begin(), channel_list.end(), *i) == channel_list.end())
+            {
+                // Append him
+                channel_list.push_back(*i);
+
+                // Emit on join
+                on_join.emit(channel, *i);
+            }
+        }
+
+        // Unlock the mutex
+        mutex_.unlock();
+    }
+
+    ///////////////////////////////////////////////////////////
+    //
+    // Start/Stop
+    //
+    ///////////////////////////////////////////////////////////
 
     void Client::start()
     {
@@ -162,9 +318,6 @@ namespace Irc
         {
             // Connect the socket
             socket_.connect(address);
-
-            // We are connecting
-            state_ = State::kConnecting;
         });
     }
 
@@ -174,8 +327,14 @@ namespace Irc
         socket_.close();
 
         // We are disconnecting
-        state_ = State::kDisconnecting;
+        state_ = kDisconnecting;
     }
+
+    ///////////////////////////////////////////////////////////
+    //
+    // Irc commands
+    //
+    ///////////////////////////////////////////////////////////
 
     void Client::send(const std::string& target, const std::string& message)
     {
@@ -192,32 +351,8 @@ namespace Irc
         output_.push(Utils::string_format("JOIN %s :%s", channel.c_str(), password.c_str()));
     }
 
-    // Default handlers
-
-    void Client::on_connect()
+    void Client::part(const std::string& channel)
     {
-        if (VERBOSE)
-            Meow("irc")->info("[Irc::Client](on_connect): Connected!");
-    }
-
-    void Client::on_message(const std::string& sender, const std::string& channel, const std::string& message)
-    {
-        if (VERBOSE)
-            Meow("irc")->info(Utils::string_format("[Irc::Client](on_message): [%s] %s: %s", channel.c_str(), sender.c_str(), message.c_str()));
-    }
-
-    void Client::on_private_message(const std::string& sender, const std::string& message)
-    {
-        if (VERBOSE)
-            Meow("irc")->info(Utils::string_format("[Irc::Client](on_private_message): %s: %s", sender.c_str(), message.c_str()));
-    }
-
-    void Client::on_raw(const Message& message)
-    {
-        if (VERBOSE)
-            Meow("irc")->info(Utils::string_format("[Irc::Client](on_raw): %s / %s ! %s @ %s [ %s ] : %s - %s\n",
-            message.server.c_str(),
-            message.nick.c_str(), message.user.c_str(), message.host.c_str(),
-            message.command.c_str(), message.middle.c_str(), message.trailing.c_str()));
+        output_.push(Utils::string_format("PART %s", channel.c_str()));
     }
 }

@@ -25,7 +25,7 @@ function onCommand(sender)
     if streamer == nil then
 
         -- Erreur
-        server:sendTwitch("Aucun streamer actuellement")
+        server:sendTwitch("Y'a personne qui stream. J'peux te donner un temps aléatoire si tu veux, mais ça serait un peu débile")
 
     -- Sinon
     else
@@ -34,7 +34,7 @@ function onCommand(sender)
         local hours, minutes, seconds = Utils.getTime(server:streamTime())
 
         -- On envoie le résultat à Twitch
-        server:sendTwitch("Cela fait " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s) que " .. streamer:getTwitchUsername() .. " stream")
+        server:sendTwitch("ça fait " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s) que " .. streamer:getTwitchUsername() .. " stream. Tu veux qu'il parte à ce point là ?")
 
     end
 

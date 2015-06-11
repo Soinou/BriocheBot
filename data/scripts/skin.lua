@@ -20,45 +20,45 @@ MaxArguments = 1;
 function onCommand(senderNickname, twitchUsername)
 
     -- Variable temporaire pour le joueur
-    local player = nil;
+    local streamer = nil;
 
     -- Un argument
     if twitchUsername ~= nil then
 
         -- On récupère le joueur correspondant
-        player = Player.get(twitchUsername)
+        streamer = Viewer.get(twitchUsername)
 
     -- Aucun argument
     else
 
         -- On récupère le streamer actuel
-        player = server:getCurrentStreamer()
+        streamer = server:getCurrentStreamer()
 
     end
 
     -- Un pseudo twitch précisé mais le joueur n'est pas trouvé
-    if twitchUsername ~= nil and player == nil then
+    if twitchUsername ~= nil and streamer == nil then
 
         -- Erreur
-        server:sendTwitch("Joueur non trouvé!")
+        server:sendTwitch("Nope, " .. twitchUsername .. " existe pas. T'as du te tromper")
 
-    -- Pas de pseudo twitch précisé mais le joueur n'existe pas non plus
-    elseif player == nil then
+    -- Pas de pseudo twitch précisé mais le streamer n'existe pas non plus
+    elseif streamer == nil then
 
         -- Pas de streamer
-        server:sendTwitch("Aucun streamer actuellement")
+        server:sendTwitch("Y'a personne qui stream lààà. Attends un peu wesh")
 
     -- Pas de skin
-    elseif player:getOsuSkin() == "null" then
+    elseif streamer:getOsuSkinLink() == "null" then
 
         -- Erreur
-        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " n'a pas défini de skin!")
+        server:sendTwitch(streamer:getTwitchUsername() .. " il m'a pas filé de skin, donc je peux rien te donner")
 
     -- Tout est bon
     else
 
         -- On envoie le skin
-        server:sendTwitch("Skin de " .. player:getTwitchUsername() .. ": " .. player:getOsuSkin())
+        server:sendTwitch("Le skin de " .. streamer:getTwitchUsername() .. " c'est " .. streamer:getOsuSkinLink() .. ". De rien !")
 
     end
 

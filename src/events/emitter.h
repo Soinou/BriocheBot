@@ -21,12 +21,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef LUA_PLAYER_H_
-#define LUA_PLAYER_H_
+#ifndef EVENTS_EMITTER_H_
+#define EVENTS_EMITTER_H_
 
-struct lua_State;
+#include <functional>
+#include <vector>
 
-// Registers the lua Player class
-int luaopen_Player(lua_State* L);
+// Represents an event emitter
+template<typename ...Parameters>
+class Emitter
+{
+private:
+    // The list of callbacks
+    std::vector<std::function<void(Parameters...)>> callbacks_;
 
-#endif // LUA_PLAYER_H_
+public:
+    // Constructor
+    Emitter() : callbacks_() {}
+
+    // Destructor
+    ~Emitter() {}
+
+    // Emit an event
+    void emit(Parameters... parameters)
+    {
+        for (auto i = callbacks_.begin(); i != callbacks_.end(); i++)
+            (*i)(parameters...);
+    }
+
+    // Add a callback to our emitter
+    void operator+=(std::function<void(Parameters...)> callback)
+    {
+        callbacks_.push_back(callback);
+    }
+};
+
+#endif // EVENTS_EMITTER_H_

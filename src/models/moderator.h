@@ -21,65 +21,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_PARSER_H_
-#define IRC_PARSER_H_
+#ifndef MODELS_MODERATOR_H_
+#define MODELS_MODERATOR_H_
 
-#include "irc/scanner.h"
-#include "irc/reply.h"
-#include "utils/macros.h"
+#include "models/streamer.h"
 
-#include <string>
-#include <vector>
-
-namespace Irc
+// Represents a moderator, a streamer with privileges
+class Moderator : public Streamer
 {
-    // Irc parser, meant to inherit from
-    class Parser
+protected:
+    // The privileges of the moderator
+    Json::UInt privileges_;
+
+public:
+    // Constructor
+    Moderator();
+
+    // Destructor
+    ~Moderator();
+
+    // Privileges getter
+    inline Json::UInt privileges() const
     {
-    private:
-        // The lexical scanner
-        Scanner scanner_;
+        return privileges_;
+    }
 
-        // The reply
-        Reply reply_;
+    // Privileges setter
+    inline void set_privileges(Json::UInt privileges)
+    {
+        privileges_ = privileges;
+    }
 
-        // Parse a prefix
-        void parse_prefix();
+    // Converts the viewer to a json object
+    virtual Json::Value to_json() const;
 
-        // Parse a nickname
-        void parse_nick();
+    // Creates the viewer from a json object
+    virtual void from_json(const Json::Value& json);
 
-        // Parse a user
-        void parse_user();
+    // Creates the viewer from a viewer object
+    virtual void from_viewer(Viewer* viewer);
+};
 
-        // Parse a host
-        void parse_host();
-
-        // Parse a reply type
-        void parse_type();
-
-        // Parse paremeters of a name reply
-        void parse_name();
-
-        // Parse parameters of a message reply
-        void parse_message();
-
-        // Parse parameters of a join reply
-        void parse_join();
-
-        // Parse parameters of a part reply
-        void parse_part();
-
-    public:
-        // Constructor
-        Parser(const std::string& line);
-
-        // Destructor
-        ~Parser();
-
-        // Parse the reply in the line and returns it
-        Reply parse();
-    };
-}
-
-#endif // IRC_PARSER_H_
+#endif // MODELS_MODERATOR_H_

@@ -24,17 +24,27 @@
 #ifndef IRC_CLIENT_H_
 #define IRC_CLIENT_H_
 
+#include "events/emitter.h"
 #include "uv/socket.h"
 #include "uv/timer.h"
 #include "irc/options.h"
 #include "irc/parser.h"
 
-#include <string>
+#include <map>
 #include <queue>
+#include <string>
+#include <vector>
+#include <mutex>
 
 // Irc namespace
 namespace Irc
 {
+    ///////////////////////////////////////////////////////////
+    //
+    // Enums/Structs/Typedefs
+    //
+    ///////////////////////////////////////////////////////////
+
     // Represents all the possible irc states
     enum State
     {
@@ -72,6 +82,15 @@ namespace Irc
     class Client
     {
     private:
+        ///////////////////////////////////////////////////////////
+        //
+        // Members
+        //
+        ///////////////////////////////////////////////////////////
+
+        // Mutex for the user list
+        std::mutex mutex_;
+
         // The timer for write operations
         Uv::Timer timer_;
 
@@ -84,8 +103,17 @@ namespace Irc
         // The client options
         Options options_;
 
+        // The connected users (Associates the channel name to a list of usernames)
+        std::map<std::string, std::vector<std::string>> users_;
+
         // The output queue
         std::queue<std::string> output_;
+
+        ///////////////////////////////////////////////////////////
+        //
+        // Libuv callbacks
+        //
+        ///////////////////////////////////////////////////////////
 
         // Called when the write timer is ready
         void on_write_timer(Uv::Timer* timer);
@@ -102,27 +130,55 @@ namespace Irc
         // Called when the underlying socket has closed
         void on_socket_close(Uv::Socket* socket);
 
-        // Handles a message and calls the right handlers
-        void handle(const Message& message);
+        ///////////////////////////////////////////////////////////
+        //
+        // Irc handlers
+        //
+        ///////////////////////////////////////////////////////////
+
+        // Handles a reply and calls the right handlers
+        void handle(const Reply& reply);
+
+        // Handles a name reply
+        void handle_on_name(const Reply& reply);
+
+        // Handles a join reply
+        void handle_on_join(const Reply& reply);
+
+        // Handles a part reply
+        void handle_on_part(const Reply& reply);
+
+        // Handles a message reply
+        void handle_on_message(const Reply& reply);
+
+    protected:
+        ///////////////////////////////////////////////////////////
+        //
+        // Protected methods
+        //
+        ///////////////////////////////////////////////////////////
+
+        // Adds a list of users to our list
+        void add_users(const std::string& channel, const std::vector<std::string>& list);
 
     public:
+        ///////////////////////////////////////////////////////////
+        //
+        // Constructors/Destructors
+        //
+        ///////////////////////////////////////////////////////////
+
         // Constructor
         Client();
 
         // Destructor
         ~Client();
 
-        // Socket getter
-        inline const Uv::Socket& socket() const
-        {
-            return socket_;
-        }
-
-        // State getter
-        inline const State& state() const
-        {
-            return state_;
-        }
+        ///////////////////////////////////////////////////////////
+        //
+        // Getters/Setters
+        //
+        ///////////////////////////////////////////////////////////
 
         // Options getter
         inline const Options& options() const
@@ -136,17 +192,29 @@ namespace Irc
             options_ = options;
         }
 
-        // Checks if the client is correctly connected
-        inline bool connected()
+        // Get the users list of a given channel
+        inline const std::vector<std::string>& users_of(const std::string& channel)
         {
-            return socket_.connected();
+            return users_[channel];
         }
+
+        ///////////////////////////////////////////////////////////
+        //
+        // Start/Stop
+        //
+        ///////////////////////////////////////////////////////////
 
         // Starts the client using the given options
         void start();
 
         // Stops the client
         void stop();
+
+        ///////////////////////////////////////////////////////////
+        //
+        // Irc commands
+        //
+        ///////////////////////////////////////////////////////////
 
         // Sends a message to the given target
         void send(const std::string& target, const std::string& message);
@@ -157,17 +225,32 @@ namespace Irc
         // Joins a channel with a password
         void join(const std::string& channel, const std::string& password);
 
-        // Called on connect
-        virtual void on_connect();
+        // Leaves a channel
+        void part(const std::string& channel);
 
-        // Called on message
-        virtual void on_message(const std::string& sender, const std::string& channel, const std::string& message);
+        ///////////////////////////////////////////////////////////
+        //
+        // Emitters
+        //
+        ///////////////////////////////////////////////////////////
 
-        // Called on private message
-        virtual void on_private_message(const std::string& sender, const std::string& message);
+        // On connect emitter
+        Emitter<> on_connect;
 
-        // Called on raw message
-        virtual void on_raw(const Message& message);
+        // On join emitter
+        Emitter<const std::string&, const std::string&> on_join;
+
+        // On part emitter
+        Emitter<const std::string&, const std::string&> on_part;
+
+        // On message emitter
+        Emitter<const std::string&, const std::string&, const std::string&> on_message;
+
+        // On private message emitter
+        Emitter<const std::string&, const std::string&> on_private_message;
+
+        // On raw emitter
+        Emitter<const Reply&> on_raw;
     };
 }
 

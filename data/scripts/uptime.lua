@@ -22,6 +22,6 @@ function onCommand(sender)
     local hours, minutes, seconds = Utils.getTime(server:upTime())
 
     -- On envoie le résultat à Twitch
-    server:sendTwitch("Cela fait " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s) que je suis connecté!")
+    server:sendTwitch("ça fait " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s) que je marche ! Espérons que je tienne encore longtemps Kappa")
 
 end

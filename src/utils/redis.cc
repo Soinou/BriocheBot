@@ -87,7 +87,8 @@ namespace Redis
                     break;
                 case REDIS_REPLY_ARRAY:
                     new_reply.type = Reply::Array;
-                    // Do something about this, but later, too lazy atm
+                    for (int i = reply->elements - 1; i >= 0; i--)
+                        new_reply.elements.push_back(parse_reply(reply->element[i]));
                     break;
                 default:
                     break;

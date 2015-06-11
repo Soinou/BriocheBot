@@ -30,6 +30,7 @@
 
 OsuClient::OsuClient() : Irc::Client(), target_("")
 {
+    on_connect += [this]() { handle_on_connect(); };
 }
 
 OsuClient::~OsuClient()
@@ -68,13 +69,8 @@ void OsuClient::load(Config& config)
     set_target(target);
 }
 
-void OsuClient::on_connect()
+void OsuClient::handle_on_connect()
 {
     // Send some message (Yeah, the only reason this file SHOULD be in UTF-8. Damn accents)
     send(target_, "Paré à transmettre les requêtes!");
-}
-
-void OsuClient::on_message(const std::string& sender, const std::string& channel, const std::string& message)
-{
-    // Ignore any message
 }

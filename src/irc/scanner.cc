@@ -31,6 +31,8 @@ namespace Irc
 {
     Scanner::Scanner(const std::string& line) : line_(line), offset_(0), next_(), buffer_()
     {
+        // Trim the line
+        Utils::trim(line_);
     }
 
     Scanner::~Scanner()
@@ -115,8 +117,8 @@ namespace Irc
         // Clear the buffer
         buffer_.clear();
 
-        // Skip eventual trailing whitespaces
-        skip();
+        // Add the last token to our buffer
+        buffer_ += next_.representation;
 
         // While we're not at the end
         while (offset_ < line_.length())

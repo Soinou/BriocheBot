@@ -101,13 +101,13 @@ if(WIN32)
     include_directories("${LIBUV_DIR}/win")
 
     # Include sources in src and src/win directories
-    file(GLOB LIBUV_SRC "${LIBUV_DIR}/*.c" "${LIBUV_DIR}/win/*.c")
+    file(GLOB LIBUV_SRC "${LIBUV_DIR}/*.[ch]" "${LIBUV_DIR}/win/*.[ch]")
 else()
     # Include unix directory on unix
     include_directories("${LIBUV_DIR}/unix")
 
     # Include sources in src and src/unix directories
-    file(GLOB LIBUV_SRC "${LIBUV_DIR}/*.c" "${LIBUV_DIR}/unix/*.c")
+    file(GLOB LIBUV_SRC "${LIBUV_DIR}/*.[ch]" "${LIBUV_DIR}/unix/*.[ch]")
 endif()
 
 ########################################################################
@@ -137,8 +137,54 @@ include_directories("${SRC_DIR}")
 # Executable name
 set(EXECUTABLE "BriocheBot")
 
+# Extra executable name
+set(EXTRA "BriocheBotExtra")
+
 # Get sources
-file(GLOB_RECURSE EXECUTABLE_SOURCES "${SRC_DIR}/*.[hc]" "${SRC_DIR}/*.cc")
+file(GLOB_RECURSE EXECUTABLE_SOURCES
+    "${SRC_DIR}/ini/*.[hc]"
+    "${SRC_DIR}/ini/*.cc"
+    "${SRC_DIR}/irc/*.h"
+    "${SRC_DIR}/irc/*.cc"
+    "${SRC_DIR}/lua/*.h"
+    "${SRC_DIR}/lua/*.cc"
+    "${SRC_DIR}/models/*.h"
+    "${SRC_DIR}/models/*.cc"
+    "${SRC_DIR}/osu/*.h"
+    "${SRC_DIR}/osu/*.cc"
+    "${SRC_DIR}/scripts/*.h"
+    "${SRC_DIR}/scripts/*.cc"
+    "${SRC_DIR}/server/*.h"
+    "${SRC_DIR}/server/*.cc"
+    "${SRC_DIR}/utils/*.h"
+    "${SRC_DIR}/utils/*.cc"
+    "${SRC_DIR}/uv/*.h"
+    "${SRC_DIR}/uv/*.cc"
+    "${SRC_DIR}/main.cc"
+)
+
+# Get extra executable sources
+file(GLOB_RECURSE EXTRA_SOURCES
+    "${SRC_DIR}/ini/*.[hc]"
+    "${SRC_DIR}/ini/*.cc"
+    "${SRC_DIR}/irc/*.h"
+    "${SRC_DIR}/irc/*.cc"
+    "${SRC_DIR}/lua/*.h"
+    "${SRC_DIR}/lua/*.cc"
+    "${SRC_DIR}/models/*.h"
+    "${SRC_DIR}/models/*.cc"
+    "${SRC_DIR}/osu/*.h"
+    "${SRC_DIR}/osu/*.cc"
+    "${SRC_DIR}/scripts/*.h"
+    "${SRC_DIR}/scripts/*.cc"
+    "${SRC_DIR}/server/*.h"
+    "${SRC_DIR}/server/*.cc"
+    "${SRC_DIR}/utils/*.h"
+    "${SRC_DIR}/utils/*.cc"
+    "${SRC_DIR}/uv/*.h"
+    "${SRC_DIR}/uv/*.cc"
+    "${SRC_DIR}/extra.cc"
+)
 
 # Add executable
 add_executable(${EXECUTABLE}
@@ -151,14 +197,27 @@ add_executable(${EXECUTABLE}
     ${EXECUTABLE_SOURCES}
 )
 
+# Add the extra executable
+add_executable(${EXTRA}
+    ${LIBIRCCLIENT_SRC}
+    ${HIREDIS_SRC}
+    ${JSONCPP_SRC}
+    ${HAPPYHTTP_SRC}
+    ${LIBUV_SRC}
+    ${LUA_SRC}
+    ${EXTRA_SOURCES}
+)
+
 # If we're building on windows
 if(WIN32)
 	# Add the -mconsole compilation flag
     set_target_properties(${EXECUTABLE} PROPERTIES COMPILE_FLAGS "-mconsole")
+    set_target_properties(${EXTRA} PROPERTIES COMPILE_FLAGS "-mconsole")
 # Else, if we're building on unix
 elseif(UNIX)
 	# Add the pthread flag
 	set_target_properties(${EXECUTABLE} PROPERTIES COMPILE_FLAGS "-pthread")
+    set_target_properties(${EXTRA} PROPERTIES COMPILE_FLAGS "-pthread")
 endif()
 
 ########################################################################
@@ -175,9 +234,20 @@ if(WIN32)
     target_link_libraries(${EXECUTABLE} "iphlpapi")
     target_link_libraries(${EXECUTABLE} "psapi")
     target_link_libraries(${EXECUTABLE} "userenv")
+
+    # Link the extra executable with windows libraries
+    target_link_libraries(${EXTRA} "ws2_32")
+	target_link_libraries(${EXTRA} "wldap32")
+    target_link_libraries(${EXTRA} "iphlpapi")
+    target_link_libraries(${EXTRA} "psapi")
+    target_link_libraries(${EXTRA} "userenv")
 # Else, if unix
 elseif(UNIX)
     # Link with unix libraries
     target_link_libraries(${EXECUTABLE} "dl")
     target_link_libraries(${EXECUTABLE} "pthread")
+
+    # Link the extra executable with unix libraries
+    target_link_libraries(${EXTRA} "dl")
+    target_link_libraries(${EXTRA} "pthread")
 endif()

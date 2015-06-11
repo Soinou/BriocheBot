@@ -20,33 +20,51 @@ MaxArguments = 4
 --
 -- Commande !brioche add <Pseudo Twitch> <Pseudo osu!>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- moderator: L'objet Moderator associé à cet auteur (Ou nil)
 -- twitchUsername: Le pseudo twitch du joueur à ajouter
 -- osuUsername: Le pseudo osu! du joueur à ajouter
 --
 --------------------------------------------------------------------
 
-local function briocheAdd(senderNickname, senderPlayer, twitchUsername, osuUsername)
+local function briocheAdd(sender, moderator, twitchUsername, osuUsername)
 
-    -- On tente de récupére le joueur qu'on veut ajouter
-    local player = Player.get(twitchUsername)
+    -- On tente de récupére le streamer qu'on veut ajouter
+    local viewer = Viewer.get(twitchUsername)
 
     -- Si il existe
-    if player ~= nil then
+    if viewer ~= nil then
 
         -- Erreur
         server:sendTwitch("Le joueur " .. twitchUsername .. " existe déjà!")
 
-    -- Sinon si on a les deux pseudos remplis
+        -- Sinon si on a les deux pseudos remplis
     elseif twitchUsername ~= nil and osuUsername ~= nil then
 
-        -- On ajoute le joueur demandé
-        Player.add(twitchUsername, osuUsername)
+        -- On créé un nouveau streamer
+        viewer = Viewer.newStreamer()
 
-        -- On confirme à twitch
-        server:sendTwitch("Joueur " .. twitchUsername .. " / " .. osuUsername .. " ajouté!")
+        -- On lui donne quelques infos
+        viewer:setTwitchUsername(twitchUsername)
+        viewer:setOsuUsername(osuUsername)
+        viewer:setOsuSkinLink("null")
 
+        -- Impossible de l'ajouter
+        if not viewer:insert() then
+
+            -- Erreur
+            server:sendTwitch("Impossible d'ajouter " .. twitchUsername .. "/" .. osuUsername .. " en tant que streamer. Allez crier sur Soinou, c'est probablement de sa faute.")
+
+            -- Et on supprime le streamer au passage
+            viewer:free()
+
+            -- Il est ajouté
+        else
+
+            -- On confirme à twitch
+            server:sendTwitch("Streamer " .. twitchUsername .. "/" .. osuUsername .. " ajouté!")
+
+        end
     end
 
 end
@@ -55,34 +73,64 @@ end
 --
 -- Commande !brioche edit <Pseudo Twitch> <Pseudo Twitch> <Pseudo osu!>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- moderator: L'objet Player associé à cet auteur (Ou nil)
 -- twitchUsername: Le pseudo twitch du joueur à supprimer
 -- newTwitchUsername: Le nouveau pseudo twitch du joueur
 -- newOsuUsername: Le nouveau pseudo osu! du joueur
 --
 --------------------------------------------------------------------
 
-local function briocheEdit(senderNickname, senderPlayer, twitchUsername, newTwitchUsername, newOsuUsername)
+local function briocheEdit(sender, moderator, twitchUsername, newTwitchUsername, newOsuUsername)
 
-    -- On tente de récupére le joueur qu'on veut modifier
-    local player = Player.get(twitchUsername)
+    -- On tente de récupére le viewer qu'on veut modifier
+    local viewer = Viewer.get(twitchUsername)
 
     -- Si il n'existe pas
-    if player == nil then
+    if viewer == nil then
 
         -- Erreur
-        server:sendTwitch("Le joueur " .. twitchUsername .. " n'existe pas!")
+        server:sendTwitch("J'ai personne qui s'appelle " .. twitchUsername .. ". T'es sûr que t'as pas trop bu ?")
 
-    -- Sinon si on a les deux pseudos remplis
-    elseif newTwitchUsername ~= nil and newOsuUsername ~= nil then
+    -- Sinon
+    else
 
-        -- On modifie le joueur demandé
-        player:edit(newTwitchUsername, newOsuUsername)
+        -- Si on a un nouveau pseudo twitch de précisé
+        if newTwitchUsername ~= nil then
 
-        -- On confirme à twitch
-        server:sendTwitch("Joueur " .. twitchUsername .. " modifié en " .. newTwitchUsername .. " / " .. newOsuUsername)
+            -- On le mets à jour
+            viewer:setTwitchUsername(newTwitchUsername)
 
+        end
+
+        -- Si on a un pseudo osu! de précisé et le viewer est au moins streamer/modérateur
+        if newOsuUsername ~= nil and viewer:getType() ~= kViewer then
+
+            -- On change son pseudo osu!
+            viewer:setOsuUsername(newOsuUsername)
+
+        end
+
+        -- Impossible de le mettre à jour
+        if not viewer:insert() then
+
+            -- Erreur
+            server:sendTwitch("J'ai pas réussi à changer le nom de " .. twitchUsername .. ". Doit y'avoir un bug caché, une fois de plus")
+
+        -- Sinon si on a un pseudo osu!
+        elseif newOsuUsername ~= nil then
+
+            -- On confirme à twitch
+            server:sendTwitch(twitchUsername .. " s'appelle maintenant  " .. newTwitchUsername .. "/" .. newOsuUsername .. ". Joyeuse nouvelle vie !")
+
+        -- Pas de pseudo osu!
+        else
+
+            -- On confirme à twitch
+            server:sendTwitch(twitchUsername .. " s'appelle maintenant " .. newTwitchUsername .. ". Joyeuse nouvelle vie !")
+
+        end
+    
     end
 
 end
@@ -91,37 +139,37 @@ end
 --
 -- Commande !brioche del <Pseudo Twitch>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- moderator: L'objet Moderator associé à cet auteur (Ou nil)
 -- twitchUsername: Le pseudo twitch du joueur à supprimer
 --
 --------------------------------------------------------------------
 
-function briocheDel(senderNickname, senderPlayer, twitchUsername)
+function briocheDel(sender, moderator, twitchUsername)
 
-    -- On récupère le joueur demandé
-    local player = Player.get(twitchUsername)
+    -- On récupère le streamer demandé
+    local streamer = Viewer.get(twitchUsername)
 
     -- Il n'existe pas
-    if player == nil then
+    if streamer == nil then
 
         -- Erreur
-        server:sendTwitch("Joueur " .. twitchUsername .. " non trouvé!")
+        server:sendTwitch("Il existe pas " .. twitchUsername .. ". Tu veux supprimer un streamer qui existe pas maintenant ?")
 
     -- C'est l'envoyeur
-    elseif senderPlayer:is(twitchUsername) then
+    elseif moderator:is(twitchUsername) then
 
         -- Erreur
-        server:sendTwitch("Vous ne pouvez pas vous supprimer vous-même!")
+        server:sendTwitch("Tu veux te supprimer toi même ? T'es sûr ?")
 
     -- Sinon
     else
 
         -- On le supprime
-        Player.remove(twitchUsername)
+        streamer.erase()
 
-         -- On envoie un message à twitch
-        server:sendTwitch("Joueur " .. twitchUsername .. " supprimé!")
+        -- On envoie un message à twitch
+        server:sendTwitch("Adieu " .. twitchUsername .. ". ça aura été sympa de te connaître!")
 
     end
 
@@ -131,37 +179,59 @@ end
 --
 -- Commande !brioche op <Pseudo Twitch>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- moderator: L'objet Moderator associé à cet auteur (Ou nil)
 -- twitchUsername: Le pseudo twitch du joueur à op
 --
 --------------------------------------------------------------------
 
-function briocheOp(senderNickname, senderPlayer, username)
+function briocheOp(sender, moderator, twitchUsername)
 
-    -- On récupère le joueur demandé
-    local player = Player.get(username)
+    -- Pas de pseudo
+    if twitchUsername == nil then
+        
+        -- wtf
+        server:sendTwitch("Tu m'as pas donné de pseudo, tu veux que j'op comment ? J'lis pas dans les pensées hein")
 
-    -- Si il n'existe pas
-    if player == nil then
-
-        -- Non trouvé
-        server:sendTwitch("Le joueur " .. username .. " n'a pas été trouvé!")
-
-    -- Sinon si le joueur est déjà admin
-    elseif player:getAdmin() then
-
-        -- On envoie un message à twitch
-        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " est déjà admin!")
-
-    -- Sinon
+    -- Un pseudo
     else
 
-        -- On le passe admin
-        player:setAdmin(true)
+        -- On récupère le streamer demandé
+        local streamer = Viewer.get(twitchUsername)
 
-        -- On envoie un message à twitch
-        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " est maintenant admin!")
+        -- Si il n'existe pas
+        if streamer == nil then
+
+            -- Non trouvé
+            server:sendTwitch("Apprends à écrire un peu, " .. twitchUsername .. " il existe pas")
+
+        -- Sinon si le joueur est déjà admin
+        elseif streamer:getType() == kModerator then
+
+            -- On envoie un message à twitch
+            server:sendTwitch("Il est déjà modo " .. streamer:getTwitchUsername() .. ". J'ai pas de fonctionnalité double modo ou idk")
+
+        -- Sinon
+        else
+
+            -- On le passe admin
+            local newStreamer = streamer:setType(kModerator)
+
+            -- Si y'a eu une erreur
+            if newStreamer == nil then
+
+                -- Nope
+                server:sendTwitch("J'ai pas pu passer " .. twitchUsername .. " modo. Désolé :(")
+        
+            -- Sinon
+            else
+
+                -- On envoie un message à twitch
+                server:sendTwitch("Et félicitations à " .. newStreamer:getTwitchUsername() .. " qui est maintenant modo. Tu vas pouvoir faire plein de trucs débiles!")
+
+            end
+
+        end
 
     end
 
@@ -171,37 +241,45 @@ end
 --
 -- Commande !brioche deop <Pseudo Twitch>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- moderator: L'objet Moderator associé à cet auteur (Ou nil)
 -- twitchUsername: Le pseudo twitch du joueur à déop
 --
 --------------------------------------------------------------------
 
-function briocheDeop(senderNickname, senderPlayer, twitchUsername)
+function briocheDeop(sender, moderator, twitchUsername)
 
-    -- On récupère le joueur demandé
-    local player = Player.get(twitchUsername)
+    -- On récupère le streamer demandé
+    local streamer = Viewer.get(twitchUsername)
 
     -- Si il n'existe pas
-    if player == nil then
+    if streamer == nil then
 
         -- Non trouvé
-        server:sendTwitch("Le joueur " .. twitchUsername .. " n'a pas été trouvé!")
+        server:sendTwitch("J'ai pas trouvé " .. twitchUsername .. ". Peut être une faute de frappe ?")
 
-    -- Sinon si le joueur est l'envoyeur
-    elseif senderPlayer:is(twitchUsername) then
+    -- Sinon si le streamer est l'envoyeur
+    elseif moderator:is(twitchUsername) then
 
         -- Pas possible
-        server:sendTwitch("Vous ne pouvez pas vous déop vous même!")
+        server:sendTwitch("Tu peux pas te déop toi-même, tu veux tout casser ou bien ?")
 
     -- Sinon
     else
 
-        -- On lui enlève son statut d'admin
-        player:setAdmin(false)
+        -- Pas possible de changer son type
+        if not streamer:setType(kStreamer) then
 
-        -- On envoie un message à twitch
-        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " n'est plus admin!")
+            -- Erreur
+            server:sendTwitch("Y'a eu une erreur, Soinou a encore dû casser un truc")
+
+        -- Sinon
+        else
+
+            -- On envoie un message à twitch
+            server:sendTwitch("Le joueur " .. streamer:getTwitchUsername() .. " n'est plus admin! Il pourra plus faire de conneries tiens")
+
+        end
 
     end
 
@@ -211,54 +289,54 @@ end
 --
 -- Commande !brioche skin <Pseudo Twitch>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
--- twitchUsername: Le pseudo twitch du joueur dont on veut le skin
+-- sender: Le pseudo de l'auteur de la commande
+-- viewer: L'objet Viewer associé à cet auteur (Ou nil)
+-- twitchUsername: Le pseudo twitch du streamer dont on veut le skin
 --
 --------------------------------------------------------------------
 
-function briocheSkin(senderNickname, senderPlayer, twitchUsername)
+function briocheSkin(sender, streamer, twitchUsername)
 
     -- Variable temporaire pour le joueur
-    local player = nil;
+    local streamer = nil;
 
     -- Un argument
     if twitchUsername ~= nil then
 
         -- On récupère le joueur correspondant
-        player = Player.get(twitchUsername)
+        streamer = Viewer.get(twitchUsername)
 
     -- Aucun argument
     else
 
         -- On récupère le streamer actuel
-        player = server:getCurrentStreamer()
+        streamer = server:getCurrentStreamer()
 
     end
 
     -- Un pseudo twitch précisé mais le joueur n'est pas trouvé
-    if twitchUsername ~= nil and player == nil then
+    if twitchUsername ~= nil and streamer == nil then
 
         -- Erreur
-        server:sendTwitch("Joueur non trouvé!")
+        server:sendTwitch("Nope, " .. twitchUsername .. " existe pas. T'as du te tromper")
 
-	-- Pas de pseudo twitch précisé mais le joueur n'existe pas non plus
-	elseif player == nil then
+    -- Pas de pseudo twitch précisé mais le streamer n'existe pas non plus
+    elseif streamer == nil then
 
-		-- Pas de streamer
-		server:sendTwitch("Aucun streamer actuellement")
+        -- Pas de streamer
+        server:sendTwitch("Y'a personne qui stream lààà. Attends un peu wesh")
 
     -- Pas de skin
-    elseif player:getOsuSkin() == "null" then
+    elseif streamer:getOsuSkinLink() == "null" then
 
         -- Erreur
-        server:sendTwitch("Le joueur " .. player:getTwitchUsername() .. " n'a pas défini de skin!")
+        server:sendTwitch(streamer:getTwitchUsername() .. " il m'a pas filé de skin, donc je peux rien te donner")
 
     -- Tout est bon
     else
 
         -- On envoie le skin
-        server:sendTwitch("Skin de " .. player:getTwitchUsername() .. ": " .. player:getOsuSkin())
+        server:sendTwitch("Ok c'est bon j'ai changé le skin de " .. streamer:getTwitchUsername() .. " par " .. streamer:getOsuSkinLink())
 
     end
 
@@ -268,44 +346,52 @@ end
 --
 -- Commande !brioche setskin <Pseudo Twitch>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
--- osuSkin: Le nouveau skin du joueur
+-- sender: Le pseudo de l'auteur de la commande
+-- streamer/moderator: L'objet Streamer/Moderator associé à cet auteur (Ou nil)
+-- osuSkinLink: Le nouveau skin du streamer
 --
 --------------------------------------------------------------------
 
-function briocheSetSkin(senderNickname, senderPlayer, osuSkin)
+function briocheSetSkin(sender, streamer, osuSkinLink)
 
     -- On change son skin
-    senderPlayer:setOsuSkin(osuSkin)
+    streamer:setOsuSkinLink(osuSkinLink)
 
-    -- Et on indique la mise à jour
-    server:sendTwitch("Skin de " .. senderPlayer:getTwitchUsername() .. " mis à jour!")
+    -- On le mets à jour
+    if not streamer:insert() then
+
+        -- On affiche une erreur si c'est pas possible
+        server:sendTwitch("Peut pas mettre à jour le skin de " .. streamer:getTwitchUsername() .. ". Encore un coup de Soinou ça")
+
+    -- Si tout est bon
+    else
+
+        -- On indique la mise à jour
+        server:sendTwitch("Nouveau skin de " .. streamer:getTwitchUsername() .. ": " .. osuSkinLink .. ". Espérons qu'il soit mieux que l'ancien")
+
+    end
 
 end
 
-function adminBriocheSetSkin(senderNickname, senderPlayer, twitchUsername, osuSkin)
+function adminBriocheSetSkin(sender, moderator, first, second)
 
     -- Si on a deux arguments et non un seul
-    if osuSkin ~= nil then
+    if second ~= nil then
 
         -- On récupère le joueur donné
-        local player = Player.get(twitchUsername)
+        local streamer = Viewer.get(first)
 
         -- Si le joueur n'existe pas
-        if player == nil then
+        if streamer == nil then
 
             -- Erreur
-            server:sendTwitch("Le joueur " .. twitchUsername .. " n'existe pas")
+            server:sendTwitch("Ahah tu t'es trompé, " .. first .. " il existe pas xD")
 
         -- Sinon
         else
 
-            -- On change son skin
-            player:setOsuSkin(osuSkin)
-
-            -- Et on indique la mise à jour
-            server:sendTwitch("Skin de " .. player:getTwitchUsername() .. " mis à jour!")
+            -- On appelle l'autre commande
+            briocheSetSkin(sender, streamer, second)
 
         end
 
@@ -313,7 +399,7 @@ function adminBriocheSetSkin(senderNickname, senderPlayer, twitchUsername, osuSk
     else
 
         -- On appelle l'autre commande
-        briocheSetSkin(senderNickname, senderPlayer, twitchUsername)
+        briocheSetSkin(sender, moderator, first)
 
     end
 
@@ -323,50 +409,48 @@ end
 --
 -- Commande !brioche stream <Pseudo Twitch>
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- streamer/moderator: L'objet Streamer/Moderator associé à cet auteur (Ou nil)
 --
 --------------------------------------------------------------------
 
-function briocheStream(senderNickname, senderPlayer)
+function briocheStream(sender, streamer)
 
     -- On le définit en tant que streameur
-    server:setCurrentStreamer(senderPlayer)
+    server:setCurrentStreamer(streamer)
 
     -- On envoie un message à twitch
-    server:sendTwitch("Streameur actuel: " .. senderPlayer:getTwitchUsername())
+    server:sendTwitch("Nouveau streameur: " .. streamer:getTwitchUsername() .. ". C'est parti \\o/")
 
 end
 
-function adminBriocheStream(senderNickname, senderPlayer, twitchUsername)
+function adminBriocheStream(sender, moderator, twitchUsername)
 
     -- Si on a un pseudo twitch
     if twitchUsername ~= nil then
 
-        -- On récupère le joueur
-        local player = Player.get(twitchUsername)
+        -- On récupère le streamer
+        local streamer = Viewer.get(twitchUsername)
 
         -- Si le joueur n'existe pas
-        if player == nil then
+        if streamer == nil then
 
             -- Erreur
-            server:sendTwitch("Le joueur " .. twitchUsername .. " n'existe pas")
+            server:sendTwitch("Il existe pas ton " .. twitchUsername .. ". Je sais pas où t'as trouvé ce nom, mais j'connais pas")
 
         -- Sinon
         else
 
-            -- On le définit en tant que streameur
-            server:setCurrentStreamer(player)
+            -- On appelle l'autre commande
+            briocheStream(sender, streamer)
 
-            -- On envoie un message à twitch
-            server:sendTwitch("Streameur actuel: " .. player:getTwitchUsername())
         end
 
     -- Sinon
     else
 
         -- On appelle la fonction normale
-        briocheStream(senderNickname, senderPlayer)
+        briocheStream(sender, moderator)
 
     end
 
@@ -376,33 +460,33 @@ end
 --
 -- Commande !brioche stop
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- streamer: L'objet Streamer associé à cet auteur (Ou nil)
 --
 --------------------------------------------------------------------
 
-function briocheStop(senderNickname, senderPlayer)
+function briocheStop(sender, streamer)
 
     -- On récupère le streamer actuel
-    local player = server:getCurrentStreamer()
+    local currentStreamer = server:getCurrentStreamer()
 
     -- Personne
-    if player == nil then
+    if currentStreamer == nil then
 
         -- Erreur
-        server:sendTwitch("Aucun streamer actuellement")
+        server:sendTwitch("Y'a personne qui stream, faut suivre un peu Kappa")
 
     -- Quelqu'un
     else
 
         -- Si le joueur est admin
-        if senderPlayer:getAdmin() then
+        if streamer:getType() == kModerator then
 
             -- On récupère son temps de stream
             local hours, minutes, seconds = Utils.getTime(server:streamTime())
 
             -- On envoie un petit message à Twitch
-            server:sendTwitch("Stream de " .. player:getTwitchUsername() .. " arrêté après " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s)");
+            server:sendTwitch("Stream arrêté. ça faisait " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s) que " .. currentStreamer:getTwitchUsername() .. " streamait.");
 
             -- On vire le streamer actuel
             server:setCurrentStreamer(nil)
@@ -411,13 +495,13 @@ function briocheStop(senderNickname, senderPlayer)
         else
 
             -- Si le streamer actuel est le joueur qui a fait la commande
-            if server:getCurrentStreamer():is(senderNickname) then
+            if currentStreamer:is(sender) then
 
                 -- On récupère son temps de stream
                 local hours, minutes, seconds = Utils.getTime(server:streamTime())
 
                 -- On envoie un petit message à Twitch
-                server:sendTwitch("Stream de " .. player:getTwitchUsername() .. " arrêté après " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s)");
+                server:sendTwitch("Stream arrêté. ça faisait " .. hours .. " heure(s) " .. minutes .. " minute(s) " .. seconds .. " seconde(s) que tu streamais.");
 
                 -- On vire le streamer actuel
                 server:setCurrentStreamer(nil)
@@ -434,12 +518,15 @@ end
 --
 -- Commande !brioche restart
 --
--- senderNickname: Le pseudo de l'auteur de la commande
--- senderPlayer: L'objet Player associé à cet auteur (Ou nil)
+-- sender: Le pseudo de l'auteur de la commande
+-- moderator: L'objet Moderator associé à cet auteur (Ou nil)
 --
 --------------------------------------------------------------------
 
-function briocheRestart(senderNickname, senderPlayer)
+function briocheRestart(sender, moderator)
+
+    -- Petit message à twitch
+    server:sendTwitch("Adieu tout le monde :D")
 
     -- On stoppe le serveur (Il sera relancé automatiquement)
     server:stop()
@@ -452,8 +539,8 @@ end
 --
 --------------------------------------------------------------------
 
--- La table des commandes accessibles aux joueurs admins
-local adminCommands =
+-- La table des commandes accessibles aux moderateurs
+local moderatorCommands =
 {
     add = briocheAdd,
     del = briocheDel,
@@ -467,8 +554,8 @@ local adminCommands =
     restart = briocheRestart
 }
 
--- La table des commandes accessibles aux joueurs normaux
-local playerCommands =
+-- La table des commandes accessibles aux streamers
+local streamerCommands =
 {
     skin = briocheSkin,
     setskin = briocheSetSkin,
@@ -477,7 +564,7 @@ local playerCommands =
 }
 
 -- La table des commandes accessibles aux viewers
-local viewersCommands =
+local viewerCommands =
 {
     skin = briocheSkin
 }
@@ -485,14 +572,14 @@ local viewersCommands =
 -- Fonction permettant d'appeller une commande présente dans la table donnée
 local function callCommand(command, table, ...)
 
-     -- On récupère le callback correspondant à cette commande dans notre table
+    -- On récupère le callback correspondant à cette commande dans notre table
     local callback = table[command]
 
     -- Si la commande n'existe pas
     if callback == nil then
 
         -- Erreur
-        server:sendTwitch("La commande " .. command .. " n'existe pas")
+        server:sendTwitch("La commande !brioche " .. command .. " n'existe pas")
 
     -- Sinon
     else
@@ -507,23 +594,29 @@ end
 -- Callback
 function onCommand(sender, command, ...)
 
-    -- On récupère le joueur qui a envoyé le message
-    local player = Player.get(sender)
+    -- On récupère le viewer qui a envoyé le message
+    local viewer = Viewer.get(sender)
 
-    -- Si le joueur existe
-    if player ~= nil then
+    -- Si le viewer existe
+    if viewer ~= nil then
 
         -- Si il est admin
-        if player:getAdmin() then
+        if viewer:getType() == kModerator then
 
             -- On appelle la commande depuis la table d'admin
-            callCommand(command, adminCommands, sender, player, ...)
+            callCommand(command, moderatorCommands, sender, viewer, ...)
 
-        -- Sinon
-        else
+        -- Sinon si c'est un streamer
+        elseif viewer:getType() == kStreamer then
 
             -- On appelle la commande depuis la table des joueurs
-            callCommand(command, playerCommands, sender, player, ...)
+            callCommand(command, streamerCommands, sender, viewer, ...)
+
+        -- Sinon si c'est un viewer
+        elseif viewer:getType() == kViewer then
+
+            -- On appelle la commande depuis la tables des viewers
+            callCommand(command, viewerCommands, sender, viewer, ...)
 
         end
 
@@ -531,7 +624,7 @@ function onCommand(sender, command, ...)
     else
 
         -- On appelle la commande depuis la table des viewers
-        callCommand(command, viewersCommands, sender, nil, ...)
+        callCommand(command, viewerCommands, sender, viewer, ...)
 
     end
 

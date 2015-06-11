@@ -49,9 +49,9 @@ static void on_data(const happyhttp::Response* response, void* userdata, const u
 {
     // Get the calling instance of the http object
     Http* http = (Http*)userdata;
-
+    
     // Append the sent data to our buffer
-    http->buffer().append(reinterpret_cast<const char*>(data));
+    http->buffer().append(std::string(data, data + count));
 }
 
 // Called when the server completes the request

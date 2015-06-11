@@ -81,6 +81,12 @@ namespace Irc
         // Destructor
         ~Scanner();
 
+        // Line getter
+        inline const std::string& line() const
+        {
+            return line_;
+        }
+
         // Next token getter
         inline const Token& next() const
         {

@@ -21,65 +21,62 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_PARSER_H_
-#define IRC_PARSER_H_
+#include "models/moderator.h"
 
-#include "irc/scanner.h"
-#include "irc/reply.h"
-#include "utils/macros.h"
+#include <typeinfo>
 
-#include <string>
-#include <vector>
+// Define json keys
+#define PRIVILEGES_KEY "privileges"
 
-namespace Irc
+Moderator::Moderator() : Streamer(), privileges_(0)
 {
-    // Irc parser, meant to inherit from
-    class Parser
-    {
-    private:
-        // The lexical scanner
-        Scanner scanner_;
-
-        // The reply
-        Reply reply_;
-
-        // Parse a prefix
-        void parse_prefix();
-
-        // Parse a nickname
-        void parse_nick();
-
-        // Parse a user
-        void parse_user();
-
-        // Parse a host
-        void parse_host();
-
-        // Parse a reply type
-        void parse_type();
-
-        // Parse paremeters of a name reply
-        void parse_name();
-
-        // Parse parameters of a message reply
-        void parse_message();
-
-        // Parse parameters of a join reply
-        void parse_join();
-
-        // Parse parameters of a part reply
-        void parse_part();
-
-    public:
-        // Constructor
-        Parser(const std::string& line);
-
-        // Destructor
-        ~Parser();
-
-        // Parse the reply in the line and returns it
-        Reply parse();
-    };
+    type_ = Viewer::kModerator;
 }
 
-#endif // IRC_PARSER_H_
+Moderator::~Moderator()
+{
+
+}
+
+Json::Value Moderator::to_json() const
+{
+    // Call the streamer to_json
+    Json::Value root = Streamer::to_json();
+
+    // Append data to the json we got
+    root[PRIVILEGES_KEY] = privileges_;
+
+    // Return the json value
+    return root;
+}
+
+void Moderator::from_json(const Json::Value& json)
+{
+    // Call streamer from_json
+    Streamer::from_json(json);
+
+    // Get data from the json
+    privileges_ = json.get(PRIVILEGES_KEY, 0).asUInt();
+}
+
+void Moderator::from_viewer(Viewer* viewer)
+{
+    // Call streamer from_viewer
+    Streamer::from_viewer(viewer);
+
+    try
+    {
+        // Cast the viewer as a moderator
+        Moderator* moderator = dynamic_cast<Moderator*>(viewer);
+
+        // If the viewer is a correct moderator
+        if (moderator != nullptr)
+            // Copy data from the old moderator
+            privileges_ = moderator->privileges_;
+    }
+    // Ignore on bad cast
+    catch (std::bad_cast e)
+    {
+
+    }
+}

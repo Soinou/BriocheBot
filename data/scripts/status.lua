@@ -17,19 +17,19 @@ MinArguments = 0;
 MaxArguments = -1;
 
 -- Callback
-function onCommand(senderNickname)
+function onCommand(sender)
 
-    -- On récupère le joueur qui a envoyé le message
-    local player = Player.get(senderNickname);
+    -- On récupère le streamer qui a envoyé le message
+    local streamer = Viewer.get(sender);
 
-    -- Si le joueur existe
-    if player ~= nil then
+    -- Si le streamer existe et n'est pas un viewer
+    if streamer ~= nil and streamer:getType() ~= kViewer then
 
         -- On le définit en tant que streameur
-        server:setCurrentStreamer(player);
+        server:setCurrentStreamer(streamer);
 
         -- On envoie un message à twitch
-        server:sendTwitch("Streameur actuel: " .. player:getTwitchUsername());
+        server:sendTwitch("Nouveau streamer: " .. streamer:getTwitchUsername() .. ". Bon courage !");
 
     end
 

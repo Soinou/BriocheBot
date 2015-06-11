@@ -31,8 +31,8 @@
 
 #include <time.h>
 
-// Forward declaration of the Player class
-class Player;
+// Forward declaration of the Viewer class
+class Streamer;
 
 // Represents a server
 class Server
@@ -40,6 +40,9 @@ class Server
 private:
     // The connection to the redis server
     Redis::Connection connection_;
+
+    // The internal timer
+    Uv::Timer timer_;
 
     // The irc manager
     Irc::Manager manager_;
@@ -54,13 +57,19 @@ private:
     bool running_;
 
     // The current streamer
-    Player* current_streamer_;
+    Streamer* current_streamer_;
 
     // The bot start time
     time_t start_time_;
 
+    // The last time the update method was called
+    time_t last_update_;
+
     // The last change time
     time_t change_time_;
+
+    // Internal method called by the timer
+    void update(Uv::Timer* timer);
 
 public:
     // Constructor
@@ -73,13 +82,13 @@ public:
     void initialize();
 
     // Current streamer getter
-    inline Player* current_streamer()
+    inline Streamer* current_streamer()
     {
         return current_streamer_;
     }
 
     // Current streamer setter
-    void set_current_streamer(Player* current_streamer);
+    void set_current_streamer(Streamer* current_streamer);
 
     // Running getter
     inline bool running()

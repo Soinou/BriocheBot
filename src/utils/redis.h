@@ -27,6 +27,7 @@
 #include <hiredis.h>
 
 #include <string>
+#include <vector>
 
 // Redis namespace
 namespace Redis
@@ -72,7 +73,7 @@ namespace Redis
         int integer;
 
         // The reply array in case of an array reply
-        Reply* elements;
+        std::vector<Reply> elements;
     };
 
     // A redis connection

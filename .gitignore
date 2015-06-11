@@ -230,3 +230,4 @@ bin/
 
 # Script files
 *.sh
+copy_scripts.bat

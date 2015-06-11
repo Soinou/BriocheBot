@@ -24,27 +24,93 @@
 #include "server/server.h"
 
 #include "utils/config.h"
-#include "models/players.h"
-#include "models/player.h"
+#include "models/viewers.h"
+#include "models/moderator.h"
 #include "osu/api.h"
 #include "utils/logger.h"
 #include "utils/utils.h"
+#include "uv/work.h"
 
 #include <chrono>
-#include <thread>
-
-#define SLEEP_TIME 200
 
 Server::Server()
-    : connection_("127.0.0.1", 6379), manager_(), twitch_(new TwitchClient(this)), osu_(new OsuClient()), current_streamer_(nullptr),
-    start_time_(time(nullptr)), change_time_(time(nullptr))
+// Redis server is on localhost at 6379
+: connection_("127.0.0.1", 6379),
+// Timer calls our update method every 5 seconds
+timer_(5000, std::bind(&Server::update, this, std::placeholders::_1)),
+// Initialize irc manager and clients
+manager_(), twitch_(new TwitchClient(this)), osu_(new OsuClient()),
+// No current streamer for now
+current_streamer_(nullptr),
+// Initialize times
+start_time_(time(nullptr)), last_update_(time(nullptr)), change_time_(time(nullptr))
 {
+    // Add clients to the irc manager
     manager_.add_client(twitch_);
     manager_.add_client(osu_);
 }
 
 Server::~Server()
 {
+}
+
+void Server::update(Uv::Timer* timer)
+{
+    // Get the new time
+    time_t current_time = time(nullptr);
+
+    // Get the difference between the last update and now
+    time_t difference = current_time - last_update_;
+
+    // Get the list of connected users in the twitch chat
+    const std::vector<std::string>& user_list = twitch_->users_of(twitch_->target());
+
+    // For each username
+    for (auto i = user_list.begin(); i != user_list.end(); i++)
+    {
+        // Get the associated  viewer
+        Viewer* viewer = the_viewers.get(*i);
+
+        // If he doesn't exist
+        if (viewer == nullptr)
+        {
+            // Create a new one
+            viewer = new Viewer();
+
+            // Change his twitch username
+            viewer->set_twitch_username(*i);
+        }
+
+        // Run a method asynchronously
+        Uv::run([viewer, difference]()
+        {
+            // Increase the viewer online time
+            viewer->set_online_time(viewer->online_time() + difference);
+
+            // Save the viewer
+            viewer->insert();
+        });
+    }
+
+    // If we have a current streamer
+    if (current_streamer_ != nullptr)
+    {
+        // Copy the current streamer
+        Streamer* streamer = current_streamer_;
+
+        // Run asynchronously
+        Uv::run([streamer, difference]()
+        {
+            // Update the streamer time
+            streamer->set_stream_time(streamer->stream_time() + difference);
+
+            // Update him
+            streamer->insert();
+        });
+    }
+
+    // Replace our last update with the current time
+    last_update_ = current_time;
 }
 
 void Server::initialize()
@@ -96,12 +162,22 @@ void Server::initialize()
         Utils::throw_error("Server", "Initialize", "Default osu! username is empty !");
 
     // If the default twitch username does not exist
-    if (!PlayersDb.exists(default_twitch_username))
+    if (!the_viewers.exists(default_twitch_username))
     {
         Meow("server")->info("Player does not exist, creating him...");
 
+        // Create a new moderator
+        Moderator* moderator = new Moderator();
+
+        // Set some data
+        moderator->set_id(the_viewers.max_id() + 1);
+        moderator->set_twitch_username(default_twitch_username);
+        moderator->set_osu_username(default_osu_username);
+        moderator->set_osu_skin_link("null");
+        moderator->set_privileges(1);
+
         // Add him
-        PlayersDb.add(default_twitch_username, default_osu_username, "null", true);
+        moderator->insert();
 
         Meow("server")->info("Player created!");
     }
@@ -122,8 +198,19 @@ void Server::initialize()
             current_streamer_ = nullptr;
         // We have a streamer
         else
-            // Get the player associated with the username we cached and put him as the current streamer
-            current_streamer_ = PlayersDb.get(reply.string);
+        {
+            try
+            {
+                // Get the player associated with the username we cached and put him as the current streamer
+                current_streamer_ = dynamic_cast<Streamer*>(the_viewers.get(reply.string));
+            }
+            // On bad cast
+            catch (std::bad_cast e)
+            {
+                // Print some error, but ignore it, we'll just have no streamer set
+                Meow("server")->error("Current streamer in the database is not a valid streamer, can't set him");
+            }
+        }
 
         // Change the osu! client target
         osu_->set_target(reply.string);
@@ -133,12 +220,24 @@ void Server::initialize()
     {
         Meow("server")->info("Current streamer does not exist, falling back to default");
 
-        // Set the default player as the current streamer
-        set_current_streamer(PlayersDb.get(default_twitch_username));
+        // Get the default viewer
+        Viewer* viewer = the_viewers.get(default_twitch_username);
+
+        try
+        {
+            // Set the default player as the current streamer
+            set_current_streamer(dynamic_cast<Streamer*>(the_viewers.get(default_twitch_username)));
+        }
+        // If the default player is not defined as a streamer
+        catch (std::bad_cast e)
+        {
+            // Error, but don't crash, since we'll just have no streamer set
+            Meow("server")->error("Default streamer is not a streamer, can't set him!");
+        }
     }
 }
 
-void Server::set_current_streamer(Player* current_streamer)
+void Server::set_current_streamer(Streamer* current_streamer)
 {
     Meow("server")->info("Changing the current streamer");
 
@@ -187,6 +286,9 @@ void Server::start()
 
     // Set running as true
     running_ = true;
+
+    // Start the timer
+    timer_.start();
 }
 
 void Server::send_twitch(const std::string& message)
@@ -201,6 +303,9 @@ void Server::send_osu(const std::string& message)
 
 void Server::stop()
 {
+    // Stop the timer
+    timer_.stop();
+
     // Set running to false
     running_ = false;
 

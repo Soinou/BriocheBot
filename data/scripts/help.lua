@@ -48,7 +48,7 @@ end
 
 local function helpNightbot(senderNickname)
 
-    server:sendTwitch("Nightbot c'est mon grand frère. Mais il est moins bavard. Et il devient méchant de temps en temps.")
+    server:sendTwitch("Nightbot c'est mon grand frère. Mais il est moins bavard. Et il aime pas venir ici, il s'en va tout le temps.")
 
 end
 

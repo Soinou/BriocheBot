@@ -105,25 +105,30 @@
     <ClCompile Include="..\lib\lua\lutf8lib.c" />
     <ClCompile Include="..\lib\lua\lvm.c" />
     <ClCompile Include="..\lib\lua\lzio.c" />
+    <ClCompile Include="..\src\extra.cc" />
     <ClCompile Include="..\src\ini\ini.c" />
     <ClCompile Include="..\src\ini\reader.cc" />
     <ClCompile Include="..\src\irc\client.cc" />
     <ClCompile Include="..\src\irc\manager.cc" />
     <ClCompile Include="..\src\irc\osu.cc" />
     <ClCompile Include="..\src\irc\parser.cc" />
+    <ClCompile Include="..\src\irc\reply.cc" />
     <ClCompile Include="..\src\irc\scanner.cc" />
     <ClCompile Include="..\src\irc\twitch.cc" />
     <ClCompile Include="..\src\lua\logger.cc" />
-    <ClCompile Include="..\src\lua\player.cc" />
     <ClCompile Include="..\src\lua\request.cc" />
     <ClCompile Include="..\src\lua\server.cc" />
     <ClCompile Include="..\src\lua\state.cc" />
     <ClCompile Include="..\src\lua\utils.cc" />
+    <ClCompile Include="..\src\lua\viewer.cc" />
     <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\models\command.cc" />
-    <ClCompile Include="..\src\models\player.cc" />
-    <ClCompile Include="..\src\models\players.cc" />
+    <ClCompile Include="..\src\models\iserializable.cc" />
+    <ClCompile Include="..\src\models\moderator.cc" />
     <ClCompile Include="..\src\models\request.cc" />
+    <ClCompile Include="..\src\models\streamer.cc" />
+    <ClCompile Include="..\src\models\viewer.cc" />
+    <ClCompile Include="..\src\models\viewers.cc" />
     <ClCompile Include="..\src\osu\api.cc" />
     <ClCompile Include="..\src\osu\beatmap.cc" />
     <ClCompile Include="..\src\osu\user.cc" />
@@ -142,6 +147,7 @@
     <ClCompile Include="..\src\uv\loop.cc" />
     <ClCompile Include="..\src\uv\socket.cc" />
     <ClCompile Include="..\src\uv\timer.cc" />
+    <ClCompile Include="..\src\uv\work.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\happyhttp\happyhttp.h" />
@@ -221,29 +227,34 @@
     <ClInclude Include="..\lib\lua\lundump.h" />
     <ClInclude Include="..\lib\lua\lvm.h" />
     <ClInclude Include="..\lib\lua\lzio.h" />
+    <ClInclude Include="..\src\events\emitter.h" />
     <ClInclude Include="..\src\ini\ini.h" />
     <ClInclude Include="..\src\ini\reader.h" />
     <ClInclude Include="..\src\irc\client.h" />
     <ClInclude Include="..\src\irc\manager.h" />
     <ClInclude Include="..\src\irc\osu.h" />
     <ClInclude Include="..\src\irc\parser.h" />
+    <ClInclude Include="..\src\irc\reply.h" />
     <ClInclude Include="..\src\irc\scanner.h" />
     <ClInclude Include="..\src\irc\twitch.h" />
     <ClInclude Include="..\src\lua\logger.h" />
-    <ClInclude Include="..\src\lua\player.h" />
     <ClInclude Include="..\src\lua\request.h" />
     <ClInclude Include="..\src\lua\server.h" />
     <ClInclude Include="..\src\lua\state.h" />
     <ClInclude Include="..\src\lua\utils.h" />
+    <ClInclude Include="..\src\lua\viewer.h" />
     <ClInclude Include="..\src\lua\wrapper.h" />
     <ClInclude Include="..\src\lua\wrapper_types.h" />
     <ClInclude Include="..\src\lua\wrapper_utils.h" />
     <ClInclude Include="..\src\models\command.h" />
     <ClInclude Include="..\src\models\icommand_listener.h" />
     <ClInclude Include="..\src\models\imessage_listener.h" />
-    <ClInclude Include="..\src\models\player.h" />
-    <ClInclude Include="..\src\models\players.h" />
+    <ClInclude Include="..\src\models\iserializable.h" />
+    <ClInclude Include="..\src\models\moderator.h" />
     <ClInclude Include="..\src\models\request.h" />
+    <ClInclude Include="..\src\models\streamer.h" />
+    <ClInclude Include="..\src\models\viewer.h" />
+    <ClInclude Include="..\src\models\viewers.h" />
     <ClInclude Include="..\src\osu\api.h" />
     <ClInclude Include="..\src\osu\beatmap.h" />
     <ClInclude Include="..\src\osu\user.h" />
@@ -253,6 +264,7 @@
     <ClInclude Include="..\src\utils\config.h" />
     <ClInclude Include="..\src\utils\http.h" />
     <ClInclude Include="..\src\utils\logger.h" />
+    <ClInclude Include="..\src\utils\macros.h" />
     <ClInclude Include="..\src\utils\non_copyable.h" />
     <ClInclude Include="..\src\utils\redis.h" />
     <ClInclude Include="..\src\utils\service.h" />
@@ -263,9 +275,29 @@
     <ClInclude Include="..\src\uv\loop.h" />
     <ClInclude Include="..\src\uv\socket.h" />
     <ClInclude Include="..\src\uv\timer.h" />
+    <ClInclude Include="..\src\uv\work.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.gitignore" />
+    <None Include="..\data\config.ini" />
+    <None Include="..\data\scripts\ban.lua" />
+    <None Include="..\data\scripts\brioche.lua" />
+    <None Include="..\data\scripts\help.lua" />
+    <None Include="..\data\scripts\log.lua" />
+    <None Include="..\data\scripts\requests.lua" />
+    <None Include="..\data\scripts\skin.lua" />
+    <None Include="..\data\scripts\stats.lua" />
+    <None Include="..\data\scripts\status.lua" />
+    <None Include="..\data\scripts\time.lua" />
+    <None Include="..\data\scripts\to.lua" />
+    <None Include="..\data\scripts\unban.lua" />
+    <None Include="..\data\scripts\uptime.lua" />
     <None Include="..\lib\jsoncpp\json_valueiterator.inl" />
+    <None Include="..\LICENSE.md" />
+    <None Include="..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AFA8D2CD-3976-41AB-8D4F-8A12CF8C67BC}</ProjectGuid>

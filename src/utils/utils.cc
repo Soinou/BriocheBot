@@ -66,6 +66,21 @@ namespace Utils
         return std::string(formatted.get());
     }
 
+    std::string to_lower(const std::string& string)
+    {
+        // Copy the string
+        std::string result = string;
+
+        // Change locale to utf8
+        ::setlocale(LC_ALL, "fr_FR.utf-8");
+
+        // Convert the string to lower
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+
+        // Return result
+        return result;
+    }
+
     std::string current_time()
     {
         // Get the current time

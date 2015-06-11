@@ -32,6 +32,9 @@ namespace Utils
     // Formats a string using a sprintf-like syntax (God I love that. Taken from http://stackoverflow.com/a/8098080)
     std::string string_format(const std::string fmt_str, ...);
 
+    // Converts a string to its lower-case version
+    std::string to_lower(const std::string& string);
+
     // Formats the current time as a readable string (Format YYYY/MM/dd hh:mm:ss)
     std::string current_time();
 

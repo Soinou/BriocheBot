@@ -27,8 +27,10 @@
 #include "lua/wrapper_utils.h"
 #include "lua/wrapper_types.h"
 
-#include "models/player.h"
+#include "models/viewer.h"
+#include "models/streamer.h"
 #include "server/server.h"
+#include "utils/logger.h"
 
 // Call to the Server.current_streamer method
 static int lua_server_current_streamer(lua_State* L)
@@ -36,8 +38,17 @@ static int lua_server_current_streamer(lua_State* L)
     // Get the server
     Server* server = luaW_check<Server>(L, 1);
 
-    // Push the current streamer
-    luaW_push(L, server->current_streamer());
+    // Get the current streamer
+    Viewer* viewer = server->current_streamer();
+
+    // No current streamer
+    if (viewer == nullptr)
+        // Push nil
+        lua_pushnil(L);
+    // A current streamer
+    else
+        // Push the current streamer
+        luaW_push<Viewer>(L, viewer);
 
     // One result
     return 1;
@@ -57,10 +68,19 @@ static int lua_server_set_current_streamer(lua_State* L)
     else
     {
         // Get the player
-        Player* player = luaW_check<Player>(L, 2);
+        Viewer* viewer = luaW_check<Viewer>(L, 2);
 
-        // Set this player as the server current streamer
-        server->set_current_streamer(player);
+        try
+        {
+            // Set this player as the server current streamer
+            server->set_current_streamer(dynamic_cast<Streamer*>(viewer));
+        }
+        // On bad cast
+        catch (std::bad_cast e)
+        {
+            // Print some error
+            Meow("lua")->error("Error: trying to set a non-streamer as current streamer");
+        }
     }
 
     // No result

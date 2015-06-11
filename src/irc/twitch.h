@@ -46,6 +46,15 @@ private:
     // The script manager
     ScriptManager manager_;
 
+    // Get the user list from the web instead of IRC (Damn Twitch)
+    void get_user_list();
+
+    // Handles an on_connect event
+    void handle_on_connect();
+
+    // Handles an on_message event
+    void handle_on_message(const std::string& channel, const std::string& username, const std::string& message);
+
 public:
     // Constructor
     TwitchClient(Server* server);
@@ -67,12 +76,6 @@ public:
 
     // Loads the client from the given config file
     void load(Config& config);
-
-    // Called on successful connection
-    void on_connect();
-
-    // Called on channel message
-    void on_message(const std::string& sender, const std::string& channel, const std::string& message);
 };
 
 #endif // IRC_TWITCH_H_

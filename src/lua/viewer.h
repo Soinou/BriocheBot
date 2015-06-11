@@ -21,65 +21,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_PARSER_H_
-#define IRC_PARSER_H_
+#ifndef LUA_VIEWER_H_
+#define LUA_VIEWER_H_
 
-#include "irc/scanner.h"
-#include "irc/reply.h"
-#include "utils/macros.h"
+struct lua_State;
 
-#include <string>
-#include <vector>
+// Registers the lua Viewer class
+int luaopen_Viewer(lua_State* L);
 
-namespace Irc
-{
-    // Irc parser, meant to inherit from
-    class Parser
-    {
-    private:
-        // The lexical scanner
-        Scanner scanner_;
-
-        // The reply
-        Reply reply_;
-
-        // Parse a prefix
-        void parse_prefix();
-
-        // Parse a nickname
-        void parse_nick();
-
-        // Parse a user
-        void parse_user();
-
-        // Parse a host
-        void parse_host();
-
-        // Parse a reply type
-        void parse_type();
-
-        // Parse paremeters of a name reply
-        void parse_name();
-
-        // Parse parameters of a message reply
-        void parse_message();
-
-        // Parse parameters of a join reply
-        void parse_join();
-
-        // Parse parameters of a part reply
-        void parse_part();
-
-    public:
-        // Constructor
-        Parser(const std::string& line);
-
-        // Destructor
-        ~Parser();
-
-        // Parse the reply in the line and returns it
-        Reply parse();
-    };
-}
-
-#endif // IRC_PARSER_H_
+#endif // LUA_VIEWER_H_

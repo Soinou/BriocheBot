@@ -21,65 +21,63 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef IRC_PARSER_H_
-#define IRC_PARSER_H_
-
-#include "irc/scanner.h"
-#include "irc/reply.h"
-#include "utils/macros.h"
+#ifndef IRC_REPLY_H_
+#define IRC_REPLY_H_
 
 #include <string>
 #include <vector>
 
 namespace Irc
 {
-    // Irc parser, meant to inherit from
-    class Parser
+    // Represents an irc reply
+    struct Reply
     {
-    private:
-        // The lexical scanner
-        Scanner scanner_;
+        // The different reply types
+        enum Type
+        {
+            // Invalid reply (Or malformatted)
+            kInvalid,
 
-        // The reply
-        Reply reply_;
+            // Connected (End of motd)
+            kConnected,
 
-        // Parse a prefix
-        void parse_prefix();
+            // Ping
+            kPing,
 
-        // Parse a nickname
-        void parse_nick();
+            // Name reply (When joining channel/issuing list command)
+            kName,
 
-        // Parse a user
-        void parse_user();
+            // Join reply
+            kJoin,
 
-        // Parse a host
-        void parse_host();
+            // Part reply
+            kPart,
 
-        // Parse a reply type
-        void parse_type();
+            // Message
+            kMessage,
+        };
 
-        // Parse paremeters of a name reply
-        void parse_name();
+        // Raw string
+        std::string raw;
 
-        // Parse parameters of a message reply
-        void parse_message();
+        // The server
+        std::string server;
 
-        // Parse parameters of a join reply
-        void parse_join();
+        // The nickname
+        std::string nickname;
 
-        // Parse parameters of a part reply
-        void parse_part();
+        // The username
+        std::string username;
 
-    public:
-        // Constructor
-        Parser(const std::string& line);
+        // The host name
+        std::string host;
 
-        // Destructor
-        ~Parser();
+        // The reply type
+        Type type;
 
-        // Parse the reply in the line and returns it
-        Reply parse();
+        // The parameters (Depends of the command type)
+        std::vector<std::string> parameters;
     };
 }
 
-#endif // IRC_PARSER_H_
+#endif // IRC_REPLY_H_

@@ -1,819 +1,925 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="utils">
-      <UniqueIdentifier>{823a3086-d70b-4621-a94b-2dfa50c4280c}</UniqueIdentifier>
+    <Filter Include="others">
+      <UniqueIdentifier>{e9cd10b3-270a-4f5f-998e-6f41dff18afe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="osu">
-      <UniqueIdentifier>{bace7af3-b2cc-445a-9f57-87884ad497f3}</UniqueIdentifier>
+    <Filter Include="others\scripts">
+      <UniqueIdentifier>{218e80b8-05e5-45b9-a338-2b42928099cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="irc">
-      <UniqueIdentifier>{2abdd509-f9eb-4d87-9f87-f8f2e76d283c}</UniqueIdentifier>
+    <Filter Include="sources">
+      <UniqueIdentifier>{dae95c92-8238-4547-82be-dc68220b6ede}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lua">
-      <UniqueIdentifier>{f5fdff56-c8bc-4785-9c83-b10e443a93e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scripts">
+    <Filter Include="sources\scripts">
       <UniqueIdentifier>{10968972-5246-42a5-ae6b-47d05fb878af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="models">
-      <UniqueIdentifier>{76266d66-cee1-444e-ba4f-30dcaaecc7fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="server">
-      <UniqueIdentifier>{593e13cd-9a55-4d3a-a28f-8638f2a986fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ini">
+    <Filter Include="sources\ini">
       <UniqueIdentifier>{93e8368f-0a6a-4fc6-a637-32044e469a58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib">
+    <Filter Include="sources\irc">
+      <UniqueIdentifier>{2abdd509-f9eb-4d87-9f87-f8f2e76d283c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\lib">
       <UniqueIdentifier>{0486a7ce-f52b-44ad-8039-3887da5d63be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\hiredis">
+    <Filter Include="sources\lib\hiredis">
       <UniqueIdentifier>{e9fd4755-aff2-4f11-97cf-e4e82fd84c74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\hiredis\adapters">
+    <Filter Include="sources\lib\hiredis\adapters">
       <UniqueIdentifier>{6a02e9f0-97d7-4a62-8633-722e37dbf426}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\lua">
+    <Filter Include="sources\lib\lua">
       <UniqueIdentifier>{1dbaa836-445a-47b2-962d-56e6e22f2443}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\jsoncpp">
+    <Filter Include="sources\lib\jsoncpp">
       <UniqueIdentifier>{12c57794-fc32-4ac5-98e5-ef5067972c29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\jsoncpp\json">
+    <Filter Include="sources\lib\jsoncpp\json">
       <UniqueIdentifier>{a10e7fef-68b6-4558-abec-e3ee40a5af55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\happyhttp">
+    <Filter Include="sources\lib\happyhttp">
       <UniqueIdentifier>{df1a796f-9ec8-4eb8-ad11-e631d86b9992}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\libuv">
+    <Filter Include="sources\lib\libuv">
       <UniqueIdentifier>{73cf8756-022b-47c7-a4a1-0162cc080c0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\libuv\unix">
+    <Filter Include="sources\lib\libuv\unix">
       <UniqueIdentifier>{40dd000d-6daa-4435-8854-cce5100b3d98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\libuv\win">
+    <Filter Include="sources\lib\libuv\win">
       <UniqueIdentifier>{33b73026-5472-48ca-8778-54b24c47c9f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="uv">
+    <Filter Include="sources\lua">
+      <UniqueIdentifier>{f5fdff56-c8bc-4785-9c83-b10e443a93e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\models">
+      <UniqueIdentifier>{76266d66-cee1-444e-ba4f-30dcaaecc7fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\osu">
+      <UniqueIdentifier>{bace7af3-b2cc-445a-9f57-87884ad497f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\server">
+      <UniqueIdentifier>{593e13cd-9a55-4d3a-a28f-8638f2a986fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\utils">
+      <UniqueIdentifier>{823a3086-d70b-4621-a94b-2dfa50c4280c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\uv">
       <UniqueIdentifier>{8b480346-2daf-4adf-b1ee-43471df53712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\events">
+      <UniqueIdentifier>{866bb613-a7eb-476b-9b2b-d83f0f25c52f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\utils\config.cc">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utils\logger.cc">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utils\redis.cc">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utils\service.cc">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utils\utils.cc">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\scripts\script.cc">
-      <Filter>scripts</Filter>
+      <Filter>sources\scripts</Filter>
     </ClCompile>
     <ClCompile Include="..\src\models\command.cc">
-      <Filter>models</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\models\player.cc">
-      <Filter>models</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\models\players.cc">
-      <Filter>models</Filter>
+      <Filter>sources\models</Filter>
     </ClCompile>
     <ClCompile Include="..\src\models\request.cc">
-      <Filter>models</Filter>
+      <Filter>sources\models</Filter>
     </ClCompile>
     <ClCompile Include="..\src\irc\client.cc">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClCompile>
     <ClCompile Include="..\src\irc\manager.cc">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClCompile>
     <ClCompile Include="..\src\scripts\manager.cc">
-      <Filter>scripts</Filter>
+      <Filter>sources\scripts</Filter>
     </ClCompile>
     <ClCompile Include="..\src\irc\osu.cc">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClCompile>
     <ClCompile Include="..\src\irc\twitch.cc">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua\logger.cc">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\lua\player.cc">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua\request.cc">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua\server.cc">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua\state.cc">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lua\utils.cc">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\src\server\server.cc">
-      <Filter>server</Filter>
+      <Filter>sources\server</Filter>
     </ClCompile>
     <ClCompile Include="..\src\osu\api.cc">
-      <Filter>osu</Filter>
+      <Filter>sources\osu</Filter>
     </ClCompile>
     <ClCompile Include="..\src\osu\user.cc">
-      <Filter>osu</Filter>
+      <Filter>sources\osu</Filter>
     </ClCompile>
     <ClCompile Include="..\src\osu\beatmap.cc">
-      <Filter>osu</Filter>
+      <Filter>sources\osu</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ini\ini.c">
-      <Filter>ini</Filter>
+      <Filter>sources\ini</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ini\reader.cc">
-      <Filter>ini</Filter>
+      <Filter>sources\ini</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\hiredis\sds.c">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\hiredis\net.c">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\hiredis\hiredis.c">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\hiredis\dict.c">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\hiredis\async.c">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lzio.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lvm.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lutf8lib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lundump.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ltm.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ltablib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ltable.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lstrlib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lstring.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lstate.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lparser.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\loslib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lopcodes.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lobject.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\loadlib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lmem.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lmathlib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\llex.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\liolib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\linit.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lgc.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lfunc.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ldump.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ldo.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ldebug.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\ldblib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lctype.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lcorolib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lcode.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lbitlib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lbaselib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lauxlib.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\lua\lapi.c">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jsoncpp\json_writer.cpp">
-      <Filter>lib\jsoncpp</Filter>
+      <Filter>sources\lib\jsoncpp</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jsoncpp\json_value.cpp">
-      <Filter>lib\jsoncpp</Filter>
+      <Filter>sources\lib\jsoncpp</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jsoncpp\json_reader.cpp">
-      <Filter>lib\jsoncpp</Filter>
+      <Filter>sources\lib\jsoncpp</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\happyhttp\happyhttp.cpp">
-      <Filter>lib\happyhttp</Filter>
+      <Filter>sources\lib\happyhttp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utils\http.cc">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\irc\parser.cc">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClCompile>
     <ClCompile Include="..\src\irc\scanner.cc">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\fs-poll.c">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\inet.c">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\threadpool.c">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\uv-common.c">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\version.c">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\async.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\core.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\dl.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\fs.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\getaddrinfo.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\getnameinfo.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\linux-core.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\linux-inotify.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\linux-syscalls.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\loop.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\loop-watcher.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\pipe.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\poll.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\process.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\proctitle.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\signal.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\stream.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\tcp.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\thread.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\timer.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\tty.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\unix\udp.c">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\async.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\core.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\dl.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\error.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\fs.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\fs-event.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\getaddrinfo.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\getnameinfo.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\handle.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\loop-watcher.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\pipe.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\poll.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\process.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\process-stdio.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\req.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\signal.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\stream.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\tcp.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\thread.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\timer.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\tty.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\udp.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\util.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\winapi.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\libuv\win\winsock.c">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\loop.cc">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\timer.cc">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\dns.cc">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\socket.cc">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\buffer.cc">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uv\file.cc">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\models\iserializable.cc">
+      <Filter>sources\models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\models\viewer.cc">
+      <Filter>sources\models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\models\streamer.cc">
+      <Filter>sources\models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\models\moderator.cc">
+      <Filter>sources\models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\models\viewers.cc">
+      <Filter>sources\models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua\viewer.cc">
+      <Filter>sources\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cc">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\extra.cc">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\irc\reply.cc">
+      <Filter>sources\irc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uv\work.cc">
+      <Filter>sources\uv</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\utils\config.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\logger.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\redis.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\service.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\utils.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\scripts\script.h">
-      <Filter>scripts</Filter>
+      <Filter>sources\scripts</Filter>
     </ClInclude>
     <ClInclude Include="..\src\models\command.h">
-      <Filter>models</Filter>
+      <Filter>sources\models</Filter>
     </ClInclude>
     <ClInclude Include="..\src\models\icommand_listener.h">
-      <Filter>models</Filter>
+      <Filter>sources\models</Filter>
     </ClInclude>
     <ClInclude Include="..\src\models\imessage_listener.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\models\player.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\models\players.h">
-      <Filter>models</Filter>
+      <Filter>sources\models</Filter>
     </ClInclude>
     <ClInclude Include="..\src\models\request.h">
-      <Filter>models</Filter>
+      <Filter>sources\models</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\client.h">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\manager.h">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\scripts\manager.h">
-      <Filter>scripts</Filter>
+      <Filter>sources\scripts</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\osu.h">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\twitch.h">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\logger.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lua\player.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\request.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\server.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\state.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\utils.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\wrapper.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\wrapper_types.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lua\wrapper_utils.h">
-      <Filter>lua</Filter>
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\src\server\server.h">
-      <Filter>server</Filter>
+      <Filter>sources\server</Filter>
     </ClInclude>
     <ClInclude Include="..\src\osu\user.h">
-      <Filter>osu</Filter>
+      <Filter>sources\osu</Filter>
     </ClInclude>
     <ClInclude Include="..\src\osu\api.h">
-      <Filter>osu</Filter>
+      <Filter>sources\osu</Filter>
     </ClInclude>
     <ClInclude Include="..\src\osu\beatmap.h">
-      <Filter>osu</Filter>
+      <Filter>sources\osu</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ini\ini.h">
-      <Filter>ini</Filter>
+      <Filter>sources\ini</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ini\reader.h">
-      <Filter>ini</Filter>
+      <Filter>sources\ini</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\sds.h">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\net.h">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\hiredis.h">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\fmacros.h">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\dict.h">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\async.h">
-      <Filter>lib\hiredis</Filter>
+      <Filter>sources\lib\hiredis</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\adapters\libuv.h">
-      <Filter>lib\hiredis\adapters</Filter>
+      <Filter>sources\lib\hiredis\adapters</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\adapters\libevent.h">
-      <Filter>lib\hiredis\adapters</Filter>
+      <Filter>sources\lib\hiredis\adapters</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\adapters\libev.h">
-      <Filter>lib\hiredis\adapters</Filter>
+      <Filter>sources\lib\hiredis\adapters</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\hiredis\adapters\ae.h">
-      <Filter>lib\hiredis\adapters</Filter>
+      <Filter>sources\lib\hiredis\adapters</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lzio.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lvm.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lundump.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lualib.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\luaconf.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lua.hpp">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lua.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\ltm.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\ltable.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lstring.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lstate.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lprefix.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lparser.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lopcodes.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lobject.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lmem.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\llimits.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\llex.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lgc.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lfunc.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\ldo.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\ldebug.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lctype.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lcode.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lauxlib.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\lua\lapi.h">
-      <Filter>lib\lua</Filter>
+      <Filter>sources\lib\lua</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\writer.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\version.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\value.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\reader.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\json.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\forwards.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\features.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\config.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\autolink.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json\assertions.h">
-      <Filter>lib\jsoncpp\json</Filter>
+      <Filter>sources\lib\jsoncpp\json</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jsoncpp\json_tool.h">
-      <Filter>lib\jsoncpp</Filter>
+      <Filter>sources\lib\jsoncpp</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\happyhttp\happyhttp.h">
-      <Filter>lib\happyhttp</Filter>
+      <Filter>sources\lib\happyhttp</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\http.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\parser.h">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\irc\scanner.h">
-      <Filter>irc</Filter>
+      <Filter>sources\irc</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\android-ifaddrs.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\heap-inl.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\pthread-fixes.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\queue.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\stdint-msvc2008.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\tree.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-aix.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-bsd.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-common.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-darwin.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-errno.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-linux.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-sunos.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-threadpool.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-unix.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-version.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\uv-win.h">
-      <Filter>lib\libuv</Filter>
+      <Filter>sources\lib\libuv</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\unix\atomic-ops.h">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\unix\internal.h">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\unix\linux-syscalls.h">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\unix\spinlock.h">
-      <Filter>lib\libuv\unix</Filter>
+      <Filter>sources\lib\libuv\unix</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\atomicops-inl.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\handle-inl.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\internal.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\req-inl.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\stream-inl.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\winapi.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\libuv\win\winsock.h">
-      <Filter>lib\libuv\win</Filter>
+      <Filter>sources\lib\libuv\win</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\loop.h">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\non_copyable.h">
-      <Filter>utils</Filter>
+      <Filter>sources\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\timer.h">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\socket.h">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\dns.h">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\buffer.h">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
     </ClInclude>
     <ClInclude Include="..\src\uv\file.h">
-      <Filter>uv</Filter>
+      <Filter>sources\uv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\models\iserializable.h">
+      <Filter>sources\models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\models\viewer.h">
+      <Filter>sources\models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\models\streamer.h">
+      <Filter>sources\models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\models\moderator.h">
+      <Filter>sources\models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\models\viewers.h">
+      <Filter>sources\models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lua\viewer.h">
+      <Filter>sources\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\macros.h">
+      <Filter>sources\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\irc\reply.h">
+      <Filter>sources\irc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\events\emitter.h">
+      <Filter>sources\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uv\work.h">
+      <Filter>sources\uv</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\lib\jsoncpp\json_valueiterator.inl">
-      <Filter>lib\jsoncpp</Filter>
+      <Filter>sources\lib\jsoncpp</Filter>
     </None>
+    <None Include="..\.gitignore">
+      <Filter>others</Filter>
+    </None>
+    <None Include="..\LICENSE.md">
+      <Filter>others</Filter>
+    </None>
+    <None Include="..\README.md">
+      <Filter>others</Filter>
+    </None>
+    <None Include="..\data\config.ini">
+      <Filter>others</Filter>
+    </None>
+    <None Include="..\data\scripts\ban.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\brioche.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\help.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\log.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\requests.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\skin.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\status.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\time.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\to.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\unban.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\uptime.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+    <None Include="..\data\scripts\stats.lua">
+      <Filter>others\scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt">
+      <Filter>others</Filter>
+    </Text>
   </ItemGroup>
 </Project>
