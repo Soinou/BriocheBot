@@ -78,7 +78,7 @@ int main()
             else
             {
                 // Valid
-                printf("    Key is a streamer, getting data...\n", value);
+                printf("    Key is a streamer, getting data...\n");
 
                 // Get the streamer
                 Redis::Reply streamer = connection.execute(Utils::string_format("GET %d", value));
