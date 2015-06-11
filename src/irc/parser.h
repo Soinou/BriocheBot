@@ -26,7 +26,6 @@
 
 #include "irc/scanner.h"
 #include "irc/reply.h"
-#include "utils/macros.h"
 
 #include <string>
 #include <vector>

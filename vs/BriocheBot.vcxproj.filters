@@ -851,9 +851,6 @@
     <ClInclude Include="..\src\lua\viewer.h">
       <Filter>sources\lua</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\utils\macros.h">
-      <Filter>sources\utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\irc\reply.h">
       <Filter>sources\irc</Filter>
     </ClInclude>
