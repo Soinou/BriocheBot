@@ -199,8 +199,14 @@ namespace Uv
                 // Get the file
                 File* file = static_cast<File*>(request->data);
 
+                if (request->result < 0)
+                    printf("Error when writing to file: %s\n", uv_strerror(request->result));
+
                 // Call file callback
                 file->on_write_(file, request->result >= 0);
+
+                // Cleanup the request
+                uv_fs_req_cleanup(request);
 
                 // Delete request
                 delete request;
@@ -233,6 +239,12 @@ namespace Uv
 
                 // Call on close
                 file->on_close_(file);
+
+                // Cleanup the request
+                uv_fs_req_cleanup(request);
+
+                // Delete the request
+                delete request;
             };
 
             // Create a new request
