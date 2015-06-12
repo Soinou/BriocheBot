@@ -87,10 +87,15 @@ namespace Uv
             opening_ = true;
 
             // Open flags
-            int flags = append ? O_CREAT | O_APPEND : O_CREAT | O_RDWR;
+            int flags = O_CREAT | O_RDWR;
+
+            // If we want to append
+            if (append)
+                // Then so be it
+                flags |= O_APPEND;
 
             // Open the file
-            uv_fs_open(*the_loop, request, path.c_str(), flags, 00666, on_open);
+            uv_fs_open(*the_loop, request, path.c_str(), flags, 0666, on_open);
         }
     }
 
