@@ -30,7 +30,6 @@
 #include <json/json.h>
 
 #include <map>
-#include <mutex>
 
 // Forward declaration of the viewer class
 class Viewer;
@@ -44,9 +43,6 @@ class Viewers : public NonCopyable
 private:
     // Redis connection
     Redis::Connection connection_;
-
-    // The mutex
-    std::mutex mutex_;
 
     // The list of viewers
     std::map<std::string, Viewer*> viewers_;

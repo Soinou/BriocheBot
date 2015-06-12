@@ -23,118 +23,16 @@
 
 ///////////////////////////////////////////////
 //
-// Current mode: Database migration
-// Will migrate everything from the old players
-// to the new viewers-models
+// Current mode: Nothing
 //
 ///////////////////////////////////////////////
 
-#include "models/viewers.h"
-#include "models/viewer.h"
-#include "models/streamer.h"
-#include "models/moderator.h"
-#include "utils/redis.h"
-#include "utils/utils.h"
+#include <cstdio>
 
 // Extra program, used to do some extra things
 int main()
 {
-    the_viewers.load();
-
-    // Connect to redis
-    Redis::Connection connection("127.0.0.1", 6379);
-
-    // Json reader we'll use
-    Json::Reader reader;
-
-    printf("Getting all keys...\n\n");
-
-    // Get all the keys we have in redis
-    Redis::Reply reply = connection.execute("KEYS *");
-
-    printf("Got all keys, scanning keys...\n");
-
-    // If we got an array
-    if (reply.type == Redis::Reply::Array)
-    {
-        int count = the_viewers.max_id();
-
-        // For each key
-        for (auto i = reply.elements.begin(); i != reply.elements.end(); i++)
-        {
-            // Get this element
-            Redis::Reply element = *i;
-
-            printf("  Scanning key \"%s\"...\n", element.string.c_str());
-
-            // Get the element value
-            int value = atoi(element.string.c_str());
-
-            // We got 0
-            if (value == 0)
-                // Not valid
-                printf("    Key is not valid, skipping\n\n");
-            // We got a number
-            else
-            {
-                // Valid
-                printf("    Key is a streamer, getting data...\n");
-
-                // Get the streamer
-                Redis::Reply streamer = connection.execute(Utils::string_format("GET %d", value));
-
-                // Reply is a string
-                if (streamer.type == Redis::Reply::String)
-                {
-                    printf("      Got data, creating streamer...\n");
-
-                    // Json we'll need
-                    Json::Value json;
-
-                    // Parse the json
-                    reader.parse(streamer.string, json);
-
-                    // If the streamer already exists, skip
-                    if (the_viewers.exists(json["twitch_username"].asString()))
-                        printf("      Streamer already exists, skipping\n\n");
-                    // If the streamer doesn't already exists
-                    else
-                    {
-                        // Create a new streamer
-                        Streamer* new_streamer = nullptr;
-
-                        // If this streamer was an admin
-                        if (json["admin"].asBool())
-                        {
-                            // Create a new moderator
-                            Moderator* moderator = new Moderator();
-                            // Set his privileges
-                            moderator->set_privileges(1);
-                            // Pass it to our viewer
-                            new_streamer = moderator;
-                        }
-                        // Else
-                        else
-                            // Just create a new streamer
-                            new_streamer = new Streamer();
-
-                        // Set streamer data
-                        new_streamer->set_id(count++);
-                        new_streamer->set_twitch_username(json["twitch_username"].asString());
-                        new_streamer->set_osu_username(json["osu_username"].asString());
-                        new_streamer->set_osu_skin_link(json["osu_skin"].asString());
-
-                        printf("      Streamer created, adding him...\n");
-
-                        // Insert the streamer
-                        new_streamer->insert();
-
-                        printf("      Streamer added!\n\n");
-                    }
-                }
-            }
-        }
-    }
+    printf("Nothing to do here\n");
 
     return 0;
 }

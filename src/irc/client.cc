@@ -176,14 +176,14 @@ namespace Irc
 
     void Client::handle_on_name(const Reply& reply)
     {
-        // Lock the mutex
-        mutex_.lock();
-
         // Get the first object of our parameters list
         auto i = reply.parameters.begin();
 
         // Get the channel
         std::string channel = *i;
+
+        // Lock the mutex
+        mutex_.lock();
 
         // While we have names
         while (++i != reply.parameters.end())
@@ -196,12 +196,12 @@ namespace Irc
 
     void Client::handle_on_join(const Reply& reply)
     {
-        // Lock the mutex
-        mutex_.lock();
-
         // Get the channel and the username
         std::string channel = reply.parameters[0];
         std::string username = reply.username;
+
+        // Lock the mutex
+        mutex_.lock();
 
         // Get the channel list
         std::vector<std::string>& channel_list = users_[channel];
@@ -212,22 +212,26 @@ namespace Irc
             // Add him to our list
             channel_list.push_back(username);
 
+            // Unlock the mutex
+            mutex_.unlock();
+
             // Emit on join
             on_join.emit(channel, username);
         }
-
-        // Unlock the mutex
-        mutex_.unlock();
+        // Else
+        else
+            // Just unlock the mutex
+            mutex_.unlock();
     }
 
     void Client::handle_on_part(const Reply& reply)
     {
-        // Lock the mutex
-        mutex_.lock();
-
         // Get the channel and the username
         std::string channel = reply.parameters[0];
         std::string username = reply.username;
+
+        // Lock the mutex
+        mutex_.lock();
 
         // Get the channel list
         std::vector<std::string>& channel_list = users_[channel];
@@ -244,12 +248,16 @@ namespace Irc
             // Reprocess the vector
             channel_list.erase(i);
 
+            // Unlock the mutex
+            mutex_.unlock();
+
             // Emit on part
             on_part.emit(channel, username);
         }
-
-        // Unlock the mutex
-        mutex_.unlock();
+        // Else
+        else
+            // Just unlock the mutex
+            mutex_.unlock();
     }
 
     void Client::handle_on_message(const Reply& reply)

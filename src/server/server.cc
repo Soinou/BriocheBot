@@ -81,15 +81,11 @@ void Server::update(Uv::Timer* timer)
             viewer->set_twitch_username(*i);
         }
 
-        // Run a method asynchronously
-        Uv::run([viewer, difference]()
-        {
-            // Increase the viewer online time
-            viewer->set_online_time(viewer->online_time() + difference);
+        // Increase the viewer online time
+        viewer->set_online_time(viewer->online_time() + difference);
 
-            // Save the viewer
-            viewer->insert();
-        });
+        // Save the viewer
+        viewer->insert();
     }
 
     // If we have a current streamer
@@ -98,15 +94,11 @@ void Server::update(Uv::Timer* timer)
         // Copy the current streamer
         Streamer* streamer = current_streamer_;
 
-        // Run asynchronously
-        Uv::run([streamer, difference]()
-        {
-            // Update the streamer time
-            streamer->set_stream_time(streamer->stream_time() + difference);
+        // Update the streamer time
+        streamer->set_stream_time(streamer->stream_time() + difference);
 
-            // Update him
-            streamer->insert();
-        });
+        // Update him
+        streamer->insert();
     }
 
     // Replace our last update with the current time

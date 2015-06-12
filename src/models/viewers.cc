@@ -29,7 +29,7 @@
 #include "utils/utils.h"
 #include "utils/logger.h"
 
-Viewers::Viewers() : connection_("127.0.0.1", 6379), mutex_(), viewers_(), json_writer_(), max_id_(0)
+Viewers::Viewers() : connection_("127.0.0.1", 6379), viewers_(), json_writer_(), max_id_(0)
 {
     // Set json writer indentation
     json_writer_["indentation"] = "";
@@ -79,14 +79,8 @@ void Viewers::load_viewer(const std::string& json_string)
         // Initialize him with the json we have
         viewer->from_json(json);
 
-        // Lock the mutex
-        mutex_.lock();
-
         // Add this viewer to our map
         viewers_.insert(std::make_pair(Utils::to_lower(viewer->twitch_username()), viewer));
-
-        // Unlock the mutex
-        mutex_.unlock();
 
         // If the viewer id is greater than our current max id
         if (viewer->id() > max_id_)
@@ -160,24 +154,12 @@ bool Viewers::update(Viewer* viewer)
 
 bool Viewers::exists(const std::string& twitch_username)
 {
-    // Lock the mutex
-    mutex_.lock();
-
-    // Get the number of users with this name
-    int count = viewers_.count(Utils::to_lower(twitch_username));
-
-    // Unlock the mutex
-    mutex_.unlock();
-
     // If we have at least one, that's good
-    return count > 0;
+    return viewers_.count(Utils::to_lower(twitch_username)) > 0;
 }
 
 bool Viewers::insert(Viewer* viewer)
 {
-    // Lock the mutex
-    mutex_.lock();
-
     // Update the viewer
     bool ok = update(viewer);
 
@@ -193,18 +175,12 @@ bool Viewers::insert(Viewer* viewer)
             max_id_ = viewer->id();
     }
 
-    // Unlock the mutex
-    mutex_.unlock();
-
     // Return the result
     return ok;
 }
 
 bool Viewers::erase(const std::string& twitch_username)
 {
-    // Lock the mutex
-    mutex_.lock();
-
     // Lower case the twitchusername
     std::string lower_twitch_username = Utils::to_lower(twitch_username);
 
@@ -245,18 +221,12 @@ bool Viewers::erase(const std::string& twitch_username)
         // Remove the viewer from the map
         viewers_.erase(lower_twitch_username);
 
-    // Unlock the mutex
-    mutex_.unlock();
-
     // Return if the command is ok
     return ok;
 }
 
 bool Viewers::replace(const std::string& twitch_username, Viewer* viewer)
 {
-    // Lock the mutex
-    mutex_.lock();
-
     // Find the previous viewer
     auto i = viewers_.find(Utils::to_lower(twitch_username));
 
@@ -269,15 +239,9 @@ bool Viewers::replace(const std::string& twitch_username, Viewer* viewer)
         // Replace the old value by the new one
         i->second = viewer;
 
-        // Unlock the mutex
-        mutex_.unlock();
-
         // Then update the viewer with the new values
         return update(viewer);
     }
-
-    // Unlock the mutex
-    mutex_.unlock();
 
     // Not ok
     return false;
@@ -285,14 +249,8 @@ bool Viewers::replace(const std::string& twitch_username, Viewer* viewer)
 
 Viewer* Viewers::get(const std::string& twitch_username)
 {
-    // Lock the mutex
-    mutex_.lock();
-
     // Find the viewer
     auto i = viewers_.find(Utils::to_lower(twitch_username));
-
-    // Unlock the mutex
-    mutex_.unlock();
 
     // Viewer doesn't exists
     if (i == viewers_.end())
